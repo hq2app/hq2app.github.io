@@ -1,479 +1,310 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Đãng Khấu Pro - Adaptive UI</title>
+    <title>Đãng Khấu Sát Thần</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
-            background-color: #F2F2F7;
-            color: #1C1C1E;
-            padding-bottom: calc(100px + env(safe-area-inset-bottom));
+            font-family: 'Inter', 'Roboto', sans-serif;
+            background-color: #ffffff;
+            color: #3c4043;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .premium-card {
-            background: #FFFFFF;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            border: 1px solid rgba(0,0,0,0.04);
-            height: 100%;
+        /* Thẻ Google App Style */
+        .google-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #dadce0;
+            transition: box-shadow 0.2s;
         }
 
-        /* Bottom Navigation Adaptive */
-        .bottom-nav-container {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 50;
-            display: flex;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 0.5px solid rgba(0, 0, 0, 0.1);
-            padding-bottom: env(safe-area-inset-bottom);
+        .google-card:hover {
+            box-shadow: 0 1px 3px 0 rgba(60,64,67,.30), 0 4px 8px 3px rgba(60,64,67,.15);
         }
 
-        .bottom-nav {
-            width: 100%;
-            max-width: 600px; /* Giới hạn độ rộng để ko bị loãng trên tablet/PC */
-            display: flex;
-            justify-content: space-around;
-            height: 64px;
+        /* Badge hệ phái phong cách Google Chips */
+        .badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
         }
+        .badge-hh { background: #fce8e6; color: #d93025; } /* Red */
+        .badge-al { background: #e8f0fe; color: #1a73e8; } /* Blue */
+        .badge-ys { background: #e6f4ea; color: #1e8e3e; } /* Green */
+        .badge-mg { background: #f3e8fd; color: #9333ea; } /* Purple */
+        .badge-dk { background: #feefc3; color: #e37400; } /* Orange */
+        .badge-cc { background: #fce8e6; color: #ea4335; } /* Bright Red */
+        .badge-xt { background: #fff4e5; color: #fb8c00; } /* Amber */
+        .badge-ps { background: #e4f7fb; color: #00acc1; } /* Cyan */
+        .badge-hk { background: #f1f3f4; color: #5f6368; } /* Gray */
+        .badge-dn { background: #f8f9fa; color: #70757a; } /* Light Gray */
+        .badge-gs { background: #e8eaed; color: #3c4043; } /* Slate - Dịu mắt hơn */
 
-        .nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            color: #8E8E93;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .nav-item.active {
-            color: #007AFF;
-            transform: translateY(-2px);
-        }
-
-        .nav-item i { font-size: 20px; }
-        .nav-item span { font-size: 10px; font-weight: 600; }
-
-        /* Tab Content Transitions */
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: slideIn 0.3s ease-out; }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Class Colors */
-        .cls-hoahon { color: #FF2D55; }
-        .cls-anhlinh { color: #5856D6; }
-        .cls-ysu { color: #34C759; }
-        .cls-migia { color: #AF52DE; }
-        .cls-daokhach { color: #FF9500; }
-        .cls-chiencuong { color: #FF3B30; }
-        .cls-xathu { color: #FFCC00; }
-        .cls-phuongsi { color: #32ADE6; }
-        .cls-hiepkhach { color: #A2845E; }
-        .cls-dinhan { color: #8E8E93; }
-        .cls-giapsi { color: #545456; }
-        .cls-yensu { color: #007AFF; }
-        .cls-diepkhach { color: #66D4CF; }
-
-        .auction-timeline {
-            border-left: 1.5px solid #F2F2F7;
-            margin-left: 8px;
-            padding-left: 16px;
-        }
-
-        .timeline-node {
-            position: relative;
-            padding-bottom: 12px;
-        }
-        .timeline-node::before {
-            content: '';
-            position: absolute;
-            left: -21px;
-            top: 6px;
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: #E5E5EA;
-            border: 2px solid #FFF;
-        }
-        .timeline-node.active::before { 
-            background: #007AFF; 
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1); 
-        }
-
-        .member-item {
-            padding: 12px 16px;
-            transition: background 0.2s;
-        }
-        .member-item:active { background: #F2F2F7; }
-
-        .fab-pdf {
-            position: fixed;
-            bottom: calc(85px + env(safe-area-inset-bottom));
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            background: #1C1C1E;
-            color: #FFF;
-            border-radius: 18px;
+        .section-header {
+            font-size: 14px;
+            font-weight: 500;
+            color: #202124;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-            z-index: 40;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.2s;
+            gap: 12px;
         }
-        .fab-pdf:active { transform: scale(0.9); background: #000; }
+
+        .row-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+        .row-item:last-child { border-bottom: none; }
+
+        .google-blue { color: #1a73e8; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .animate-fade {
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        /* Tối ưu hóa cho di động */
+        @media (max-width: 640px) {
+            .section-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
-<body>
+<body class="py-10">
 
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+    <main class="max-w-6xl mx-auto px-6 space-y-12">
         
-        <!-- Header Section -->
-        <header class="mb-8 flex flex-wrap justify-between items-center gap-4">
-            <div>
-                <h1 class="text-3xl font-900 tracking-tight text-slate-900">Đãng Khấu Pro</h1>
-                <p class="text-[12px] font-bold text-slate-400 uppercase tracking-[3px] mt-1">Personnel Management System</p>
+        <!-- Header: Google Style -->
+        <header class="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-gray-100 pb-8 animate-fade">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white text-2xl shadow-sm">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-500 text-gray-900">Đãng Khấu <span class="font-normal text-gray-500 italic">Workplace</span></h1>
+                    <p class="text-sm text-gray-500 mt-1">Dữ liệu quản trị bang hội • 05/04/2026</p>
+                </div>
             </div>
-            <div class="flex gap-3">
-                <div class="bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center min-w-[80px]">
-                    <span class="text-[9px] font-bold text-slate-400 uppercase">Hạng Bang</span>
-                    <span class="text-sm font-bold text-blue-600">GIÁP</span>
+            <div class="flex items-center gap-3">
+                <div class="google-card px-4 py-2 flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                    <span class="text-sm font-500">Hạng GIÁP</span>
                 </div>
-                <div class="bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center min-w-[80px]">
-                    <span class="text-[9px] font-bold text-slate-400 uppercase">Trận</span>
-                    <span class="text-sm font-bold text-slate-800">54/54</span>
-                </div>
+                <button class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-600">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
             </div>
         </header>
 
-        <div id="capture-area">
-            
-            <!-- TAB 1: ĐẤU GIÁ (Grid co giãn theo màn hình) -->
-            <div id="tab-auction" class="tab-content active">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="auction-container">
-                    <!-- Cards rendered by JS -->
-                </div>
-            </div>
-
-            <!-- TAB 2: NHÂN SỰ -->
-            <div id="tab-personnel" class="tab-content">
+        <!-- Đấu giá (Google Style Cards) -->
+        <section class="animate-fade" style="animation-delay: 0.1s;">
+            <h2 class="section-header">
+                <i class="fas fa-tag google-blue"></i>
+                Lộ trình đấu giá
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 
-                <!-- Nhóm Xoay Tua (2 cột trên màn hình lớn) -->
-                <div class="mb-8">
-                    <h3 class="text-[11px] font-800 text-slate-400 uppercase tracking-widest ml-1 mb-4">Điều phối xoay tua (Boss 2-5)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="premium-card overflow-hidden">
-                            <div class="bg-red-50/50 px-5 py-4 flex justify-between items-center border-b border-red-100">
-                                <span class="text-[13px] font-bold text-red-600 tracking-tight">NGHỈ SAU BOSS 1</span>
-                                <span class="text-[10px] bg-red-100/50 text-red-600 px-2 py-0.5 rounded-full font-bold">6 Đơn vị</span>
-                            </div>
-                            <div id="out-list" class="grid grid-cols-2 divide-x divide-slate-50"></div>
-                        </div>
-                        <div class="premium-card overflow-hidden">
-                            <div class="bg-green-50/50 px-5 py-4 flex justify-between items-center border-b border-green-100">
-                                <span class="text-[13px] font-bold text-green-600 tracking-tight">VÀO TỪ BOSS 2</span>
-                                <span class="text-[10px] bg-green-100/50 text-green-600 px-2 py-0.5 rounded-full font-bold">6 Đơn vị</span>
-                            </div>
-                            <div id="in-list" class="grid grid-cols-2 divide-x divide-slate-50"></div>
-                        </div>
+                <!-- Card -->
+                <div class="google-card p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i class="fas fa-key google-blue"></i>
+                        <span class="text-xs font-500 uppercase tracking-wider text-gray-500">Chìa Bảo Rương</span>
+                    </div>
+                    <div class="mb-6">
+                        <span class="text-[10px] font-700 text-gray-400 uppercase">Hiện tại (05/04)</span>
+                        <p class="text-xl font-500 text-gray-900 mt-1">HOANG</p>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="row-item"><span class="text-xs text-gray-500">W+1</span><span class="text-sm font-500">Vô Ảnh</span></div>
+                        <div class="row-item"><span class="text-xs text-gray-500">W+2</span><span class="text-sm font-500">Lord</span></div>
+                        <div class="row-item"><span class="text-xs text-gray-500">W+3</span><span class="text-sm font-500">PEMY</span></div>
+                        <div class="row-item"><span class="text-xs text-gray-500 font-500 google-blue">W+4</span><span class="text-sm font-500 google-blue">yomost</span></div>
                     </div>
                 </div>
 
-                <!-- Danh sách tổng (Nhiều cột hơn trên PC) -->
-                <div>
-                    <h3 class="text-[11px] font-800 text-slate-400 uppercase tracking-widest ml-1 mb-4">Danh sách tham chiến</h3>
-                    <div class="premium-card overflow-hidden">
-                        <div id="full-member-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 divide-x divide-y divide-slate-50"></div>
+                <div class="google-card p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i class="fas fa-gem text-purple-600"></i>
+                        <span class="text-xs font-500 uppercase tracking-wider text-gray-500">Dùi Kim Cương</span>
+                    </div>
+                    <div class="mb-6">
+                        <span class="text-[10px] font-700 text-gray-400 uppercase">Hiện tại (05/04)</span>
+                        <p class="text-xl font-500 text-gray-900 mt-1">Lưu Vân</p>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="row-item"><span class="text-xs text-gray-500">W+1</span><span class="text-sm font-500">Trư Ngộ</span></div>
+                        <div class="row-item"><span class="text-xs text-gray-500">W+2</span><span class="text-sm font-500">Việt</span></div>
+                        <div class="row-item"><span class="text-xs text-gray-500">W+3</span><span class="text-sm font-500">Lucie</span></div>
+                        <div class="row-item"><span class="text-xs text-gray-500 font-500 google-blue">W+4</span><span class="text-sm font-500 google-blue">Vit</span></div>
                     </div>
                 </div>
+
+                <div class="google-card p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i class="fas fa-box-open text-orange-600"></i>
+                        <span class="text-xs font-500 uppercase tracking-wider text-gray-500">Rương TB 137</span>
+                    </div>
+                    <div class="mb-6">
+                        <span class="text-[10px] font-700 text-gray-400 uppercase">Hiện tại (05/04)</span>
+                        <p class="text-xl font-500 text-gray-900 mt-1">Billion</p>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="row-item"><span class="text-xs text-gray-500">W+1</span><span class="text-sm font-500">Ashdale</span></div>
+                        <div class="row-item"><span class="text-xs text-gray-500">W+2</span><span class="text-sm font-500">Vĩnh Quân</span></div>
+                        <div class="row-item"><span class="text-xs text-gray-500">W+3</span><span class="text-sm font-500">Aniu</span></div>
+                        <div class="row-item"><span class="text-xs text-gray-500 font-500 google-blue">W+4</span><span class="text-sm font-500 google-blue">Nhật Nguyệt</span></div>
+                    </div>
+                </div>
+
+                <div class="google-card p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i class="fas fa-boxes text-green-600"></i>
+                        <span class="text-xs font-500 uppercase tracking-wider text-gray-500">Rương TB 129</span>
+                    </div>
+                    <div class="mb-6">
+                        <span class="text-[10px] font-700 text-gray-400 uppercase">Hiện tại (05/04)</span>
+                        <p class="text-xl font-500 text-gray-900 mt-1">CANDY</p>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="row-item"><span class="text-xs text-gray-500">W+1</span><span class="text-sm font-500">XiuSiêu</span></div>
+                        <div class="row-item"><span class="text-xs text-gray-500">W+2</span><span class="text-sm font-500">Nguyệt Mộng</span></div>
+                        <div class="row-item"><span class="text-xs text-gray-500">W+3</span><span class="text-sm font-500">Chin</span></div>
+                        <div class="row-item"><span class="text-xs text-gray-500 font-500 google-blue">W+4</span><span class="text-sm font-500 google-blue">PeHuyen</span></div>
+                    </div>
+                </div>
+
             </div>
-        </div>
+        </section>
+
+        <!-- Xoay Tua Đội Hình -->
+        <section class="animate-fade" style="animation-delay: 0.2s;">
+            <h2 class="section-header">
+                <i class="fas fa-exchange-alt google-blue"></i>
+                Điều phối đội hình
+            </h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- Rời trận -->
+                <div class="google-card p-0 overflow-hidden">
+                    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+                        <span class="text-sm font-500 text-red-600">Rời trận sau Boss 1</span>
+                        <i class="fas fa-sign-out-alt text-red-300"></i>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 divide-x divide-gray-100" id="out-grid">
+                        <!-- JS Render -->
+                    </div>
+                </div>
+
+                <!-- Vào trận -->
+                <div class="google-card p-0 overflow-hidden">
+                    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+                        <span class="text-sm font-500 text-green-700">Vào trận từ Boss 2</span>
+                        <i class="fas fa-sign-in-alt text-green-300"></i>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 divide-x divide-gray-100" id="in-grid">
+                        <!-- JS Render -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Danh sách 48 Thành viên -->
+        <section class="animate-fade" style="animation-delay: 0.3s;">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="section-header mb-0">
+                    <i class="fas fa-list-ul google-blue"></i>
+                    Danh sách tham chiến chính
+                </h2>
+                <div class="bg-blue-100 text-blue-700 text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+                    48 Thành viên Full Boss
+                </div>
+            </div>
+            <div class="google-card overflow-hidden">
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 divide-x divide-y divide-gray-100" id="member-grid">
+                    <!-- JS Render -->
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center pt-10 pb-20 border-t border-gray-100">
+            
+            <p class="text-xs text-gray-400 font-500 uppercase tracking-widest mt-6">Google Workspace Dashboard Model • Bang hội Đãng Khấu</p>
+        </footer>
     </main>
 
-    <!-- Bottom Navigation Bar -->
-    <div class="bottom-nav-container">
-        <nav class="bottom-nav">
-            <button onclick="switchTab('auction')" id="nav-auction" class="nav-item active">
-                <i class="fas fa-gavel"></i>
-                <span>Đấu giá</span>
-            </button>
-            <button onclick="switchTab('personnel')" id="nav-personnel" class="nav-item">
-                <i class="fas fa-users-gear"></i>
-                <span>Nhân sự</span>
-            </button>
-        </nav>
-    </div>
-
-    <!-- PDF FAB -->
-    <button onclick="exportToPDF()" class="fab-pdf">
-        <i class="fas fa-file-pdf"></i>
-    </button>
-
-    <!-- Edit Modal -->
-    <div id="editModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] hidden flex items-end sm:items-center justify-center">
-        <div class="bg-white w-full max-w-md rounded-t-[32px] sm:rounded-[24px] shadow-2xl overflow-hidden animate-slide-up sm:mb-0 pb-10 sm:pb-0">
-            <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
-                <button onclick="closeModal()" class="text-gray-400 font-bold">Hủy</button>
-                <h3 id="modalTitle" class="text-[17px] font-extrabold text-slate-800">Cập nhật</h3>
-                <button onclick="saveChanges()" class="text-blue-600 font-bold text-[17px]">Lưu</button>
-            </div>
-            <div class="p-6 space-y-5">
-                <input type="hidden" id="edit-id">
-                <input type="hidden" id="edit-type">
-                <input type="hidden" id="edit-auction-key"> 
-                <input type="hidden" id="edit-auction-index">
-
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Tên nhân vật / Đơn vị</label>
-                    <input type="text" id="edit-name" class="w-full bg-transparent text-[17px] font-bold text-slate-900 outline-none">
-                </div>
-                <div id="class-select-container" class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Hệ phái</label>
-                    <select id="edit-class" class="w-full bg-transparent text-[17px] font-bold text-slate-900 outline-none appearance-none cursor-pointer">
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        const { jsPDF } = window.jspdf;
-
-        const classConfig = {
-            "Họa Hồn": "cls-hoahon", "Ảnh Linh": "cls-anhlinh", "Y Sư": "cls-ysu",
-            "Mị Giả": "cls-migia", "Đao Khách": "cls-daokhach", "Chiến Cuồng": "cls-chiencuong",
-            "Xạ Thủ": "cls-xathu", "Phương Sĩ": "cls-phuongsi", "Hiệp Khách": "cls-hiepkhach",
-            "Dị Nhân": "cls-dinhan", "Giáp Sĩ": "cls-giapsi", "Yển Sư": "cls-yensu",
-            "Điệp Khách": "cls-diepkhach"
-        };
-
-        let members = [
-            { id: 1, name: "HOANG", className: "Họa Hồn", status: "Cả 2" },
-            { id: 2, name: "Vô Ảnh", className: "Ảnh Linh", status: "Cả 2" },
-            { id: 3, name: "C A N D Y", className: "Y Sư", status: "Cả 2" },
-            { id: 4, name: "Lưu Vân", className: "Mị Giả", status: "Cả 2" },
-            { id: 5, name: "Mặc Vũ Huyền Tịch", className: "Họa Hồn", status: "C cả 2" },
-            { id: 6, name: "Vũ.Vũ", className: "Đao Khách", status: "Cả 2" },
-            { id: 7, name: "Trư Ngộ Hiên", className: "Chiến Cuồng", status: "Cả 2" },
-            { id: 8, name: "Phog Hoa Tuyết Nguyệt", className: "Chiến Cuồng", status: "Cả 2" },
-            { id: 9, name: "Tiểu★Ất", className: "Yển Sư", status: "Cả 2" },
-            { id: 10, name: "Chìn", className: "Y Sư", status: "Cả 2" },
-            { id: 11, name: "LeoSensei", className: "Xạ Thủ", status: "Cả 2" },
-            { id: 12, name: "Việt Đang Ngủ", className: "Xạ Thủ", status: "Cả 2" },
-            { id: 13, name: "Kem Siêu Nhậu", className: "Phương Sĩ", status: "C cả 2" },
-            { id: 14, name: "Linh anh", className: "Họa Hồn", status: "Cả 2" },
-            { id: 15, name: "_Yeong_", className: "Mị Giả", status: "Cả 2" },
-            { id: 16, name: "Rice", className: "Xạ Thủ", status: "Cả 2" },
-            { id: 17, name: "Hoài Thương", className: "Phương Sĩ", status: "Cả 2" },
-            { id: 18, name: "BaoGiờThấyỔnSẽĐổiTên", className: "Hiệp Khách", status: "Cả 2" },
-            { id: 19, name: ".Sát.", className: "Yển Sư", status: "Cả 2" },
-            { id: 20, name: "XíuSiêuQuạo", className: "Y Sư", status: "Cả 2" },
-            { id: 21, name: "ATủn(PấyPỳ)", className: "Mị Giả", status: "Cả 2" },
-            { id: 22, name: "yomost ʕ • ᴥ • ʔ", className: "Họa Hồn", status: "Cả 2" },
-            { id: 23, name: "PEMY", className: "Họa Hồn", status: "Cả 2" },
-            { id: 24, name: "Min Ji", className: "Y Sư", status: "Cả 2" },
-            { id: 25, name: "Tiểu Bạch Xiu", className: "Dị Nhân", status: "Cả 2" },
-            { id: 26, name: "Mỹ Nữ Siêu Béo", className: "Y Sư", status: "Cả 2" },
-            { id: 27, name: "Sói 7 món", className: "Giáp Sĩ", status: "C cả 2" },
-            { id: 28, name: "Khắc Tình", className: "Dị Nhân", status: "Cả 2" },
-            { id: 29, name: "Lord", className: "Họa Hồn", status: "Cả 2" },
-            { id: 30, name: "Tử Huyết", className: "Hiệp Khách", status: "Cả 2" },
-            { id: 31, name: "Em Bé Tập Ngồi", className: "Y Sư", status: "Cả 2" },
-            { id: 32, name: "Tiểu Linh Ngư", className: "Hiệp Khách", status: "Cả 2" },
-            { id: 33, name: "Đường Cà Phê", className: "Ảnh Linh", status: "Cả 2" },
-            { id: 34, name: "Trường Hà Lạc Nhật", className: "Họa Hồn", status: "Cả 2" },
-            { id: 35, name: "Ysa", className: "Y Sư", status: "Cả 2" },
-            { id: 36, name: "REIGN", className: "Mị Giả", status: "Cả 2" },
-            { id: 37, name: "L I L I T H", className: "Điệp Khách", status: "C cả 2" },
-            { id: 38, name: "D E A T H", className: "Xạ Thủ", status: "Cả 2" },
-            { id: 39, name: "Ngọc Linh Đan", className: "Y Sư", status: "Cả 2" },
-            { id: 40, name: "milam", className: "Hiệp Khách", status: "Cả 2" },
-            { id: 41, name: "Sa Ngộ Cá", className: "Y Sư", status: "Cả 2" },
-            { id: 42, name: "Jison", className: "Hiệp Khách", status: "Cả 2" },
-            { id: 43, name: "Cá Voi Xanh", className: "Hiệp Khách", status: "Cả 2" },
-            { id: 44, name: "Phoebe ^.^", className: "Y Sư", status: "Cả 2" },
-            { id: 45, name: "Bông", className: "Dị Nhân", status: "Cả 2" },
-            { id: 46, name: "PEHUYEN", className: "Y Sư", status: "Cả 2" },
-            { id: 47, name: "Tôn Ngộ Bin", className: "Mị Giả", status: "Cả 2" },
-            { id: 48, name: "Nguyệt Mộng Thanh Ly", className: "Y Sư", status: "Cả 2" },
-            { id: 49, name: "Billion", className: "Mị Giả", status: "Boss 1" },
-            { id: 50, name: "Plack Panther", className: "Giáp Sĩ", status: "Boss 1" },
-            { id: 51, name: "Vĩnh Quân ☆", className: "Mị Giả", status: "Boss 1" },
-            { id: 52, name: "An i u", className: "Giáp Sĩ", status: "Boss 1" },
-            { id: 53, name: "Nhật Nguyệt Thánh Đế", className: "Giáp Sĩ", status: "Boss 1" },
-            { id: 54, name: "Lam Trạm ︵☆", className: "Họa Hồn", status: "Boss 1" },
-            { id: 55, name: "Ashdale", className: "Xạ Thủ", status: "Boss 2-5" },
-            { id: 56, name: "Du Thần", className: "Điệp Khách", status: "Boss 2-5" },
-            { id: 57, name: "BOSSYLAMB", className: "Họa Hồn", status: "Boss 2-5" },
-            { id: 58, name: "TN Tiểu Mây", className: "Dị Nhân", status: "Boss 2-5" },
-            { id: 59, name: "Minh Châu", className: "Ảnh Linh", status: "Boss 2-5" },
-            { id: 60, name: "Nước Phở Vị Sầu Riêng", className: "Chiến Cuồng", status: "Boss 2-5" }
+        const membersData = [
+            {id: 1, name: "HOANG", class: "HH"}, {id: 2, name: "Vô Ảnh", class: "AL"},
+            {id: 3, name: "CANDY", class: "YS"}, {id: 4, name: "Lưu Vân", class: "MG"},
+            {id: 5, name: "Tiêu Họa", class: "HH"}, {id: 6, name: "Vũ Vũ", class: "DK"},
+            {id: 7, name: "Trư Ngộ Hiên", class: "CC"}, {id: 8, name: "Lucie", class: "CC"},
+            {id: 9, name: "Tiểu Ất", class: "YS"}, {id: 10, name: "Chìn", class: "YS"},
+            {id: 11, name: "LeoSensei", class: "XT"}, {id: 12, name: "Vit", class: "XT"},
+            {id: 13, name: "Kem Siêu Chiến", class: "PS"}, {id: 14, name: "Linh anh", class: "HH"},
+            {id: 15, name: "Yeong", class: "MG"}, {id: 16, name: "Rice", class: "XT"},
+            {id: 17, name: "Hoài Thương", class: "PS"}, {id: 18, name: "Tố Tố", class: "HK"},
+            {id: 19, name: "Sát", class: "YS"}, {id: 20, name: "Xíu Siêu Quạo", class: "YS"},
+            {id: 21, name: "A Tun", class: "MG"}, {id: 22, name: "Yomost", class: "HH"},
+            {id: 23, name: "PEMY", class: "HH"}, {id: 24, name: "MinJi", class: "YS"},
+            {id: 25, name: "Tiểu Bạch Xiu", class: "DN"}, {id: 26, name: "Mỹ Nữ Siêu Béoo", class: "YS"},
+            {id: 27, name: "Sói 7 món", class: "GS"}, {id: 28, name: "Tacia", class: "DN"},
+            {id: 29, name: "Lord", class: "HH"}, {id: 30, name: "Tử Huyết", class: "HK"},
+            {id: 31, name: "Em Bé Tập Ngồi", class: "YS"}, {id: 32, name: "Tiểu Linh Ngư", class: "HK"},
+            {id: 33, name: "Đường Cà Phê", class: "AL"}, {id: 34, name: "Trường Hà Nhật", class: "HH"},
+            {id: 35, name: "Ysa", class: "YS"}, {id: 36, name: "REIGN", class: "MG"},
+            {id: 37, name: "LILITH", class: "DK"}, {id: 38, name: "DEATH", class: "XT"},
+            {id: 39, name: "Ngọc Linh Đan", class: "YS"}, {id: 40, name: "Milam", class: "HK"},
+            {id: 41, name: "Cá Nhỏ", class: "YS"}, {id: 42, name: "Jison", class: "HK"},
+            {id: 43, name: "Cá Voi Xanh", class: "HK"}, {id: 44, name: "Phoebe", class: "YS"},
+            {id: 45, name: "Bông", class: "DN"}, {id: 46, name: "PEHUYEN", class: "YS"},
+            {id: 47, name: "Bin", class: "MG"}, {id: 48, name: "Nguyệt Mộng", class: "YS"}
         ];
 
-        let auctionData = {
-            keys: { label: "Chìa Rương", now: "HOANG", color: "#007AFF", next: ["Vô Ảnh", "Lord", "PEMY", "yomost"] },
-            drills: { label: "Dùi Kim Cương", now: "Lưu Vân", color: "#AF52DE", next: ["Trư Ngộ", "Việt", "Lucie", "Vit"] },
-            box137: { label: "Rương TB 137", now: "Billion", color: "#FF9500", next: ["Ashdale", "Vĩnh Quân", "An i u", "Nhật Nguyệt"] },
-            box129: { label: "Rương TB 129", now: "C A N D Y", color: "#34C759", next: ["XíuSiêu", "Nguyệt Mộng", "Chìn", "PeHuyen"] }
-        };
+        const outList = [
+            {name: "Billion", class: "MG"}, {name: "Plack Panther", class: "GS"},
+            {name: "Vĩnh Quân", class: "MG"}, {name: "An iu", class: "GS"},
+            {name: "Nhật Nguyệt", class: "GS"}, {name: "Lam Trạm", class: "HH"}
+        ];
+        const inList = [
+            {name: "Ashdale", class: "XT"}, {name: "Du Thần", class: "DK"},
+            {name: "BOSSYLAMB", class: "HH"}, {name: "TN Tiểu Mây", class: "DN"},
+            {name: "Minh Châu", class: "AL"}, {name: "Phở Sầu Riêng", class: "CC"}
+        ];
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
-            document.getElementById('nav-' + tabId).classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function renderUI() {
-            renderAuction();
-            renderRotation();
-            renderMembers();
-        }
-
-        function renderAuction() {
-            const container = document.getElementById('auction-container');
-            container.innerHTML = Object.keys(auctionData).map(key => {
-                const data = auctionData[key];
-                return `
-                    <div class="premium-card p-5 border-l-4 h-auto" style="border-color: ${data.color}">
-                        <div class="flex justify-between items-start mb-5">
-                            <div>
-                                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">${data.label}</h3>
-                                <p class="text-[18px] font-800 text-slate-900 tracking-tight leading-none">${data.now}</p>
-                            </div>
-                            <button class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-xl text-[11px] font-bold active:scale-95 transition-all" onclick="openAuctionEdit('${key}', -1)">Sửa</button>
-                        </div>
-                        <div class="auction-timeline">
-                            ${data.next.map((name, i) => `
-                                <div class="timeline-node" onclick="openAuctionEdit('${key}', ${i})">
-                                    <p class="text-[9px] font-bold text-slate-400 uppercase mb-0.5">Tuần ${i+1}</p>
-                                    <p class="text-[14px] font-bold text-slate-600">${name}</p>
-                                </div>
-                            `).join('')}
-                        </div>
+        function createItem(name, className, id = null) {
+            return `
+                <div class="px-5 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                    <div class="flex items-center gap-4 overflow-hidden">
+                        ${id ? `<span class="text-[10px] font-bold text-gray-300 w-4">${id}</span>` : ''}
+                        <p class="text-sm font-500 text-gray-700 truncate">${name}</p>
                     </div>
-                `;
-            }).join('');
-        }
-
-        function renderRotation() {
-            const outC = document.getElementById('out-list');
-            const inC = document.getElementById('in-list');
-            const b1 = members.filter(m => m.status === "Boss 1");
-            const b2 = members.filter(m => m.status === "Boss 2-5");
-            const item = (m) => `
-                <div class="px-5 py-4 flex flex-col justify-center active:bg-slate-50 border-b border-slate-50 last:border-0" onclick="openMemberEdit(${m.id})">
-                    <p class="text-[14px] font-bold text-slate-800 truncate">${m.name}</p>
-                    <p class="${classConfig[m.className]} text-[10px] font-extrabold uppercase tracking-tight">${m.className}</p>
+                    <span class="badge badge-${className.toLowerCase()}">${className}</span>
                 </div>
             `;
-            outC.innerHTML = b1.map(item).join('');
-            inC.innerHTML = b2.map(item).join('');
         }
 
-        function renderMembers() {
-            const container = document.getElementById('full-member-list');
-            const display = members.filter(m => m.status !== "Boss 2-5");
-            container.innerHTML = display.map(m => `
-                <div class="member-item flex items-center gap-3 active:bg-slate-50" onclick="openMemberEdit(${m.id})">
-                    <span class="text-[10px] text-slate-300 font-bold w-4 shrink-0">${m.id}</span>
-                    <div class="overflow-hidden">
-                        <p class="text-[14px] font-bold text-slate-800 truncate leading-tight">${m.name}</p>
-                        <p class="text-[9px] font-black uppercase ${classConfig[m.className]} tracking-tighter">${m.className}</p>
-                    </div>
-                </div>
-            `).join('');
+        function render() {
+            document.getElementById('member-grid').innerHTML = membersData.map(m => createItem(m.name, m.class, m.id)).join('');
+            document.getElementById('out-grid').innerHTML = outList.map((m, i) => createItem(m.name, m.class, i + 1)).join('');
+            document.getElementById('in-grid').innerHTML = inList.map((m, i) => createItem(m.name, m.class, i + 1)).join('');
         }
 
-        function openMemberEdit(id) {
-            const m = members.find(x => x.id === id);
-            if (!m) return;
-            document.getElementById('modalTitle').innerText = m.name;
-            document.getElementById('edit-type').value = 'member';
-            document.getElementById('edit-id').value = id;
-            document.getElementById('edit-name').value = m.name;
-            document.getElementById('class-select-container').classList.remove('hidden');
-            document.getElementById('edit-class').innerHTML = Object.keys(classConfig).map(c => `<option value="${c}" ${c === m.className ? 'selected' : ''}>${c}</option>`).join('');
-            document.getElementById('editModal').classList.remove('hidden');
-        }
-
-        function openAuctionEdit(key, idx) {
-            const d = auctionData[key];
-            const name = idx === -1 ? d.now : d.next[idx];
-            document.getElementById('modalTitle').innerText = "Sửa " + (idx === -1 ? "Hiện tại" : "Tuần " + (idx + 1));
-            document.getElementById('edit-type').value = 'auction';
-            document.getElementById('edit-auction-key').value = key;
-            document.getElementById('edit-auction-index').value = idx;
-            document.getElementById('edit-name').value = name;
-            document.getElementById('class-select-container').classList.add('hidden');
-            document.getElementById('editModal').classList.remove('hidden');
-        }
-
-        function closeModal() { document.getElementById('editModal').classList.add('hidden'); }
-
-        function saveChanges() {
-            const type = document.getElementById('edit-type').value;
-            const newName = document.getElementById('edit-name').value.trim();
-            if (!newName) return;
-            if (type === 'member') {
-                const id = parseInt(document.getElementById('edit-id').value);
-                const cls = document.getElementById('edit-class').value;
-                const i = members.findIndex(x => x.id === id);
-                if (i !== -1) { members[i].name = newName; members[i].className = cls; }
-            } else {
-                const key = document.getElementById('edit-auction-key').value;
-                const idx = parseInt(document.getElementById('edit-auction-index').value);
-                if (idx === -1) auctionData[key].now = newName;
-                else auctionData[key].next[idx] = newName;
-            }
-            renderUI(); closeModal();
-        }
-
-        async function exportToPDF() {
-            const area = document.getElementById('capture-area');
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(c => c.style.display = 'block');
-            try {
-                const canvas = await html2canvas(area, { 
-                    backgroundColor: "#F2F2F7", 
-                    scale: 2,
-                    windowWidth: 1200 // Đảm bảo PDF trông rộng rãi
-                });
-                const imgData = canvas.toDataURL('image/jpeg', 0.9);
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const imgWidth = 190;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                pdf.addImage(imgData, 'JPEG', 10, 10, imgWidth, imgHeight);
-                pdf.save(`Dang_Khau_Pro_Responsive.pdf`);
-            } catch (err) { console.error(err); }
-            tabs.forEach(c => { if(!c.classList.contains('active')) c.style.display = 'none'; });
-        }
-
-        window.onload = () => renderUI();
+        window.onload = render;
     </script>
 </body>
 </html>
