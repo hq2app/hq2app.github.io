@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Đãng Khấu Pro - Google Workspace Style</title>
+    <title>Chinh Hải Đãng Khấu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -11,12 +11,12 @@
         
         body {
             font-family: 'Inter', 'Roboto', sans-serif;
-            background-color: #f8f9fa; /* Màu nền xám nhạt đặc trưng Google */
+            background-color: #f8f9fa;
             color: #3c4043;
             -webkit-tap-highlight-color: transparent;
+            padding-bottom: calc(70px + env(safe-area-inset-bottom));
         }
 
-        /* Thẻ Google App Style */
         .google-card {
             background: #ffffff;
             border-radius: 12px;
@@ -24,11 +24,6 @@
             transition: box-shadow 0.2s;
         }
 
-        .google-card:hover {
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,.30), 0 1px 3px 1px rgba(60,64,67,.15);
-        }
-
-        /* Badge hệ phái phong cách Google Chips */
         .badge {
             font-size: 10px;
             font-weight: 600;
@@ -70,241 +65,210 @@
         .row-item:last-child { border-bottom: none; }
 
         .google-blue { color: #1a73e8; }
-        
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border-top: 1px solid #dadce0;
+            display: flex;
+            justify-content: space-around;
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 100;
+            height: calc(60px + env(safe-area-inset-bottom));
+        }
+
+        .nav-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #5f6368;
+            font-size: 11px;
+            font-weight: 500;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .nav-btn.active {
+            color: #1a73e8;
+            background: rgba(26, 115, 232, 0.04);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .animate-fade {
-            animation: fadeIn 0.4s ease-out forwards;
-        }
-
-        /* Sticky header cho Mobile */
         .sticky-header {
             position: sticky;
             top: 0;
             z-index: 50;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
+            background: #ffffff;
             border-bottom: 1px solid #dadce0;
-        }
-
-        /* Tối ưu hóa cho di động */
-        @media (max-width: 640px) {
-            .mobile-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .auction-card { padding: 16px !important; }
-            .header-text { font-size: 1.25rem !important; }
         }
     </style>
 </head>
 <body class="bg-[#f8f9fa]">
 
-    <!-- Header: Google Style -->
     <header class="sticky-header mb-6">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white text-xl shadow-sm">
+                <div class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center text-white text-lg shadow-sm">
                     <i class="fas fa-layer-group"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-500 text-gray-900 header-text tracking-tight">Đãng Khấu <span class="font-normal text-gray-500 italic">Workplace</span></h1>
-                    <p class="text-[10px] sm:text-xs text-gray-500 uppercase font-bold tracking-wider">05/04/2026</p>
+                    <h1 class="text-lg font-600 text-gray-900 tracking-tight leading-none">Chinh Hải Đãng Khấu</h1>
+                    <p class="text-[10px] text-gray-500 uppercase font-bold tracking-wider mt-1">Cập nhật 12/04</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <div class="bg-green-50 border border-green-100 px-3 py-1.5 rounded-full flex items-center gap-2">
-                    <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                    <span class="text-[11px] font-700 text-green-700 uppercase">GIÁP</span>
-                </div>
+            <div class="bg-blue-50 border border-blue-100 px-3 py-1 rounded-full flex items-center gap-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                <span class="text-[10px] font-700 text-blue-700 uppercase">Hạng GIÁP</span>
             </div>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 space-y-10 pb-20">
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 space-y-8">
         
-        <!-- Đấu giá (Google Style Cards) -->
-        <section class="animate-fade" style="animation-delay: 0.1s;">
+        <!-- TAB 1: ĐIỀU PHỐI & THÀNH VIÊN -->
+        <div id="tab-squad" class="tab-content active">
+            
+            <!-- Xoay Tua -->
+            <section class="mb-10">
+                <h2 class="section-header">
+                    <i class="fas fa-exchange-alt google-blue"></i>
+                    Điều phối xoay tua (5 người)
+                </h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="google-card p-0 overflow-hidden shadow-sm">
+                        <div class="px-5 py-3 bg-red-50/50 border-b border-red-100 flex justify-between items-center">
+                            <span class="text-sm font-600 text-red-600">Rời trận sau Boss 1</span>
+                            <i class="fas fa-sign-out-alt text-red-300"></i>
+                        </div>
+                        <div class="grid grid-cols-1 divide-y divide-gray-100" id="out-grid"></div>
+                    </div>
+
+                    <div class="google-card p-0 overflow-hidden shadow-sm">
+                        <div class="px-5 py-3 bg-green-50/50 border-b border-green-100 flex justify-between items-center">
+                            <span class="text-sm font-600 text-green-700">Vào trận từ Boss 2</span>
+                            <i class="fas fa-sign-in-alt text-green-300"></i>
+                        </div>
+                        <div class="grid grid-cols-1 divide-y divide-gray-100" id="in-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Full Boss -->
+            <section>
+                <div class="flex items-center justify-between mb-4 px-1">
+                    <h2 class="section-header mb-0">
+                        <i class="fas fa-users google-blue"></i>
+                        Thành viên tham chiến chính (49)
+                    </h2>
+                </div>
+                <div class="google-card overflow-hidden shadow-sm">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 divide-x divide-y divide-gray-100" id="member-grid"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- TAB 2: ĐẤU GIÁ -->
+        <div id="tab-auction" class="tab-content">
             <h2 class="section-header">
                 <i class="fas fa-tag google-blue"></i>
                 Lộ trình đấu giá vật phẩm
             </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                
-                <!-- Card Chìa -->
-                <div class="google-card p-5 auction-card">
-                    <div class="flex items-center gap-3 mb-4">
-                        <i class="fas fa-key google-blue text-sm"></i>
-                        <span class="text-[11px] font-700 uppercase tracking-wider text-gray-500">Chìa Bảo Rương</span>
-                    </div>
-                    <div class="bg-blue-50/50 p-3 rounded-xl border border-blue-100/50 mb-4">
-                        <span class="text-[9px] font-800 text-blue-400 uppercase">Hiện tại</span>
-                        <p class="text-lg font-600 text-gray-900">HOANG</p>
-                    </div>
-                    <div class="space-y-0.5">
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+1</span><span class="text-sm font-600">Vô Ảnh</span></div>
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+2</span><span class="text-sm font-600">Lord</span></div>
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+3</span><span class="text-sm font-600">PEMY</span></div>
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-blue-500">W+4</span><span class="text-sm font-700 google-blue">yomost</span></div>
-                    </div>
-                </div>
-
-                <!-- Card Dùi -->
-                <div class="google-card p-5 auction-card">
-                    <div class="flex items-center gap-3 mb-4">
-                        <i class="fas fa-gem text-purple-600 text-sm"></i>
-                        <span class="text-[11px] font-700 uppercase tracking-wider text-gray-500">Dùi Kim Cương</span>
-                    </div>
-                    <div class="bg-purple-50/50 p-3 rounded-xl border border-purple-100/50 mb-4">
-                        <span class="text-[9px] font-800 text-purple-400 uppercase">Hiện tại</span>
-                        <p class="text-lg font-600 text-gray-900">Lưu Vân</p>
-                    </div>
-                    <div class="space-y-0.5">
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+1</span><span class="text-sm font-600">Trư Ngộ</span></div>
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+2</span><span class="text-sm font-600">Việt</span></div>
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+3</span><span class="text-sm font-600">Lucie</span></div>
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-blue-500">W+4</span><span class="text-sm font-700 google-blue">Vit</span></div>
-                    </div>
-                </div>
-
-                <!-- Card Rương 137 -->
-                <div class="google-card p-5 auction-card">
-                    <div class="flex items-center gap-3 mb-4">
-                        <i class="fas fa-box-open text-orange-600 text-sm"></i>
-                        <span class="text-[11px] font-700 uppercase tracking-wider text-gray-500">Rương TB 137</span>
-                    </div>
-                    <div class="bg-orange-50/50 p-3 rounded-xl border border-orange-100/50 mb-4">
-                        <span class="text-[9px] font-800 text-orange-400 uppercase">Hiện tại</span>
-                        <p class="text-lg font-600 text-gray-900">Billion</p>
-                    </div>
-                    <div class="space-y-0.5">
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+1</span><span class="text-sm font-600">Ashdale</span></div>
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+2</span><span class="text-sm font-600">Vĩnh Quân</span></div>
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+3</span><span class="text-sm font-600">Aniu</span></div>
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-blue-500">W+4</span><span class="text-sm font-700 google-blue">Nhật Nguyệt</span></div>
-                    </div>
-                </div>
-
-                <!-- Card Rương 129 -->
-                <div class="google-card p-5 auction-card">
-                    <div class="flex items-center gap-3 mb-4">
-                        <i class="fas fa-boxes text-green-600 text-sm"></i>
-                        <span class="text-[11px] font-700 uppercase tracking-wider text-gray-500">Rương TB 129</span>
-                    </div>
-                    <div class="bg-green-50/50 p-3 rounded-xl border border-green-100/50 mb-4">
-                        <span class="text-[9px] font-800 text-green-400 uppercase">Hiện tại</span>
-                        <p class="text-lg font-600 text-gray-900">CANDY</p>
-                    </div>
-                    <div class="space-y-0.5">
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+1</span><span class="text-sm font-600">XiuSiêu</span></div>
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+2</span><span class="text-sm font-600">Nguyệt Mộng</span></div>
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+3</span><span class="text-sm font-600">Chin</span></div>
-                        <div class="row-item py-2"><span class="text-[11px] font-bold text-blue-500">W+4</span><span class="text-sm font-700 google-blue">PeHuyen</span></div>
-                    </div>
-                </div>
-
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="auction-grid">
+                <!-- Nội dung render bằng JS -->
             </div>
-        </section>
+        </div>
 
-        <!-- Xoay Tua Đội Hình -->
-        <section class="animate-fade" style="animation-delay: 0.2s;">
-            <h2 class="section-header">
-                <i class="fas fa-exchange-alt google-blue"></i>
-                Điều phối đội hình xoay tua
-            </h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
-                <!-- Rời trận -->
-                <div class="google-card p-0 overflow-hidden shadow-sm">
-                    <div class="px-5 py-4 bg-red-50/50 border-b border-red-100 flex justify-between items-center">
-                        <span class="text-sm font-600 text-red-600">Rời trận sau Boss 1</span>
-                        <div class="text-[10px] font-800 bg-red-100 text-red-600 px-2 py-0.5 rounded uppercase tracking-wider">OFF</div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 divide-x divide-gray-100" id="out-grid">
-                        <!-- JS Render -->
-                    </div>
-                </div>
-
-                <!-- Vào trận -->
-                <div class="google-card p-0 overflow-hidden shadow-sm">
-                    <div class="px-5 py-4 bg-green-50/50 border-b border-green-100 flex justify-between items-center">
-                        <span class="text-sm font-600 text-green-700">Vào trận từ Boss 2</span>
-                        <div class="text-[10px] font-800 bg-green-100 text-green-700 px-2 py-0.5 rounded uppercase tracking-wider">ON</div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 divide-x divide-gray-100" id="in-grid">
-                        <!-- JS Render -->
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- Danh sách 48 Thành viên -->
-        <section class="animate-fade" style="animation-delay: 0.3s;">
-            <div class="flex items-center justify-between mb-4 px-1">
-                <h2 class="section-header mb-0">
-                    <i class="fas fa-list-ul google-blue"></i>
-                    Thành viên tham chiến chính
-                </h2>
-                <div class="hidden sm:block bg-blue-100 text-blue-700 text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">
-                    48 Units Full Boss
-                </div>
-            </div>
-            <div class="google-card overflow-hidden shadow-sm">
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 divide-x divide-y divide-gray-100" id="member-grid">
-                    <!-- JS Render -->
-                </div>
-            </div>
-        </section>
-
-        <footer class="text-center pt-10 pb-20 border-t border-gray-100">
-            
-            <p class="text-[10px] text-gray-400 font-700 uppercase tracking-widest mt-4 italic">Dữ liệu bảo mật nội bộ • Bang hội Đãng Khấu Pro</p>
-        </footer>
     </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button onclick="switchTab('squad')" id="btn-squad" class="nav-btn active">
+            <i class="fas fa-users-cog text-lg"></i>
+            <span>Đội hình</span>
+        </button>
+        <button onclick="switchTab('auction')" id="btn-auction" class="nav-btn">
+            <i class="fas fa-gavel text-lg"></i>
+            <span>Đấu giá</span>
+        </button>
+    </nav>
 
     <script>
         const membersData = [
-            {id: 1, name: "HOANG", class: "HH"}, {id: 2, name: "Vô Ảnh", class: "AL"},
-            {id: 3, name: "CANDY", class: "YS"}, {id: 4, name: "Lưu Vân", class: "MG"},
-            {id: 5, name: "Tiêu Họa", class: "HH"}, {id: 6, name: "Vũ Vũ", class: "DK"},
-            {id: 7, name: "Trư Ngộ Hiên", class: "CC"}, {id: 8, name: "Lucie", class: "CC"},
-            {id: 9, name: "Tiểu Ất", class: "YS"}, {id: 10, name: "Chìn", class: "YS"},
-            {id: 11, name: "LeoSensei", class: "XT"}, {id: 12, name: "Vit", class: "XT"},
-            {id: 13, name: "Kem Siêu Chiến", class: "PS"}, {id: 14, name: "Linh anh", class: "HH"},
-            {id: 15, name: "Yeong", class: "MG"}, {id: 16, name: "Rice", class: "XT"},
-            {id: 17, name: "Hoài Thương", class: "PS"}, {id: 18, name: "Tố Tố", class: "HK"},
-            {id: 19, name: "Sát", class: "YS"}, {id: 20, name: "Xíu Siêu Quạo", class: "YS"},
-            {id: 21, name: "A Tun", class: "MG"}, {id: 22, name: "Yomost", class: "HH"},
-            {id: 23, name: "PEMY", class: "HH"}, {id: 24, name: "MinJi", class: "YS"},
-            {id: 25, name: "Tiểu Bạch Xiu", class: "DN"}, {id: 26, name: "Mỹ Nữ Siêu Béoo", class: "YS"},
-            {id: 27, name: "Sói 7 món", class: "GS"}, {id: 28, name: "Tacia", class: "DN"},
-            {id: 29, name: "Lord", class: "HH"}, {id: 30, name: "Tử Huyết", class: "HK"},
-            {id: 31, name: "Em Bé Tập Ngồi", class: "YS"}, {id: 32, name: "Tiểu Linh Ngư", class: "HK"},
-            {id: 33, name: "Đường Cà Phê", class: "AL"}, {id: 34, name: "Trường Hà Nhật", class: "HH"},
-            {id: 35, name: "Ysa", class: "YS"}, {id: 36, name: "REIGN", class: "MG"},
-            {id: 37, name: "LILITH", class: "DK"}, {id: 38, name: "DEATH", class: "XT"},
-            {id: 39, name: "Ngọc Linh Đan", class: "YS"}, {id: 40, name: "Milam", class: "HK"},
-            {id: 41, name: "Cá Nhỏ", class: "YS"}, {id: 42, name: "Jison", class: "HK"},
-            {id: 43, name: "Cá Voi Xanh", class: "HK"}, {id: 44, name: "Phoebe", class: "YS"},
-            {id: 45, name: "Bông", class: "DN"}, {id: 46, name: "PEHUYEN", class: "YS"},
-            {id: 47, name: "Bin", class: "MG"}, {id: 48, name: "Nguyệt Mộng", class: "YS"}
+            {id: 1, name: "Vô Ảnh", class: "AL"}, {id: 2, name: "Vịt", class: "AL"},
+            {id: 3, name: "CANDY", class: "YS"}, {id: 4, name: "HOANG", class: "HH"},
+            {id: 5, name: "Vũ Vũ", class: "DK"}, {id: 6, name: "Kem Siêu Nhậu", class: "PS"},
+            {id: 7, name: "Tiêu Họa", class: "HH"}, {id: 8, name: "Lucie", class: "CC"},
+            {id: 9, name: "Rice", class: "XT"}, {id: 10, name: "Nợ Máu Trả Mana", class: "CC"},
+            {id: 11, name: "Nguyệt Mộng Thanh Ly", class: "YS"}, {id: 12, name: "Xíu Siêu Quạo", class: "YS"},
+            {id: 13, name: "BOSSYLAMB", class: "HH"}, {id: 14, name: "LILITH", class: "DK"},
+            {id: 15, name: "Yeong", class: "MG"}, {id: 16, name: "Chìn", class: "YS"},
+            {id: 17, name: "Tố Tố", class: "HK"}, {id: 18, name: "Phong Nguyệt", class: "HH"},
+            {id: 19, name: "Lord", class: "HH"}, {id: 20, name: "Linh anh", class: "HH"},
+            {id: 21, name: "Em Bé Tập Ngồi", class: "YS"}, {id: 22, name: "Milam", class: "HK"},
+            {id: 23, name: "Bông", class: "DN"}, {id: 24, name: "PEHUYEN", class: "YS"},
+            {id: 25, name: "Tiểu Hạo Nhiên", class: "DK"}, {id: 26, name: "Tiểu Ất", class: "YS"},
+            {id: 27, name: "Sát", class: "YS"}, {id: 28, name: "Mỹ nữ siêu báo", class: "YS"},
+            {id: 29, name: "Cá Voi Xanh", class: "HK"}, {id: 30, name: "Bơ Sữa", class: "HH"},
+            {id: 31, name: "PEMY", class: "HH"}, {id: 32, name: "Đường Cà Phê", class: "AL"},
+            {id: 33, name: "Tiểu Linh Ngư", class: "HK"}, {id: 34, name: "LeoSensei", class: "XT"},
+            {id: 35, name: "Hoài Thương", class: "PS"}, {id: 36, name: "DEATH", class: "XT"},
+            {id: 37, name: "Phoebe", class: "YS"}, {id: 38, name: "Tiểu Bạch Xiu", class: "DN"},
+            {id: 39, name: "Jison", class: "HK"}, {id: 40, name: "Tiểu Bình An", class: "HK"},
+            {id: 41, name: "Minh Châu", class: "AL"}, {id: 42, name: "Cá Nhỏ", class: "YS"},
+            {id: 43, name: "Nhật Nguyệt Thánh Đế", class: "GS"}, {id: 44, name: "Ysa", class: "YS"},
+            {id: 45, name: "Tử Huyết", class: "HK"}, {id: 46, name: "Trư Ngộ Hiên", class: "CC"},
+            {id: 47, name: "Tôn Ngộ Bin", class: "MG"}, {id: 48, name: "Yomost", class: "HH"},
+            {id: 49, name: "Ashdale", class: "XT"}
         ];
 
         const outList = [
-            {name: "Billion", class: "MG"}, {name: "Plack Panther", class: "GS"},
-            {name: "Vĩnh Quân", class: "MG"}, {name: "An iu", class: "GS"},
-            {name: "Nhật Nguyệt", class: "GS"}, {name: "Lam Trạm", class: "HH"}
+            {name: "Cam", class: "DK"}, {name: "An iu", class: "GS"},
+            {name: "Minh", class: "MG"}, {name: "Anna", class: "DK"},
+            {name: "Lưu Vân", class: "MG"}
         ];
         const inList = [
-            {name: "Ashdale", class: "XT"}, {name: "Du Thần", class: "DK"},
-            {name: "BOSSYLAMB", class: "HH"}, {name: "TN Tiểu Mây", class: "DN"},
-            {name: "Minh Châu", class: "AL"}, {name: "Phở Sầu Riêng", class: "CC"}
+            {name: "Billion", class: "MG"}, {name: "Tacia", class: "DN"},
+            {name: "Black Panther", class: "GS"}, {name: "Du Thần", class: "DK"},
+            {name: "TN Tiểu Mây", class: "DN"}
         ];
+
+        const auctionData = [
+            { label: "Chìa Bảo Rương", now: "HOANG", icon: "fa-key", color: "blue", next: ["Vô Ảnh", "Lord", "PEMY", "yomost"] },
+            { label: "Dùi Kim Cương", now: "Lưu Vân", icon: "fa-gem", color: "purple", next: ["Trư Ngộ", "Việt", "Lucie", "Vit"] },
+            { label: "Rương TB 137", now: "Billion", icon: "fa-box-open", color: "orange", next: ["Ashdale", "Vĩnh Quân", "Aniu", "Nhật Nguyệt"] },
+            { label: "Rương TB 129", now: "CANDY", icon: "fa-boxes", color: "green", next: ["XiuSiêu", "Nguyệt Mộng", "Chìn", "PeHuyen"] }
+        ];
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            document.getElementById('btn-' + tabId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         function createItem(name, className, id = null) {
             return `
-                <div class="px-4 py-3.5 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                <div class="px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors">
                     <div class="flex items-center gap-3 overflow-hidden">
                         ${id ? `<span class="text-[9px] font-bold text-gray-300 w-4">${id}</span>` : ''}
                         <p class="text-[13px] font-600 text-gray-700 truncate">${name}</p>
@@ -314,10 +278,35 @@
             `;
         }
 
+        function renderAuction() {
+            const grid = document.getElementById('auction-grid');
+            grid.innerHTML = auctionData.map(item => `
+                <div class="google-card p-5">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fas ${item.icon} text-${item.color}-600 text-sm"></i>
+                        <span class="text-[11px] font-700 uppercase tracking-wider text-gray-500">${item.label}</span>
+                    </div>
+                    <div class="bg-${item.color}-50/50 p-3 rounded-xl border border-${item.color}-100/50 mb-4">
+                        <span class="text-[9px] font-800 text-${item.color}-400 uppercase">Hiện tại</span>
+                        <p class="text-lg font-600 text-gray-900">${item.now}</p>
+                    </div>
+                    <div class="space-y-0.5">
+                        ${item.next.map((n, i) => `
+                            <div class="row-item py-2">
+                                <span class="text-[11px] font-bold text-gray-400">W+${i+1}</span>
+                                <span class="text-sm font-600 ${i === 3 ? 'text-blue-500' : ''}">${n}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
         function render() {
             document.getElementById('member-grid').innerHTML = membersData.map(m => createItem(m.name, m.class, m.id)).join('');
             document.getElementById('out-grid').innerHTML = outList.map((m, i) => createItem(m.name, m.class, i + 1)).join('');
             document.getElementById('in-grid').innerHTML = inList.map((m, i) => createItem(m.name, m.class, i + 1)).join('');
+            renderAuction();
         }
 
         window.onload = render;
