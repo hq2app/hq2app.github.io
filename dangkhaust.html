@@ -32,9 +32,11 @@
             text-transform: uppercase;
             white-space: nowrap;
         }
+        
+        /* Màu hệ phái chuẩn Google */
         .badge-hh { background: #fce8e6; color: #d93025; }
         .badge-al { background: #e8f0fe; color: #1a73e8; }
-        .badge-ys { background: #e6f4ea; color: #1e8e3e; }
+        .badge-ys { background: #e6f4ea; color: #1e8e3e; } /* Xanh lá mặc định */
         .badge-mg { background: #f3e8fd; color: #9333ea; }
         .badge-dk { background: #feefc3; color: #e37400; }
         .badge-cc { background: #fce8e6; color: #ea4335; }
@@ -43,6 +45,9 @@
         .badge-hk { background: #f1f3f4; color: #5f6368; }
         .badge-dn { background: #f8f9fa; color: #70757a; }
         .badge-gs { background: #e8eaed; color: #3c4043; }
+        
+        /* Màu Xanh Bầu Trời riêng cho Sát và Tiểu Ất */
+        .badge-sky { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
 
         .section-header {
             font-size: 14px;
@@ -66,7 +71,6 @@
 
         .google-blue { color: #1a73e8; }
 
-        /* Bottom Nav */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -212,6 +216,9 @@
     </nav>
 
     <script>
+        // Danh sách cần đổi màu đặc biệt
+        const skyBlueMembers = ["Sát", "Tiểu Ất"];
+
         const membersData = [
             {id: 1, name: "Vô Ảnh", class: "AL"}, {id: 2, name: "Vịt", class: "XT"},
             {id: 3, name: "CANDY", class: "YS"}, {id: 4, name: "HOANG", class: "HH"},
@@ -237,7 +244,7 @@
             {id: 43, name: "Nhật Nguyệt Thánh Đế", class: "GS"}, {id: 44, name: "Ysa", class: "YS"},
             {id: 45, name: "Tử Huyết", class: "HK"}, {id: 46, name: "Trư Ngộ Hiên", class: "CC"},
             {id: 47, name: "Tôn Ngộ Bin", class: "MG"}, {id: 48, name: "Yomost", class: "HH"},
-            {id: 49, name: "Ashdale", class: "XT"},{id: 50, name: "", class: ""}
+            {id: 49, name: "Ashdale", class: "XT"}
         ];
 
         const outList = [
@@ -267,13 +274,16 @@
         }
 
         function createItem(name, className, id = null) {
+            // Kiểm tra xem có nằm trong danh sách đổi màu bầu trời không
+            const badgeClass = skyBlueMembers.includes(name) ? 'badge-sky' : `badge-${className.toLowerCase().replace(/\s/g, '').replace('.', '')}`;
+            
             return `
                 <div class="px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors">
                     <div class="flex items-center gap-3 overflow-hidden">
                         ${id ? `<span class="text-[9px] font-bold text-gray-300 w-4">${id}</span>` : ''}
                         <p class="text-[13px] font-600 text-gray-700 truncate">${name}</p>
                     </div>
-                    <span class="badge badge-${className.toLowerCase()}">${className}</span>
+                    <span class="badge ${badgeClass}">${className}</span>
                 </div>
             `;
         }
@@ -303,7 +313,7 @@
         }
 
         function render() {
-            document.getElementById('member-grid').innerHTML = membersData.map(m => createItem(m.name, m.class, m.id)).join('');
+            document.getElementById('member-grid').innerHTML = membersData.filter(m => m.name !== "").map(m => createItem(m.name, m.class, m.id)).join('');
             document.getElementById('out-grid').innerHTML = outList.map((m, i) => createItem(m.name, m.class, i + 1)).join('');
             document.getElementById('in-grid').innerHTML = inList.map((m, i) => createItem(m.name, m.class, i + 1)).join('');
             renderAuction();
