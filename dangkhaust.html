@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Đãng Khấu Sát Thần</title>
+    <title>Đãng Khấu Pro - Google Workspace Style</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -11,7 +11,7 @@
         
         body {
             font-family: 'Inter', 'Roboto', sans-serif;
-            background-color: #ffffff;
+            background-color: #f8f9fa; /* Màu nền xám nhạt đặc trưng Google */
             color: #3c4043;
             -webkit-tap-highlight-color: transparent;
         }
@@ -25,7 +25,7 @@
         }
 
         .google-card:hover {
-            box-shadow: 0 1px 3px 0 rgba(60,64,67,.30), 0 4px 8px 3px rgba(60,64,67,.15);
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,.30), 0 1px 3px 1px rgba(60,64,67,.15);
         }
 
         /* Badge hệ phái phong cách Google Chips */
@@ -35,34 +35,36 @@
             padding: 2px 8px;
             border-radius: 6px;
             text-transform: uppercase;
+            white-space: nowrap;
         }
-        .badge-hh { background: #fce8e6; color: #d93025; } /* Red */
-        .badge-al { background: #e8f0fe; color: #1a73e8; } /* Blue */
-        .badge-ys { background: #e6f4ea; color: #1e8e3e; } /* Green */
-        .badge-mg { background: #f3e8fd; color: #9333ea; } /* Purple */
-        .badge-dk { background: #feefc3; color: #e37400; } /* Orange */
-        .badge-cc { background: #fce8e6; color: #ea4335; } /* Bright Red */
-        .badge-xt { background: #fff4e5; color: #fb8c00; } /* Amber */
-        .badge-ps { background: #e4f7fb; color: #00acc1; } /* Cyan */
-        .badge-hk { background: #f1f3f4; color: #5f6368; } /* Gray */
-        .badge-dn { background: #f8f9fa; color: #70757a; } /* Light Gray */
-        .badge-gs { background: #e8eaed; color: #3c4043; } /* Slate - Dịu mắt hơn */
+        .badge-hh { background: #fce8e6; color: #d93025; }
+        .badge-al { background: #e8f0fe; color: #1a73e8; }
+        .badge-ys { background: #e6f4ea; color: #1e8e3e; }
+        .badge-mg { background: #f3e8fd; color: #9333ea; }
+        .badge-dk { background: #feefc3; color: #e37400; }
+        .badge-cc { background: #fce8e6; color: #ea4335; }
+        .badge-xt { background: #fff4e5; color: #fb8c00; }
+        .badge-ps { background: #e4f7fb; color: #00acc1; }
+        .badge-hk { background: #f1f3f4; color: #5f6368; }
+        .badge-dn { background: #f8f9fa; color: #70757a; }
+        .badge-gs { background: #e8eaed; color: #3c4043; }
 
         .section-header {
             font-size: 14px;
             font-weight: 500;
             color: #202124;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
             gap: 12px;
+            padding-left: 4px;
         }
 
         .row-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
+            padding: 12px 0;
             border-bottom: 1px solid #f1f3f4;
         }
         .row-item:last-child { border-bottom: none; }
@@ -70,120 +72,134 @@
         .google-blue { color: #1a73e8; }
         
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .animate-fade {
-            animation: fadeIn 0.4s ease-in-out forwards;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        /* Sticky header cho Mobile */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #dadce0;
         }
 
         /* Tối ưu hóa cho di động */
         @media (max-width: 640px) {
-            .section-grid { grid-template-columns: 1fr; }
+            .mobile-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .auction-card { padding: 16px !important; }
+            .header-text { font-size: 1.25rem !important; }
         }
     </style>
 </head>
-<body class="py-10">
+<body class="bg-[#f8f9fa]">
 
-    <main class="max-w-6xl mx-auto px-6 space-y-12">
-        
-        <!-- Header: Google Style -->
-        <header class="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-gray-100 pb-8 animate-fade">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white text-2xl shadow-sm">
+    <!-- Header: Google Style -->
+    <header class="sticky-header mb-6">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white text-xl shadow-sm">
                     <i class="fas fa-layer-group"></i>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-500 text-gray-900">Đãng Khấu <span class="font-normal text-gray-500 italic">Workplace</span></h1>
-                    <p class="text-sm text-gray-500 mt-1">Dữ liệu quản trị bang hội • 05/04/2026</p>
+                    <h1 class="text-xl font-500 text-gray-900 header-text tracking-tight">Đãng Khấu <span class="font-normal text-gray-500 italic">Workplace</span></h1>
+                    <p class="text-[10px] sm:text-xs text-gray-500 uppercase font-bold tracking-wider">05/04/2026</p>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="google-card px-4 py-2 flex items-center gap-3">
-                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                    <span class="text-sm font-500">Hạng GIÁP</span>
+            <div class="flex items-center gap-2">
+                <div class="bg-green-50 border border-green-100 px-3 py-1.5 rounded-full flex items-center gap-2">
+                    <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                    <span class="text-[11px] font-700 text-green-700 uppercase">GIÁP</span>
                 </div>
-                <button class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-600">
-                    <i class="fas fa-sync-alt"></i>
-                </button>
             </div>
-        </header>
+        </div>
+    </header>
 
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 space-y-10 pb-20">
+        
         <!-- Đấu giá (Google Style Cards) -->
         <section class="animate-fade" style="animation-delay: 0.1s;">
             <h2 class="section-header">
                 <i class="fas fa-tag google-blue"></i>
-                Lộ trình đấu giá
+                Lộ trình đấu giá vật phẩm
             </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 
-                <!-- Card -->
-                <div class="google-card p-6">
-                    <div class="flex items-center gap-3 mb-6">
-                        <i class="fas fa-key google-blue"></i>
-                        <span class="text-xs font-500 uppercase tracking-wider text-gray-500">Chìa Bảo Rương</span>
+                <!-- Card Chìa -->
+                <div class="google-card p-5 auction-card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fas fa-key google-blue text-sm"></i>
+                        <span class="text-[11px] font-700 uppercase tracking-wider text-gray-500">Chìa Bảo Rương</span>
                     </div>
-                    <div class="mb-6">
-                        <span class="text-[10px] font-700 text-gray-400 uppercase">Hiện tại (05/04)</span>
-                        <p class="text-xl font-500 text-gray-900 mt-1">HOANG</p>
+                    <div class="bg-blue-50/50 p-3 rounded-xl border border-blue-100/50 mb-4">
+                        <span class="text-[9px] font-800 text-blue-400 uppercase">Hiện tại</span>
+                        <p class="text-lg font-600 text-gray-900">HOANG</p>
                     </div>
-                    <div class="space-y-1">
-                        <div class="row-item"><span class="text-xs text-gray-500">W+1</span><span class="text-sm font-500">Vô Ảnh</span></div>
-                        <div class="row-item"><span class="text-xs text-gray-500">W+2</span><span class="text-sm font-500">Lord</span></div>
-                        <div class="row-item"><span class="text-xs text-gray-500">W+3</span><span class="text-sm font-500">PEMY</span></div>
-                        <div class="row-item"><span class="text-xs text-gray-500 font-500 google-blue">W+4</span><span class="text-sm font-500 google-blue">yomost</span></div>
-                    </div>
-                </div>
-
-                <div class="google-card p-6">
-                    <div class="flex items-center gap-3 mb-6">
-                        <i class="fas fa-gem text-purple-600"></i>
-                        <span class="text-xs font-500 uppercase tracking-wider text-gray-500">Dùi Kim Cương</span>
-                    </div>
-                    <div class="mb-6">
-                        <span class="text-[10px] font-700 text-gray-400 uppercase">Hiện tại (05/04)</span>
-                        <p class="text-xl font-500 text-gray-900 mt-1">Lưu Vân</p>
-                    </div>
-                    <div class="space-y-1">
-                        <div class="row-item"><span class="text-xs text-gray-500">W+1</span><span class="text-sm font-500">Trư Ngộ</span></div>
-                        <div class="row-item"><span class="text-xs text-gray-500">W+2</span><span class="text-sm font-500">Việt</span></div>
-                        <div class="row-item"><span class="text-xs text-gray-500">W+3</span><span class="text-sm font-500">Lucie</span></div>
-                        <div class="row-item"><span class="text-xs text-gray-500 font-500 google-blue">W+4</span><span class="text-sm font-500 google-blue">Vit</span></div>
+                    <div class="space-y-0.5">
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+1</span><span class="text-sm font-600">Vô Ảnh</span></div>
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+2</span><span class="text-sm font-600">Lord</span></div>
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+3</span><span class="text-sm font-600">PEMY</span></div>
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-blue-500">W+4</span><span class="text-sm font-700 google-blue">yomost</span></div>
                     </div>
                 </div>
 
-                <div class="google-card p-6">
-                    <div class="flex items-center gap-3 mb-6">
-                        <i class="fas fa-box-open text-orange-600"></i>
-                        <span class="text-xs font-500 uppercase tracking-wider text-gray-500">Rương TB 137</span>
+                <!-- Card Dùi -->
+                <div class="google-card p-5 auction-card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fas fa-gem text-purple-600 text-sm"></i>
+                        <span class="text-[11px] font-700 uppercase tracking-wider text-gray-500">Dùi Kim Cương</span>
                     </div>
-                    <div class="mb-6">
-                        <span class="text-[10px] font-700 text-gray-400 uppercase">Hiện tại (05/04)</span>
-                        <p class="text-xl font-500 text-gray-900 mt-1">Billion</p>
+                    <div class="bg-purple-50/50 p-3 rounded-xl border border-purple-100/50 mb-4">
+                        <span class="text-[9px] font-800 text-purple-400 uppercase">Hiện tại</span>
+                        <p class="text-lg font-600 text-gray-900">Lưu Vân</p>
                     </div>
-                    <div class="space-y-1">
-                        <div class="row-item"><span class="text-xs text-gray-500">W+1</span><span class="text-sm font-500">Ashdale</span></div>
-                        <div class="row-item"><span class="text-xs text-gray-500">W+2</span><span class="text-sm font-500">Vĩnh Quân</span></div>
-                        <div class="row-item"><span class="text-xs text-gray-500">W+3</span><span class="text-sm font-500">Aniu</span></div>
-                        <div class="row-item"><span class="text-xs text-gray-500 font-500 google-blue">W+4</span><span class="text-sm font-500 google-blue">Nhật Nguyệt</span></div>
+                    <div class="space-y-0.5">
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+1</span><span class="text-sm font-600">Trư Ngộ</span></div>
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+2</span><span class="text-sm font-600">Việt</span></div>
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+3</span><span class="text-sm font-600">Lucie</span></div>
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-blue-500">W+4</span><span class="text-sm font-700 google-blue">Vit</span></div>
                     </div>
                 </div>
 
-                <div class="google-card p-6">
-                    <div class="flex items-center gap-3 mb-6">
-                        <i class="fas fa-boxes text-green-600"></i>
-                        <span class="text-xs font-500 uppercase tracking-wider text-gray-500">Rương TB 129</span>
+                <!-- Card Rương 137 -->
+                <div class="google-card p-5 auction-card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fas fa-box-open text-orange-600 text-sm"></i>
+                        <span class="text-[11px] font-700 uppercase tracking-wider text-gray-500">Rương TB 137</span>
                     </div>
-                    <div class="mb-6">
-                        <span class="text-[10px] font-700 text-gray-400 uppercase">Hiện tại (05/04)</span>
-                        <p class="text-xl font-500 text-gray-900 mt-1">CANDY</p>
+                    <div class="bg-orange-50/50 p-3 rounded-xl border border-orange-100/50 mb-4">
+                        <span class="text-[9px] font-800 text-orange-400 uppercase">Hiện tại</span>
+                        <p class="text-lg font-600 text-gray-900">Billion</p>
                     </div>
-                    <div class="space-y-1">
-                        <div class="row-item"><span class="text-xs text-gray-500">W+1</span><span class="text-sm font-500">XiuSiêu</span></div>
-                        <div class="row-item"><span class="text-xs text-gray-500">W+2</span><span class="text-sm font-500">Nguyệt Mộng</span></div>
-                        <div class="row-item"><span class="text-xs text-gray-500">W+3</span><span class="text-sm font-500">Chin</span></div>
-                        <div class="row-item"><span class="text-xs text-gray-500 font-500 google-blue">W+4</span><span class="text-sm font-500 google-blue">PeHuyen</span></div>
+                    <div class="space-y-0.5">
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+1</span><span class="text-sm font-600">Ashdale</span></div>
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+2</span><span class="text-sm font-600">Vĩnh Quân</span></div>
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+3</span><span class="text-sm font-600">Aniu</span></div>
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-blue-500">W+4</span><span class="text-sm font-700 google-blue">Nhật Nguyệt</span></div>
+                    </div>
+                </div>
+
+                <!-- Card Rương 129 -->
+                <div class="google-card p-5 auction-card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fas fa-boxes text-green-600 text-sm"></i>
+                        <span class="text-[11px] font-700 uppercase tracking-wider text-gray-500">Rương TB 129</span>
+                    </div>
+                    <div class="bg-green-50/50 p-3 rounded-xl border border-green-100/50 mb-4">
+                        <span class="text-[9px] font-800 text-green-400 uppercase">Hiện tại</span>
+                        <p class="text-lg font-600 text-gray-900">CANDY</p>
+                    </div>
+                    <div class="space-y-0.5">
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+1</span><span class="text-sm font-600">XiuSiêu</span></div>
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+2</span><span class="text-sm font-600">Nguyệt Mộng</span></div>
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-gray-400">W+3</span><span class="text-sm font-600">Chin</span></div>
+                        <div class="row-item py-2"><span class="text-[11px] font-bold text-blue-500">W+4</span><span class="text-sm font-700 google-blue">PeHuyen</span></div>
                     </div>
                 </div>
 
@@ -194,15 +210,15 @@
         <section class="animate-fade" style="animation-delay: 0.2s;">
             <h2 class="section-header">
                 <i class="fas fa-exchange-alt google-blue"></i>
-                Điều phối đội hình
+                Điều phối đội hình xoay tua
             </h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 
                 <!-- Rời trận -->
-                <div class="google-card p-0 overflow-hidden">
-                    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
-                        <span class="text-sm font-500 text-red-600">Rời trận sau Boss 1</span>
-                        <i class="fas fa-sign-out-alt text-red-300"></i>
+                <div class="google-card p-0 overflow-hidden shadow-sm">
+                    <div class="px-5 py-4 bg-red-50/50 border-b border-red-100 flex justify-between items-center">
+                        <span class="text-sm font-600 text-red-600">Rời trận sau Boss 1</span>
+                        <div class="text-[10px] font-800 bg-red-100 text-red-600 px-2 py-0.5 rounded uppercase tracking-wider">OFF</div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 divide-x divide-gray-100" id="out-grid">
                         <!-- JS Render -->
@@ -210,10 +226,10 @@
                 </div>
 
                 <!-- Vào trận -->
-                <div class="google-card p-0 overflow-hidden">
-                    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
-                        <span class="text-sm font-500 text-green-700">Vào trận từ Boss 2</span>
-                        <i class="fas fa-sign-in-alt text-green-300"></i>
+                <div class="google-card p-0 overflow-hidden shadow-sm">
+                    <div class="px-5 py-4 bg-green-50/50 border-b border-green-100 flex justify-between items-center">
+                        <span class="text-sm font-600 text-green-700">Vào trận từ Boss 2</span>
+                        <div class="text-[10px] font-800 bg-green-100 text-green-700 px-2 py-0.5 rounded uppercase tracking-wider">ON</div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 divide-x divide-gray-100" id="in-grid">
                         <!-- JS Render -->
@@ -225,16 +241,16 @@
 
         <!-- Danh sách 48 Thành viên -->
         <section class="animate-fade" style="animation-delay: 0.3s;">
-            <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center justify-between mb-4 px-1">
                 <h2 class="section-header mb-0">
                     <i class="fas fa-list-ul google-blue"></i>
-                    Danh sách tham chiến chính
+                    Thành viên tham chiến chính
                 </h2>
-                <div class="bg-blue-100 text-blue-700 text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">
-                    48 Thành viên Full Boss
+                <div class="hidden sm:block bg-blue-100 text-blue-700 text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+                    48 Units Full Boss
                 </div>
             </div>
-            <div class="google-card overflow-hidden">
+            <div class="google-card overflow-hidden shadow-sm">
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 divide-x divide-y divide-gray-100" id="member-grid">
                     <!-- JS Render -->
                 </div>
@@ -243,7 +259,7 @@
 
         <footer class="text-center pt-10 pb-20 border-t border-gray-100">
             
-            <p class="text-xs text-gray-400 font-500 uppercase tracking-widest mt-6">Google Workspace Dashboard Model • Bang hội Đãng Khấu</p>
+            <p class="text-[10px] text-gray-400 font-700 uppercase tracking-widest mt-4 italic">Dữ liệu bảo mật nội bộ • Bang hội Đãng Khấu Pro</p>
         </footer>
     </main>
 
@@ -288,10 +304,10 @@
 
         function createItem(name, className, id = null) {
             return `
-                <div class="px-5 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                    <div class="flex items-center gap-4 overflow-hidden">
-                        ${id ? `<span class="text-[10px] font-bold text-gray-300 w-4">${id}</span>` : ''}
-                        <p class="text-sm font-500 text-gray-700 truncate">${name}</p>
+                <div class="px-4 py-3.5 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        ${id ? `<span class="text-[9px] font-bold text-gray-300 w-4">${id}</span>` : ''}
+                        <p class="text-[13px] font-600 text-gray-700 truncate">${name}</p>
                     </div>
                     <span class="badge badge-${className.toLowerCase()}">${className}</span>
                 </div>
