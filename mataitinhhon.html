@@ -1,1 +1,258 @@
 
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thử Thách Mắt Thần - Ai Tinh Mắt Hơn?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            touch-action: manipulation;
+        }
+
+        .grid-container {
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .color-box {
+            cursor: pointer;
+            transition: transform 0.1s ease;
+            border-radius: 4px;
+        }
+
+        .color-box:active {
+            transform: scale(0.95);
+        }
+
+        .shake {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .progress-bar {
+            transition: width 1s linear;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+
+    <!-- Header Section -->
+    <div class="w-full max-w-md mb-6 text-center">
+        <h1 class="text-3xl font-extrabold text-slate-800 mb-2">MẮT AI TINH HƠN?</h1>
+        <p class="text-slate-500 text-sm">Tìm ô vuông có màu sắc khác biệt nhất.</p>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="w-full max-w-md flex justify-between items-end mb-4 px-2">
+        <div class="text-left">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Điểm số</span>
+            <div id="score" class="text-3xl font-black text-indigo-600">0</div>
+        </div>
+        <div class="text-right w-1/2">
+            <div class="flex justify-between mb-1">
+                <span class="text-xs font-bold text-slate-400 uppercase">Thời gian</span>
+                <span id="timer-text" class="text-xs font-bold text-indigo-600">30s</span>
+            </div>
+            <div class="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+                <div id="progress" class="progress-bar h-full bg-indigo-500 w-full"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Board -->
+    <div id="game-board" class="grid-container bg-white p-3 rounded-2xl shadow-xl border border-slate-100 grid gap-2">
+        <!-- Boxes will be generated here -->
+    </div>
+
+    <!-- Start/Overlay Screen -->
+    <div id="overlay" class="fixed inset-0 bg-slate-900/90 flex items-center justify-center z-50 p-6">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl">
+            <div id="result-icon" class="text-6xl mb-4">👁️</div>
+            <h2 id="modal-title" class="text-2xl font-bold text-slate-800 mb-2">Sẵn sàng chưa?</h2>
+            <p id="modal-desc" class="text-slate-600 mb-6">Bạn có 30 giây để tìm ra các ô màu khác biệt. Càng về sau thử thách càng khó!</p>
+            
+            <div id="final-stats" class="hidden grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                    <span class="block text-xs text-slate-400 uppercase font-bold">Điểm</span>
+                    <span id="final-score" class="text-2xl font-black text-indigo-600">0</span>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                    <span class="block text-xs text-slate-400 uppercase font-bold">Xếp hạng</span>
+                    <span id="rank-name" class="text-sm font-bold text-slate-700">Tập sự</span>
+                </div>
+            </div>
+
+            <button id="start-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-95">
+                BẮT ĐẦU CHƠI
+            </button>
+        </div>
+    </div>
+
+    <!-- Feedback Message -->
+    <div id="feedback" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-full font-bold shadow-lg opacity-0 transition-opacity pointer-events-none">
+        Chọn sai rồi! -1 giây
+    </div>
+
+    <script>
+        const gameBoard = document.getElementById('game-board');
+        const scoreDisplay = document.getElementById('score');
+        const timerText = document.getElementById('timer-text');
+        const progressBar = document.getElementById('progress');
+        const overlay = document.getElementById('overlay');
+        const startBtn = document.getElementById('start-btn');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDesc = document.getElementById('modal-desc');
+        const resultIcon = document.getElementById('result-icon');
+        const finalStats = document.getElementById('final-stats');
+        const finalScore = document.getElementById('final-score');
+        const rankName = document.getElementById('rank-name');
+        const feedback = document.getElementById('feedback');
+
+        let score = 0;
+        let timeLeft = 30;
+        let gameActive = false;
+        let timerInterval;
+
+        const ranks = [
+            { min: 0, title: "Mắt Mờ", icon: "👓", desc: "Bạn nên đi khám mắt ngay hoặc lau màn hình đi nhé!" },
+            { min: 10, title: "Mắt Người Thường", icon: "👀", desc: "Thị lực ổn định, nhưng vẫn chưa phải là thợ săn đâu." },
+            { min: 20, title: "Mắt Thợ Săn", icon: "🏹", desc: "Khả năng phân biệt màu sắc cực tốt. Bạn rất tinh mắt!" },
+            { min: 30, title: "Mắt Đại Bàng", icon: "🦅", desc: "Thị lực phi thường! Bạn có thể nhìn thấy con mồi từ xa đấy." },
+            { min: 45, title: "Mắt Cú Mèo", icon: "🦉", desc: "Bạn có thể nhìn xuyên thấu màn đêm. Đỉnh của chóp!" },
+            { min: 60, title: "Mắt Thần", icon: "💎", desc: "Bạn không phải con người nữa rồi. Quá xuất sắc!" }
+        ];
+
+        function getRandomColor() {
+            const r = Math.floor(Math.random() * 200);
+            const g = Math.floor(Math.random() * 200);
+            const b = Math.floor(Math.random() * 200);
+            return { r, g, b };
+        }
+
+        function createLevel() {
+            gameBoard.innerHTML = '';
+            
+            // Calculate grid size based on score
+            // 0-2: 2x2, 3-6: 3x3, 7-12: 4x4, 13-20: 5x5, 21-30: 6x6, 31-45: 7x7, 46+: 8x8
+            let size = 2;
+            if (score >= 3) size = 3;
+            if (score >= 8) size = 4;
+            if (score >= 15) size = 5;
+            if (score >= 25) size = 6;
+            if (score >= 40) size = 7;
+            if (score >= 55) size = 8;
+            if (score >= 75) size = 9;
+
+            gameBoard.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+            
+            const baseColor = getRandomColor();
+            // Delta decreases as score increases (Harder)
+            const delta = Math.max(2, 40 - Math.floor(score / 2));
+            
+            const targetIndex = Math.floor(Math.random() * (size * size));
+            
+            for (let i = 0; i < size * size; i++) {
+                const box = document.createElement('div');
+                box.className = 'color-box';
+                
+                if (i === targetIndex) {
+                    box.style.backgroundColor = `rgb(${baseColor.r + delta}, ${baseColor.g + delta}, ${baseColor.b + delta})`;
+                    box.onclick = handleCorrect;
+                } else {
+                    box.style.backgroundColor = `rgb(${baseColor.r}, ${baseColor.g}, ${baseColor.b})`;
+                    box.onclick = handleWrong;
+                }
+                
+                gameBoard.appendChild(box);
+            }
+        }
+
+        function handleCorrect() {
+            if (!gameActive) return;
+            score++;
+            scoreDisplay.textContent = score;
+            createLevel();
+        }
+
+        function handleWrong() {
+            if (!gameActive) return;
+            // Penalty for wrong click
+            timeLeft = Math.max(0, timeLeft - 1);
+            timerText.textContent = timeLeft + "s";
+            
+            gameBoard.classList.add('shake');
+            feedback.style.opacity = '1';
+            
+            setTimeout(() => {
+                gameBoard.classList.remove('shake');
+                feedback.style.opacity = '0';
+            }, 500);
+        }
+
+        function updateTimer() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                timerText.textContent = timeLeft + "s";
+                const percentage = (timeLeft / 30) * 100;
+                progressBar.style.width = percentage + "%";
+                
+                if (timeLeft <= 5) {
+                    timerText.classList.add('text-red-600');
+                    progressBar.classList.replace('bg-indigo-500', 'bg-red-500');
+                }
+            } else {
+                endGame();
+            }
+        }
+
+        function startGame() {
+            score = 0;
+            timeLeft = 30;
+            gameActive = true;
+            scoreDisplay.textContent = score;
+            timerText.textContent = "30s";
+            timerText.classList.remove('text-red-600');
+            progressBar.classList.replace('bg-red-500', 'bg-indigo-500');
+            progressBar.style.width = "100%";
+            overlay.classList.add('hidden');
+            
+            createLevel();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function endGame() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            
+            // Find rank
+            const rank = [...ranks].reverse().find(r => score >= r.min) || ranks[0];
+            
+            resultIcon.textContent = rank.icon;
+            modalTitle.textContent = rank.title;
+            modalDesc.textContent = rank.desc;
+            finalScore.textContent = score;
+            rankName.textContent = rank.title;
+            
+            finalStats.classList.remove('hidden');
+            overlay.classList.remove('hidden');
+            startBtn.textContent = "CHƠI LẠI";
+        }
+
+        startBtn.onclick = startGame;
+    </script>
+</body>
+</html>
