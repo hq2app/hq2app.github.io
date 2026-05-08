@@ -1,1 +1,369 @@
 
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Wedding - Đức Huy & Huyền Thương</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #b91c1c;
+            --secondary: #d4af37;
+            --gold: #d4af37;
+            --bg-light: #fffaf5;
+        }
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #fcf8f2;
+            color: #374151;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+        .font-wedding { font-family: 'Dancing Script', cursive; }
+        
+        /* Hiệu ứng hoa bay */
+        .petal {
+            position: fixed;
+            top: -10%;
+            pointer-events: none;
+            z-index: 99;
+            user-select: none;
+        }
+
+        /* Khung hoa văn viền cố định */
+        .wedding-border {
+            position: fixed;
+            inset: 0;
+            border: 12px solid #d4af37;
+            pointer-events: none;
+            z-index: 100;
+            mask-image: radial-gradient(circle, transparent 0%, black 100%);
+            opacity: 0.15;
+        }
+        
+        /* Góc hoa văn SVG sắc nét */
+        .corner-decor {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            z-index: 101;
+            pointer-events: none;
+            color: var(--gold);
+            opacity: 0.6;
+        }
+        .top-left { top: 15px; left: 15px; }
+        .top-right { top: 15px; right: 15px; transform: rotate(90deg); }
+        .bottom-left { bottom: 15px; left: 15px; transform: rotate(-90deg); }
+        .bottom-right { bottom: 15px; right: 15px; transform: rotate(180deg); }
+
+        .one-ui-card { 
+            border-radius: 2.5rem; 
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            transition: all 0.3s ease; 
+        }
+
+        .fade-in { animation: fadeIn 1.2s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .fa-spin-slow { animation: spin-slow 4s linear infinite; }
+    </style>
+</head>
+<body class="max-w-md mx-auto bg-white shadow-2xl relative">
+
+    <!-- Góc hoa văn trang trí SVG nội bộ -->
+    <svg class="corner-decor top-left" viewBox="0 0 100 100" fill="currentColor">
+        <path d="M0 0 v100 Q0 0 100 0 Z M20 20 Q20 40 40 20 T60 20 M15 45 Q30 30 45 15"></path>
+    </svg>
+    <svg class="corner-decor top-right" viewBox="0 0 100 100" fill="currentColor">
+        <path d="M0 0 v100 Q0 0 100 0 Z M20 20 Q20 40 40 20 T60 20 M15 45 Q30 30 45 15"></path>
+    </svg>
+    <svg class="corner-decor bottom-left" viewBox="0 0 100 100" fill="currentColor">
+        <path d="M0 0 v100 Q0 0 100 0 Z M20 20 Q20 40 40 20 T60 20 M15 45 Q30 30 45 15"></path>
+    </svg>
+    <svg class="corner-decor bottom-right" viewBox="0 0 100 100" fill="currentColor">
+        <path d="M0 0 v100 Q0 0 100 0 Z M20 20 Q20 40 40 20 T60 20 M15 45 Q30 30 45 15"></path>
+    </svg>
+
+    <div class="wedding-border"></div>
+    <div id="petal-container"></div>
+
+    <!-- Music Player -->
+    <div class="fixed top-8 right-8 z-[110]">
+        <button onclick="toggleMusic()" class="bg-white/90 backdrop-blur p-3 rounded-full shadow-xl text-red-700 w-12 h-12 flex items-center justify-center border border-gold">
+            <i id="music-icon" class="fa-solid fa-music"></i>
+        </button>
+        <audio id="wedding-audio" loop>
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen flex flex-col items-center justify-end pb-32 text-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <!-- Ảnh nền mới của Huy & Thương -->
+            <img src="https://raw.githubusercontent.com/hq2app/hq2app.github.io/refs/heads/main/wdhuythuong.jpg" 
+                 alt="Huy & Thương" class="w-full h-full object-cover scale-110 motion-safe:animate-[pulse_15s_infinite]">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+        </div>
+        <div class="relative z-10 text-white fade-in px-8">
+            <p class="text-xs tracking-[0.5em] uppercase mb-4 opacity-80 italic font-medium">Happy Wedding</p>
+            <h1 class="font-wedding text-6xl mb-4 drop-shadow-2xl">Đức Huy & Huyền Thương</h1>
+            <div class="h-[2px] w-16 bg-gold mx-auto mb-6 opacity-60"></div>
+            <p class="text-xl font-light tracking-[0.2em]">24 . 05 . 2026</p>
+        </div>
+    </section>
+
+    <!-- Invitation Message -->
+    <section class="p-10 text-center bg-white rounded-t-[3.5rem] -mt-20 relative z-20 border-t border-gold/10 shadow-[0_-15px_35px_rgba(0,0,0,0.1)]">
+        <div class="fade-in">
+            <!-- Cập nhật icon trái tim sang màu đỏ hồng lãng mạn -->
+            <div class="mb-4 text-[#ff4d6d] opacity-60">
+                <i class="fa-solid fa-heart-pulse text-2xl"></i>
+            </div>
+            
+            <h2 class="text-lg font-bold text-red-900 mb-2 uppercase tracking-widest">[ Góc mời đám cưới online ]</h2>
+            <p class="text-[10px] text-gold font-bold uppercase tracking-[0.2em] mb-8 px-4">Thay cho những tấm thiệp hồng chưa kịp trao tay 💗</p>
+            
+            <p class="text-gray-600 leading-relaxed italic mb-8 px-4 text-sm font-medium">
+                "Trân trọng kính mời: Cô, Dì, Chú, Bác, Anh, Chị, Em, Bạn Bè gần xa tới dự đám cưới của vợ chồng con / em 🥂"
+            </p>
+
+            <div class="flex flex-col items-center gap-2 mb-10 scale-110">
+                <p class="font-wedding text-5xl text-red-800">Đức Huy</p>
+                <div class="flex items-center gap-4 py-2">
+                    <div class="h-[1px] w-10 bg-gold/20"></div>
+                    <p class="text-gold font-serif text-2xl">💍</p>
+                    <div class="h-[1px] w-10 bg-gold/20"></div>
+                </div>
+                <p class="font-wedding text-5xl text-red-800">Huyền Thương</p>
+            </div>
+
+            <p class="text-[11px] text-gray-400 leading-relaxed max-w-[280px] mx-auto italic">
+                🥰 Vì một số lý do nên không thể trực tiếp đưa thiệp mời tận tay mọi người được, mong mọi người hết sức thông cảm!
+            </p>
+        </div>
+    </section>
+
+    <!-- Timeline Cards -->
+    <section class="p-8 bg-stone-50 relative">
+        <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-white to-transparent pointer-events-none"></div>
+        
+        <!-- THỨ 7: BỮA CƠM THÂN MẬT -->
+        <div class="one-ui-card bg-white p-8 shadow-xl shadow-gold/5 mb-8 relative overflow-hidden group">
+            <div class="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                <i class="fa-solid fa-utensils text-9xl text-red-900"></i>
+            </div>
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h4 class="text-xl font-bold text-red-900">Bữa Cơm Thân Mật 🥂</h4>
+                    <p class="text-xs font-bold text-gold mt-1">Thứ Bảy, 23/05/2026</p>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">(Tức ngày 07/04 Âm Lịch)</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <div class="flex flex-col items-center">
+                    <span class="text-xs text-gray-400 font-bold uppercase tracking-tighter">Giờ</span>
+                    <span class="text-3xl font-black text-red-800">16:00</span>
+                </div>
+                <div class="h-10 w-[1px] bg-gold/20"></div>
+                <div class="text-sm text-gray-600 font-medium">
+                    <p>Được tổ chức thân mật tại gia đình Nhà Trai.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHỦ NHẬT: TIỆC THÀNH HÔN -->
+        <div class="one-ui-card bg-white p-8 shadow-xl shadow-gold/5 mb-8 relative overflow-hidden group border-l-[6px] border-red-700">
+            <div class="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                <i class="fa-solid fa-champagne-glasses text-9xl text-red-900"></i>
+            </div>
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h4 class="text-xl font-bold text-red-900">Tiệc Thành Hôn 💕</h4>
+                    <p class="text-xs font-bold text-gold mt-1">Chủ Nhật, 24/05/2026</p>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">(Tức ngày 08/04 Âm Lịch)</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <div class="flex flex-col items-center">
+                    <span class="text-xs text-gray-400 font-bold uppercase tracking-tighter">Giờ</span>
+                    <span class="text-3xl font-black text-red-800">08:00</span>
+                </div>
+                <div class="h-10 w-[1px] bg-gold/20"></div>
+                <div class="text-sm text-gray-600 font-medium">
+                    <p>Tiệc trà & đón tiếp khách mời tại gia đình Nhà Trai.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHỦ NHẬT: LỄ THÀNH HÔN -->
+        <div class="one-ui-card bg-white p-8 shadow-xl shadow-gold/5 relative overflow-hidden group border-l-[6px] border-yellow-500">
+            <div class="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                <i class="fa-solid fa-ring text-9xl text-red-900"></i>
+            </div>
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h4 class="text-xl font-bold text-red-900">Lễ Thành Hôn 👩‍❤️‍💋‍👨</h4>
+                    <p class="text-xs font-bold text-gold mt-1">Chủ Nhật, 24/05/2026</p>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">(Tức ngày 08/04 Âm Lịch)</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <div class="flex flex-col items-center">
+                    <span class="text-xs text-gray-400 font-bold uppercase tracking-tighter">Giờ</span>
+                    <span class="text-3xl font-black text-red-800">12:10</span>
+                </div>
+                <div class="h-10 w-[1px] bg-gold/20"></div>
+                <div class="text-sm text-gray-600 font-medium">
+                    <p>Lễ Chính thức được cử hành tại gia đình Nhà Trai.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Address Section (Updated Theme) -->
+    <section class="p-8 bg-white text-center relative overflow-hidden">
+        <div id="location-card" class="one-ui-card bg-[#fffaf5] p-10 relative overflow-hidden z-10 shadow-xl shadow-gold/10">
+            <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, var(--gold) 1px, transparent 0); background-size: 20px 20px;"></div>
+            <i class="fa-solid fa-location-dot text-red-700 text-4xl mb-4 drop-shadow-md"></i>
+            <h3 class="text-xl font-bold mb-3 tracking-widest uppercase italic text-red-900">Địa Chỉ Nhà Trai 🏡</h3>
+            <p class="text-gray-600 text-sm mb-10 leading-relaxed font-semibold">
+                Ngõ 2 thôn Cẩm Bối, xã Khoái Châu, tỉnh Hưng Yên
+            </p>
+            <a href="https://www.google.com/maps/search/thôn+Cẩm+Bối,+xã+Khoái+Châu,+Hưng+Yên" target="_blank" class="inline-block bg-red-800 text-white px-12 py-4 rounded-full font-bold text-xs shadow-lg tracking-[0.2em] active:scale-95 transition-transform hover:bg-red-900">
+                CHỈ ĐƯỜNG GOOGLE MAPS
+            </a>
+        </div>
+    </section>
+
+    <!-- Final Message -->
+    <section class="p-8 text-center bg-white">
+        <p class="text-gray-500 text-sm leading-relaxed mb-4 italic px-4">
+            🥰 Rất mong tất cả mọi người bớt chút thời gian đến chung vui với vợ chồng em. Sự hiện diện của mọi người là niềm hạnh phúc lớn của gia đình 👩‍👩‍👧‍👧
+        </p>
+    </section>
+
+    <!-- Gift Section -->
+    <section class="py-20 text-center bg-stone-50">
+        <p class="text-[10px] uppercase tracking-[0.4em] text-stone-400 mb-6">Mừng cưới online tới dâu rể 💐</p>
+        <button onclick="openGift()" class="text-red-900 font-bold text-sm border-b border-red-900/20 pb-2 flex items-center gap-3 mx-auto px-4 hover:text-red-700 transition-colors">
+            <i class="fa-solid fa-gift text-lg"></i> THÔNG TIN QUÀ MỪNG
+        </button>
+    </section>
+
+    <!-- Gift Modal -->
+    <div id="gift-modal" class="fixed inset-0 z-[120] bg-black/70 backdrop-blur-sm flex items-end justify-center hidden" onclick="closeGift(event)">
+        <div class="bg-white w-full rounded-t-[3.5rem] p-10 fade-in shadow-2xl max-w-md relative" onclick="event.stopPropagation()">
+            <div class="w-16 h-1.5 bg-stone-100 mx-auto mb-10 rounded-full"></div>
+            <h3 class="text-xl font-bold text-center mb-10 tracking-widest text-red-900 uppercase">Thông tin mừng cưới</h3>
+            
+            <div class="space-y-8 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                <div class="bg-stone-50 p-8 rounded-[2.5rem] text-center border border-stone-100 shadow-inner">
+                    <p class="text-[10px] font-bold text-gold mb-6 uppercase tracking-widest">Tài khoản Chú Rể</p>
+                    <div class="bg-white p-3 rounded-2xl inline-block shadow-md mb-6 border border-stone-50">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=BANK-INFO-HUY" class="w-40 mx-auto" alt="QR Huy">
+                    </div>
+                    <p class="font-bold text-stone-800 text-lg uppercase">QUANG ĐỨC HUY</p>
+                    <p class="text-sm text-stone-500 mt-1 italic text-center">Mừng cưới Đức Huy</p>
+                </div>
+                
+                <div class="bg-stone-50 p-8 rounded-[2.5rem] text-center border border-stone-100 shadow-inner">
+                    <p class="text-[10px] font-bold text-gold mb-6 uppercase tracking-widest">Tài khoản Cô Dâu</p>
+                    <div class="bg-white p-3 rounded-2xl inline-block shadow-md mb-6 border border-stone-50">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=BANK-INFO-THUONG" class="w-40 mx-auto" alt="QR Thương">
+                    </div>
+                    <p class="font-bold text-stone-800 text-lg uppercase">Nguyễn Huyền Thương</p>
+                    <p class="text-sm text-stone-500 mt-1 italic text-center">Mừng cưới Huyền Thương</p>
+                </div>
+            </div>
+            
+            <button onclick="document.getElementById('gift-modal').classList.add('hidden')" class="w-full mt-10 p-6 bg-stone-900 text-white rounded-[1.5rem] font-bold text-xs tracking-widest active:bg-black transition-colors uppercase">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="p-24 text-center bg-white border-t border-stone-50 relative overflow-hidden">
+        <h2 class="font-wedding text-5xl text-red-800 mb-6 drop-shadow-sm">Xin Chân Thành Cảm Ơn!</h2>
+        <div class="h-[1px] w-20 bg-gold/30 mx-auto mb-8"></div>
+        <p class="text-[10px] tracking-[0.4em] text-stone-300 uppercase font-bold tracking-widest">Rất Hân Hạnh Được Đón Tiếp</p>
+    </footer>
+
+    <script>
+        // Hiệu ứng hoa bay mượt mà
+        function createPetal() {
+            const container = document.getElementById('petal-container');
+            if (!container) return;
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            
+            const shapes = ['🌸', '💮', '🤍', '✨', '💕', '💍'];
+            petal.innerHTML = shapes[Math.floor(Math.random() * shapes.length)];
+            
+            const startPos = Math.random() * 100;
+            const delay = Math.random() * 5;
+            const duration = 6 + Math.random() * 12;
+            const size = 12 + Math.random() * 18;
+
+            petal.style.left = startPos + 'vw';
+            petal.style.fontSize = size + 'px';
+            petal.style.animation = `fall ${duration}s linear ${delay}s infinite`;
+            petal.style.opacity = Math.random() * 0.4 + 0.3;
+
+            container.appendChild(petal);
+            
+            setTimeout(() => { petal.remove(); }, (duration + delay) * 1000);
+        }
+
+        // Khởi tạo
+        for(let i = 0; i < 15; i++) { createPetal(); }
+        setInterval(createPetal, 1000);
+
+        function openGift() {
+            document.getElementById('gift-modal').classList.remove('hidden');
+        }
+
+        function closeGift(e) {
+            if (e.target === document.getElementById('gift-modal')) {
+                document.getElementById('gift-modal').classList.add('hidden');
+            }
+        }
+
+        let isPlaying = false;
+        function toggleMusic() {
+            const audio = document.getElementById('wedding-audio');
+            const icon = document.getElementById('music-icon');
+            if (isPlaying) {
+                audio.pause();
+                icon.className = "fa-solid fa-music";
+                icon.style.animation = "none";
+            } else {
+                audio.play().catch(() => {
+                    alert("Chạm vào màn hình để nghe nhạc nhé!");
+                });
+                icon.className = "fa-solid fa-pause fa-spin-slow";
+            }
+            isPlaying = !isPlaying;
+        }
+    </script>
+</body>
+</html>
