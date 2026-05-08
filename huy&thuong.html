@@ -70,7 +70,7 @@
 </head>
 <body class="max-w-md mx-auto bg-white shadow-2xl relative">
 
-    <!-- Góc hoa văn trang trí SVG nội bộ -->
+    <!-- Góc hoa văn trang trí SVG -->
     <svg class="corner-decor top-left" viewBox="0 0 100 100" fill="currentColor">
         <path d="M0 0 v100 Q0 0 100 0 Z M20 20 Q20 40 40 20 T60 20 M15 45 Q30 30 45 15"></path>
     </svg>
@@ -91,8 +91,10 @@
         <button onclick="toggleMusic()" class="bg-white/90 backdrop-blur p-3 rounded-full shadow-xl text-red-700 w-12 h-12 flex items-center justify-center border border-gold">
             <i id="music-icon" class="fa-solid fa-music"></i>
         </button>
-        <audio id="wedding-audio" loop>
-            <source src="https://archive.org/download/beautifulinwhite_201911/Beautiful%20In%20White.mp3" type="audio/mpeg">
+        <!-- Cập nhật link nhạc nền mới -->
+        <audio id="wedding-audio" loop preload="auto">
+            <source src="https://github.com/hq2app/hq2app.github.io/raw/refs/heads/main/aa.mp3" type="audio/mpeg">
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg"> <!-- Fallback -->
         </audio>
     </div>
 
@@ -145,7 +147,6 @@
     <section class="p-8 bg-stone-50 relative">
         <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-white to-transparent pointer-events-none"></div>
         
-        <!-- Cụm tiêu đề: Lịch Trình Ngày Hạnh Phúc -->
         <div class="flex items-center justify-center gap-4 mb-10 text-center px-4">
             <div class="h-[1px] flex-1 bg-gold/30"></div>
             <h3 class="text-[11px] font-bold tracking-[0.3em] text-gold uppercase italic">Lịch Trình Ngày Hạnh Phúc</h3>
@@ -244,7 +245,6 @@
                 <div class="bg-stone-50 p-8 rounded-[2.5rem] text-center border border-stone-100 shadow-inner">
                     <p class="text-[10px] font-bold text-gold mb-6 uppercase tracking-widest">Tài khoản Chú Rể</p>
                     <div class="bg-white p-3 rounded-2xl inline-block shadow-md mb-6 border border-stone-50">
-                        <!-- QR VPBank Huy -->
                         <img src="https://img.vietqr.io/image/VPB-663283286-compact2.png?addInfo=Mung%20cuoi%20Duc%20Huy&accountName=QUANG%20DUC%20HUY" class="w-40 mx-auto" alt="QR Huy">
                     </div>
                     <p class="font-bold text-stone-800 text-lg uppercase">QUANG ĐỨC HUY</p>
@@ -255,7 +255,6 @@
                 <div class="bg-stone-50 p-8 rounded-[2.5rem] text-center border border-stone-100 shadow-inner">
                     <p class="text-[10px] font-bold text-gold mb-6 uppercase tracking-widest">Tài khoản Cô Dâu</p>
                     <div class="bg-white p-3 rounded-2xl inline-block shadow-md mb-6 border border-stone-50">
-                        <!-- QR VPBank Thương -->
                         <img src="https://img.vietqr.io/image/VPB-663283286-compact2.png?addInfo=Mung%20cuoi%20Huyen%20Thuong&accountName=NGUYEN%20HUYEN%20THUONG" class="w-40 mx-auto" alt="QR Thương">
                     </div>
                     <p class="font-bold text-stone-800 text-lg uppercase">Nguyễn Huyền Thương</p>
@@ -289,17 +288,28 @@
         function toggleMusic() {
             const audio = document.getElementById('wedding-audio');
             const icon = document.getElementById('music-icon');
+            
             if (isPlaying) {
                 audio.pause();
                 icon.className = "fa-solid fa-music";
                 icon.style.animation = "none";
+                isPlaying = false;
             } else {
-                audio.play().catch(() => {
-                    alert("Chạm vào màn hình để nghe nhạc nhé!");
-                });
-                icon.className = "fa-solid fa-pause fa-spin-slow";
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        icon.className = "fa-solid fa-pause fa-spin-slow";
+                        isPlaying = true;
+                    }).catch(error => {
+                        console.log("Music play blocked:", error);
+                        const msg = document.createElement('div');
+                        msg.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 bg-black/80 text-white text-[10px] px-4 py-2 rounded-full z-[200] fade-in';
+                        msg.innerText = 'Chạm vào màn hình để nghe nhạc nhé!';
+                        document.body.appendChild(msg);
+                        setTimeout(() => msg.remove(), 3000);
+                    });
+                }
             }
-            isPlaying = !isPlaying;
         }
     </script>
 </body>
