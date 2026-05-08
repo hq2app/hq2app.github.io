@@ -13,6 +13,7 @@
             --secondary: #d4af37;
             --gold: #d4af37;
             --bg-light: #fffaf5;
+            --heart-pink: #ff4d6d;
         }
         body {
             font-family: 'Quicksand', sans-serif;
@@ -90,24 +91,21 @@
         <button onclick="toggleMusic()" class="bg-white/90 backdrop-blur p-3 rounded-full shadow-xl text-red-700 w-12 h-12 flex items-center justify-center border border-gold">
             <i id="music-icon" class="fa-solid fa-music"></i>
         </button>
-        <!-- Thay nhạc nền đám cưới phổ biến (không lời lãng mạn) -->
         <audio id="wedding-audio" loop>
-            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+            <source src="https://archive.org/download/beautifulinwhite_201911/Beautiful%20In%20White.mp3" type="audio/mpeg">
         </audio>
     </div>
 
     <!-- Hero Section -->
     <section class="relative h-screen flex flex-col items-center justify-end pb-32 text-center overflow-hidden">
         <div class="absolute inset-0 z-0">
-            <!-- Ảnh nền không mờ, không animation mờ ảo -->
             <img src="https://raw.githubusercontent.com/hq2app/hq2app.github.io/refs/heads/main/wdhuythuong.jpg" 
                  alt="Huy & Thương" class="w-full h-full object-cover">
-            <!-- Overlay nhẹ để tên dâu rể nổi bật nhưng không làm mờ ảnh -->
             <div class="absolute inset-0 bg-black/20"></div>
         </div>
         <div class="relative z-10 text-white fade-in px-8">
             <p class="text-xs tracking-[0.5em] uppercase mb-4 opacity-90 italic font-medium">Happy Wedding</p>
-            <h1 class="font-wedding text-6xl mb-4 drop-shadow-2xl">Đức Huy & Huyền Thương</h1>
+            <h1 class="font-wedding text-6xl mb-4 text-white drop-shadow-2xl">Đức Huy & Huyền Thương</h1>
             <div class="h-[2px] w-16 bg-gold mx-auto mb-6 opacity-80"></div>
             <p class="text-xl font-light tracking-[0.2em]">24 . 05 . 2026</p>
         </div>
@@ -116,13 +114,12 @@
     <!-- Invitation Message -->
     <section class="p-10 text-center bg-white rounded-t-[3.5rem] -mt-20 relative z-20 border-t border-gold/10 shadow-[0_-15px_35px_rgba(0,0,0,0.1)]">
         <div class="fade-in">
-            <!-- Icon trái tim màu đỏ hồng -->
-            <div class="mb-4 text-[#ff4d6d] opacity-100">
+            <div class="mb-4 text-[#ff4d6d] opacity-100 animate-pulse">
                 <i class="fa-solid fa-heart-pulse text-2xl"></i>
             </div>
             
             <h2 class="text-lg font-bold text-red-900 mb-2 uppercase tracking-widest">[ Góc mời đám cưới online ]</h2>
-            <p class="text-[10px] text-gold font-bold uppercase tracking-[0.2em] mb-8 px-4">Thay cho những tấm thiệp hồng chưa kịp trao tay 💗</p>
+            <p class="text-[10px] text-gold font-bold uppercase tracking-[0.2em] mb-8 px-4">THAY CHO NHỮNG TẤM THIỆP HỒNG CHƯA KỊP TRAO TAY💗</p>
             
             <p class="text-gray-600 leading-relaxed italic mb-8 px-4 text-sm font-medium">
                 "Trân trọng kính mời: Cô, Dì, Chú, Bác, Anh, Chị, Em, Bạn Bè gần xa tới dự đám cưới của vợ chồng con / em 🥂"
@@ -148,39 +145,21 @@
     <section class="p-8 bg-stone-50 relative">
         <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-white to-transparent pointer-events-none"></div>
         
-        <!-- THỨ 7: BỮA CƠM THÂN MẬT -->
-        <div class="one-ui-card bg-white p-8 shadow-xl shadow-gold/5 mb-8 relative overflow-hidden group">
-            <div class="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
-                <i class="fa-solid fa-utensils text-9xl text-red-900"></i>
-            </div>
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h4 class="text-xl font-bold text-red-900">Bữa Cơm Thân Mật 🥂</h4>
-                    <p class="text-xs font-bold text-gold mt-1">Thứ Bảy, 23/05/2026</p>
-                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">(Tức ngày 07/04 Âm Lịch)</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-6">
-                <div class="flex flex-col items-center">
-                    <span class="text-xs text-gray-400 font-bold uppercase tracking-tighter">Giờ</span>
-                    <span class="text-3xl font-black text-red-800">16:00</span>
-                </div>
-                <div class="h-10 w-[1px] bg-gold/20"></div>
-                <div class="text-sm text-gray-600 font-medium">
-                    <p>Được tổ chức thân mật tại gia đình Nhà Trai.</p>
-                </div>
-            </div>
+        <!-- Cụm tiêu đề: Lịch Trình Ngày Hạnh Phúc -->
+        <div class="flex items-center justify-center gap-4 mb-10 text-center px-4">
+            <div class="h-[1px] flex-1 bg-gold/30"></div>
+            <h3 class="text-[11px] font-bold tracking-[0.3em] text-gold uppercase italic">Lịch Trình Ngày Hạnh Phúc</h3>
+            <div class="h-[1px] flex-1 bg-gold/30"></div>
         </div>
 
-        <!-- CHỦ NHẬT: TIỆC THÀNH HÔN -->
-        <div class="one-ui-card bg-white p-8 shadow-xl shadow-gold/5 mb-8 relative overflow-hidden group border-l-[6px] border-red-700">
+        <!-- BỮA CƠM THÂN MẬT -->
+        <div class="one-ui-card bg-white p-8 shadow-xl shadow-gold/5 mb-8 relative overflow-hidden group">
             <div class="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
                 <i class="fa-solid fa-champagne-glasses text-9xl text-red-900"></i>
             </div>
             <div class="flex justify-between items-center mb-6">
                 <div>
-                    <h4 class="text-xl font-bold text-red-900">Tiệc Thành Hôn 💕</h4>
+                    <h4 class="text-xl font-bold text-red-900">Bữa Cơm Thân Mật 💕</h4>
                     <p class="text-xs font-bold text-gold mt-1">Chủ Nhật, 24/05/2026</p>
                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">(Tức ngày 08/04 Âm Lịch)</p>
                 </div>
@@ -189,23 +168,23 @@
             <div class="flex items-center gap-6">
                 <div class="flex flex-col items-center">
                     <span class="text-xs text-gray-400 font-bold uppercase tracking-tighter">Giờ</span>
-                    <span class="text-3xl font-black text-red-800">08:00</span>
+                    <span class="text-3xl font-black text-red-800 leading-tight">09:00</span>
                 </div>
                 <div class="h-10 w-[1px] bg-gold/20"></div>
-                <div class="text-sm text-gray-600 font-medium">
-                    <p>Tiệc trà & đón tiếp khách mời tại gia đình Nhà Trai.</p>
+                <div class="text-sm text-gray-600 font-medium text-left leading-relaxed">
+                    <p>Thân mời gia đình, họ hàng và bạn bè thân thiết tới dự bữa cơm ấm cúng tại tư gia.</p>
                 </div>
             </div>
         </div>
 
-        <!-- CHỦ NHẬT: LỄ THÀNH HÔN -->
+        <!-- LỄ ĐÓN DÂU & TỔ CHỨC -->
         <div class="one-ui-card bg-white p-8 shadow-xl shadow-gold/5 mb-8 relative overflow-hidden group border-l-[6px] border-yellow-500">
             <div class="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
-                <i class="fa-solid fa-ring text-9xl text-red-900"></i>
+                <i class="fa-solid fa-car-side text-9xl text-red-900"></i>
             </div>
             <div class="flex justify-between items-center mb-6">
                 <div>
-                    <h4 class="text-xl font-bold text-red-900">Lễ Thành Hôn 👩‍❤️‍💋‍👨</h4>
+                    <h4 class="text-xl font-bold text-red-900">Lễ Đón Dâu & Tổ Chức 👩‍❤️‍💋‍👨</h4>
                     <p class="text-xs font-bold text-gold mt-1">Chủ Nhật, 24/05/2026</p>
                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">(Tức ngày 08/04 Âm Lịch)</p>
                 </div>
@@ -214,26 +193,26 @@
             <div class="flex items-center gap-6">
                 <div class="flex flex-col items-center">
                     <span class="text-xs text-gray-400 font-bold uppercase tracking-tighter">Giờ</span>
-                    <span class="text-3xl font-black text-red-800">12:10</span>
+                    <span class="text-3xl font-black text-red-800 leading-tight">13:00</span>
                 </div>
                 <div class="h-10 w-[1px] bg-gold/20"></div>
-                <div class="text-sm text-gray-600 font-medium">
-                    <p>Lễ Chính thức được cử hành tại gia đình Nhà Trai.</p>
+                <div class="text-sm text-gray-600 font-medium text-left leading-relaxed">
+                    <p>Đoàn nhà trai khởi hành đón dâu về làm lễ Thành Hôn và tổ chức tiệc mừng chính thức.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Address Section (Updated Theme) -->
+    <!-- Address Section -->
     <section class="p-8 bg-white text-center relative overflow-hidden">
         <div id="location-card" class="one-ui-card bg-[#fffaf5] p-10 relative overflow-hidden z-10 shadow-xl shadow-gold/10">
             <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, var(--gold) 1px, transparent 0); background-size: 20px 20px;"></div>
             <i class="fa-solid fa-location-dot text-red-700 text-4xl mb-4 drop-shadow-md"></i>
             <h3 class="text-xl font-bold mb-3 tracking-widest uppercase italic text-red-900">Địa Chỉ Nhà Trai 🏡</h3>
             <p class="text-gray-600 text-sm mb-10 leading-relaxed font-semibold">
-                Ngõ 2 thôn Cẩm Bối, xã Khoái Châu, tỉnh Hưng Yên
+                Ngõ 2, đường Cẩm Bối, Khoái Châu, Hưng Yên
             </p>
-            <a href="https://www.google.com/maps/search/thôn+Cẩm+Bối,+xã+Khoái+Châu,+Hưng+Yên" target="_blank" class="inline-block bg-red-800 text-white px-12 py-4 rounded-full font-bold text-xs shadow-lg tracking-[0.2em] active:scale-95 transition-transform hover:bg-red-900">
+            <a href="https://www.google.com/maps/search/Ngõ+2,+đường+Cẩm+Bối,+Khoái+Châu,+Hưng+Yên" target="_blank" class="inline-block bg-red-800 text-white px-12 py-4 rounded-full font-bold text-xs shadow-lg tracking-[0.2em] active:scale-95 transition-transform hover:bg-red-900">
                 CHỈ ĐƯỜNG GOOGLE MAPS
             </a>
         </div>
@@ -241,7 +220,7 @@
 
     <!-- Final Message -->
     <section class="p-8 text-center bg-white">
-        <p class="text-gray-500 text-sm leading-relaxed mb-4 italic px-4">
+        <p class="text-gray-500 text-sm leading-relaxed mb-4 italic px-4 font-medium">
             🥰 Rất mong tất cả mọi người bớt chút thời gian đến chung vui với vợ chồng em. Sự hiện diện của mọi người là niềm hạnh phúc lớn của gia đình 👩‍👩‍👧‍👧
         </p>
     </section>
@@ -261,22 +240,26 @@
             <h3 class="text-xl font-bold text-center mb-10 tracking-widest text-red-900 uppercase">Thông tin mừng cưới</h3>
             
             <div class="space-y-8 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                <!-- Chú Rể -->
                 <div class="bg-stone-50 p-8 rounded-[2.5rem] text-center border border-stone-100 shadow-inner">
                     <p class="text-[10px] font-bold text-gold mb-6 uppercase tracking-widest">Tài khoản Chú Rể</p>
                     <div class="bg-white p-3 rounded-2xl inline-block shadow-md mb-6 border border-stone-50">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=BANK-INFO-HUY" class="w-40 mx-auto" alt="QR Huy">
+                        <!-- QR VPBank Huy -->
+                        <img src="https://img.vietqr.io/image/VPB-663283286-compact2.png?addInfo=Mung%20cuoi%20Duc%20Huy&accountName=QUANG%20DUC%20HUY" class="w-40 mx-auto" alt="QR Huy">
                     </div>
                     <p class="font-bold text-stone-800 text-lg uppercase">QUANG ĐỨC HUY</p>
-                    <p class="text-sm text-stone-500 mt-1 italic text-center">Mừng cưới Đức Huy</p>
+                    <p class="text-sm text-stone-500 mt-1 italic text-center">VPBANK - 663283286</p>
                 </div>
                 
+                <!-- Cô Dâu -->
                 <div class="bg-stone-50 p-8 rounded-[2.5rem] text-center border border-stone-100 shadow-inner">
                     <p class="text-[10px] font-bold text-gold mb-6 uppercase tracking-widest">Tài khoản Cô Dâu</p>
                     <div class="bg-white p-3 rounded-2xl inline-block shadow-md mb-6 border border-stone-50">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=BANK-INFO-THUONG" class="w-40 mx-auto" alt="QR Thương">
+                        <!-- QR VPBank Thương -->
+                        <img src="https://img.vietqr.io/image/VPB-663283286-compact2.png?addInfo=Mung%20cuoi%20Huyen%20Thuong&accountName=NGUYEN%20HUYEN%20THUONG" class="w-40 mx-auto" alt="QR Thương">
                     </div>
                     <p class="font-bold text-stone-800 text-lg uppercase">Nguyễn Huyền Thương</p>
-                    <p class="text-sm text-stone-500 mt-1 italic text-center">Mừng cưới Huyền Thương</p>
+                    <p class="text-sm text-stone-500 mt-1 italic text-center">VPBANK - 663283286</p>
                 </div>
             </div>
             
