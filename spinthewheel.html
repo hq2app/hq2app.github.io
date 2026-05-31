@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vòng Quay Quyết Định Siêu Cấp - Giao Diện Sáng</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Inter & Montserrat) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome (Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'premium': '0 10px 30px -5px rgba(148, 163, 184, 0.15), 0 5px 15px -3px rgba(148, 163, 184, 0.1)',
+                        'neon-soft': '0 0 20px rgba(168, 85, 247, 0.15), 0 0 40px rgba(236, 72, 153, 0.1)',
+                        'glow-btn': '0 8px 20px -4px rgba(168, 85, 247, 0.4)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 50% 50%, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .heading-glow {
+            text-shadow: 0 2px 10px rgba(168, 85, 247, 0.15);
+        }
+
+        /* Hiệu ứng kính mờ phiên bản sáng (Light Glassmorphism) */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.02);
+        }
+
+        /* Nút quay phong cách chuyển màu Gradient thời thượng */
+        .btn-spin-gradient {
+            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%);
+            background-size: 200% 200%;
+            animation: gradient-shift 4s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Custom scrollbar tông xám thanh lịch */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.12);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="text-slate-800 py-6 px-4 md:px-8">
+
+    <!-- Container Chính -->
+    <div class="max-w-7xl mx-auto flex flex-col min-h-screen justify-between">
+        
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <div class="inline-flex items-center space-x-2 bg-white/80 px-4 py-1.5 rounded-full border border-slate-200/60 mb-3 shadow-sm backdrop-blur-md">
+                <span class="flex h-2 w-2 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-pink-500"></span>
+                </span>
+                <span class="text-xs font-bold tracking-wider text-pink-600 uppercase">Ứng dụng hỗ trợ quyết định</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold font-heading tracking-tight mb-2 heading-glow">
+                VÒNG QUAY <span class="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">QUYẾT ĐỊNH</span>
+            </h1>
+            <p class="text-slate-500 text-sm md:text-base max-w-xl mx-auto">
+                Đang phân vân không biết chọn gì? Hãy để số phận quyết định giúp bạn bằng một vòng quay cực kỳ may rủi và bắt mắt!
+            </p>
+        </header>
+
+        <!-- Main Layout Grid -->
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
+            
+            <!-- Cột Trái: Vòng Quay & Nút Điều Khiển (Chiếm 7 cột) -->
+            <div class="lg:col-span-7 flex flex-col items-center justify-center space-y-6">
+                
+                <!-- Khu vực Vòng Quay kèm hiệu ứng phát sáng nhẹ -->
+                <div class="relative w-full max-w-[420px] md:max-w-[480px] aspect-square flex items-center justify-center">
+                    
+                    <!-- Vòng LED ngoài cùng phát sáng huyền ảo -->
+                    <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-pink-400/10 via-purple-400/5 to-blue-400/10 blur-2xl -z-10 animate-pulse"></div>
+                    
+                    <!-- Viền kim loại/trắng tinh tế bao bọc vòng quay -->
+                    <div class="absolute w-[98%] h-[98%] rounded-full border-4 border-slate-200 bg-white shadow-xl flex items-center justify-center">
+                        
+                        <!-- Canvas Vòng Quay -->
+                        <canvas id="wheelCanvas" class="w-full h-full rounded-full transform transition-transform duration-75"></canvas>
+                    </div>
+
+                    <!-- Kim Chỉ Định (Pointer) - Đặt ở đỉnh 12h màu đỏ tươi cá tính -->
+                    <div class="absolute -top-1 left-1/2 -translate-x-1/2 z-30 drop-shadow-[0_4px_8px_rgba(15,23,42,0.15)] flex flex-col items-center">
+                        <svg width="34" height="42" viewBox="0 0 34 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17 42L0 12C0 5.37258 7.61116 0 17 0C26.3888 0 34 5.37258 34 12L17 42Z" fill="url(#pointer-gradient)" />
+                            <defs>
+                                <linearGradient id="pointer-gradient" x1="17" y1="0" x2="17" y2="42" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#f43f5e" />
+                                    <stop offset="100%" stop-color="#be123c" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <!-- Tâm đèn tròn nhỏ lấp lánh -->
+                        <div class="w-2.5 h-2.5 bg-white rounded-full -mt-[34px] shadow-sm animate-ping"></div>
+                    </div>
+
+                    <!-- Tâm Vòng Quay (Khớp trục tròn màu trắng sang trọng) -->
+                    <div class="absolute w-16 h-16 rounded-full bg-white border-4 border-slate-200/80 z-20 flex items-center justify-center shadow-md cursor-pointer transform hover:scale-105 active:scale-95 transition" onclick="spinWheel()">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-pink-500 to-purple-600 flex items-center justify-center shadow-inner">
+                            <i class="fa-solid fa-play text-white text-xs ml-0.5"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bộ Nút Quay Sáng Sủa -->
+                <div class="w-full max-w-[420px] md:max-w-[450px] flex gap-3">
+                    <button onclick="spinWheel()" id="spinBtn" class="flex-1 py-4 px-6 btn-spin-gradient text-white font-extrabold text-lg tracking-wider rounded-2xl shadow-glow-btn hover:opacity-95 transform active:scale-95 transition-all duration-150 flex items-center justify-center space-x-3">
+                        <i class="fa-solid fa-sync animate-spin-slow text-xl"></i>
+                        <span>QUAY NGAY</span>
+                    </button>
+                    
+                    <button onclick="toggleSound()" id="soundToggle" class="px-5 py-4 bg-white hover:bg-slate-50 text-slate-700 rounded-2xl border border-slate-200 transition active:scale-95 flex items-center justify-center shadow-sm">
+                        <i id="soundIcon" class="fa-solid fa-volume-high text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cột Phải: Quản lý Lựa chọn & Lịch sử (Chiếm 5 cột) -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- Bảng Thiết Lập Vòng Quay -->
+                <div class="glass-panel rounded-3xl p-6">
+                    <div class="flex justify-between items-center mb-5">
+                        <h2 class="text-xl font-bold font-heading text-purple-600 flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-pink-500"></i>
+                            <span>Tùy Chỉnh Lựa Chọn</span>
+                        </h2>
+                        <!-- Nút đổi presets nhanh -->
+                        <div class="relative inline-block text-left">
+                            <select id="presetSelect" onchange="loadPreset()" class="bg-white/80 text-slate-700 text-xs font-semibold py-1.5 px-3 rounded-lg border border-slate-200 outline-none focus:ring-1 focus:ring-purple-500 cursor-pointer shadow-sm">
+                                <option value="" disabled selected>Chọn Bộ Mẫu</option>
+                                <option value="lunch">Trưa Nay Ăn Gì?</option>
+                                <option value="decision">Nên Làm Không?</option>
+                                <option value="truth_dare">Sự Thật hay Thách</option>
+                                <option value="numbers">Bốc Số May Mắn</option>
+                                <option value="yes_no">Có hay Không?</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Ô Thêm Lựa Chọn Mới -->
+                    <form onsubmit="handleAddOption(event)" class="flex gap-2 mb-4">
+                        <div class="relative flex-1">
+                            <input type="text" id="newOptionInput" placeholder="Nhập lựa chọn mới..." maxlength="40" class="w-full bg-white/90 text-slate-800 placeholder-slate-400 text-sm py-3 pl-4 pr-10 rounded-xl border border-slate-200 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition duration-150 shadow-sm">
+                            <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                                <i class="fa-solid fa-palette text-sm"></i>
+                            </span>
+                        </div>
+                        <button type="submit" class="px-5 bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-95 rounded-xl text-white font-bold text-sm transition duration-150 active:scale-95 flex items-center justify-center shadow-sm">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </form>
+
+                    <!-- Danh Sách Lựa Chọn Hiện Tại -->
+                    <div class="space-y-2 max-h-[220px] overflow-y-auto pr-1" id="optionsContainer">
+                        <!-- Sẽ tự động kết xuất bằng JS -->
+                    </div>
+
+                    <!-- Bộ nút chức năng phụ -->
+                    <div class="flex justify-between items-center mt-5 pt-4 border-t border-slate-200/80 text-xs">
+                        <span class="text-slate-500 font-semibold" id="optionsCount">0 lựa chọn</span>
+                        <div class="flex space-x-2">
+                            <button onclick="shuffleOptions()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition active:scale-95 flex items-center gap-1.5 border border-slate-200/60 font-medium">
+                                <i class="fa-solid fa-shuffle text-purple-500"></i> Trộn đều
+                            </button>
+                            <button onclick="clearAllOptions()" class="px-3 py-1.5 bg-red-50 hover:bg-red-100/80 text-red-600 rounded-lg border border-red-200/60 transition active:scale-95 flex items-center gap-1.5 font-medium">
+                                <i class="fa-solid fa-trash-can"></i> Xóa sạch
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bảng Lịch Sự Kết Quả -->
+                <div class="glass-panel rounded-3xl p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-bold font-heading text-blue-600 flex items-center gap-2">
+                            <i class="fa-solid fa-history text-blue-500"></i>
+                            <span>Lịch Sử Gần Đây</span>
+                        </h2>
+                        <button onclick="clearHistory()" class="text-xs text-slate-400 hover:text-slate-600 transition font-medium">
+                            Xóa lịch sử
+                        </button>
+                    </div>
+
+                    <div id="historyContainer" class="space-y-2 max-h-[160px] overflow-y-auto pr-1">
+                        <!-- Sẽ tự động kết xuất bằng JS -->
+                        <div class="text-center py-6 text-slate-400 text-sm">Chưa có kết quả nào được chọn.</div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center py-4 border-t border-slate-200/60 text-xs text-slate-400 font-medium">
+            <p>© 2026 Vòng Quay Quyết Định Tối Thượng • Thiết kế giao diện sáng cao cấp</p>
+        </footer>
+    </div>
+
+    <!-- Modal Kết Quả (Popup Light Glassmorphism) -->
+    <div id="resultModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+        <div class="glass-panel max-w-sm w-full rounded-3xl p-8 text-center transform scale-90 transition-all duration-300 border border-purple-200/80 shadow-2xl flex flex-col items-center">
+            
+            <!-- Icon Cup Vàng rực rỡ ăn mừng -->
+            <div class="w-20 h-20 bg-gradient-to-tr from-yellow-400 to-amber-500 rounded-full flex items-center justify-center shadow-md mb-6 animate-bounce">
+                <i class="fa-solid fa-trophy text-white text-3xl"></i>
+            </div>
+            
+            <p class="text-xs uppercase tracking-widest text-purple-600 font-extrabold mb-1">Kết quả tối thượng</p>
+            <h2 class="text-3xl font-black font-heading mb-6 px-2 text-slate-800 break-words w-full" id="modalResultText">
+                TÊN LỰA CHỌN
+            </h2>
+
+            <div class="flex flex-col gap-2 w-full">
+                <button onclick="closeModal()" class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-95 text-white font-bold rounded-xl transition duration-150 active:scale-95 shadow-md">
+                    Tuyệt vời! Chấp nhận
+                </button>
+                <button onclick="spinWheel(); closeModal();" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition duration-150 active:scale-95 border border-slate-200">
+                    <i class="fa-solid fa-redo mr-1 text-sm"></i> Quay lại lần nữa
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Xử Lý Logic Vòng Quay & Âm Thanh -->
+    <script>
+        // --- 1. BIẾN TOÀN CỤC & DANH SÁCH MẶC ĐỊNH ---
+        // Sử dụng bảng màu sáng sống động nhưng tinh tế
+        let options = [
+            { id: 1, text: "Bún chả", color: "#EC4899" },
+            { id: 2, text: "Phở bò", color: "#8B5CF6" },
+            { id: 3, text: "Cơm tấm", color: "#3B82F6" },
+            { id: 4, text: "Pizza", color: "#10B981" },
+            { id: 5, text: "Mì cay", color: "#F59E0B" },
+            { id: 6, text: "Gà rán", color: "#EF4444" },
+            { id: 7, text: "Sushi", color: "#6366F1" },
+            { id: 8, text: "Trà sữa", color: "#06B6D4" }
+        ];
+
+        let presets = {
+            lunch: [
+                { text: "Cơm sườn", color: "#EF4444" },
+                { text: "Phở bò", color: "#3B82F6" },
+                { text: "Bún chả", color: "#10B981" },
+                { text: "Mì cay", color: "#F59E0B" },
+                { text: "Pizza", color: "#EC4899" },
+                { text: "Bún đậu mắm tôm", color: "#8B5CF6" },
+                { text: "Bún bò Huế", color: "#14B8A6" },
+                { text: "Ăn mì gói", color: "#6B7280" }
+            ],
+            decision: [
+                { text: "Làm luôn không trì hoãn!", color: "#10B981" },
+                { text: "Thôi dẹp đi!", color: "#EF4444" },
+                { text: "Để mai làm", color: "#F59E0B" },
+                { text: "Đi ngủ một giấc rồi tính", color: "#3B82F6" },
+                { text: "Hỏi ý kiến bạn thân", color: "#8B5CF6" }
+            ],
+            truth_dare: [
+                { text: "Thật (Truth)", color: "#3B82F6" },
+                { text: "Thách (Dare)", color: "#EF4444" },
+                { text: "Thật (Truth)", color: "#10B981" },
+                { text: "Thách (Dare)", color: "#F59E0B" },
+                { text: "Uống 1 ly!", color: "#8B5CF6" }
+            ],
+            numbers: [
+                { text: "Số 01", color: "#EC4899" },
+                { text: "Số 02", color: "#8B5CF6" },
+                { text: "Số 03", color: "#3B82F6" },
+                { text: "Số 04", color: "#10B981" },
+                { text: "Số 05", color: "#F59E0B" },
+                { text: "Số 06", color: "#EF4444" }
+            ],
+            yes_no: [
+                { text: "CÓ (YES)", color: "#10B981" },
+                { text: "KHÔNG (NO)", color: "#EF4444" },
+                { text: "CÓ (YES)", color: "#10B981" },
+                { text: "KHÔNG (NO)", color: "#EF4444" }
+            ]
+        };
+
+        let history = [];
+        let isSpinning = false;
+        let isSoundEnabled = true;
+
+        // Vòng quay vật lý/hình ảnh
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        let currentAngle = 0; // Góc quay hiện tại (theo Radian)
+        let totalSpeed = 0;   // Tốc độ quay hiện tại
+
+        // Web Audio API để tổng hợp âm thanh chân thực (không cần file mp3 ngoài)
+        let audioCtx = null;
+        
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // Tạo tiếng click cơ học tinh tế khi quay
+        function playTickSound() {
+            if (!isSoundEnabled) return;
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(450, audioCtx.currentTime); // Tần số click cao
+            osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.05); // Giảm nhanh
+            
+            gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.06);
+        }
+
+        // Tạo tiếng kèn/chuông ăn mừng khi kết thúc vòng quay
+        function playWinSound() {
+            if (!isSoundEnabled) return;
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            
+            // Hợp âm chiến thắng (C4, E4, G4, C5)
+            const notes = [261.63, 329.63, 392.00, 523.25];
+            notes.forEach((freq, index) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + index * 0.1);
+                
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime + index * 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8 + index * 0.1);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(audioCtx.currentTime + index * 0.1);
+                osc.stop(audioCtx.currentTime + 0.9 + index * 0.1);
+            });
+        }
+
+        // --- 2. HỆ THỐNG VẼ CANVAS VÀ THIẾT KẾ VÒNG QUAY ---
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            // Đảm bảo độ nét cao cho màn hình Retina
+            const scale = window.devicePixelRatio || 1;
+            canvas.width = rect.width * scale;
+            canvas.height = rect.height * scale;
+            ctx.scale(scale, scale);
+            drawWheel();
+        }
+
+        // Vẽ từng phân đoạn của vòng quay lên Canvas
+        function drawWheel() {
+            if (canvas.width === 0) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const width = rect.width;
+            const height = rect.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = Math.min(centerX, centerY) - 15; // Trừ khoảng hở viền ngoài
+
+            ctx.clearRect(0, 0, width, height);
+
+            if (options.length === 0) {
+                // Nếu không có phần tử nào, vẽ màn hình trống sáng mượt
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.beginPath();
+                ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+                ctx.fillStyle = "#f1f5f9";
+                ctx.fill();
+                ctx.strokeStyle = "#cbd5e1";
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                ctx.fillStyle = "#64748b";
+                ctx.font = "bold 16px Inter";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText("Nhập lựa chọn của bạn", 0, 0);
+                ctx.restore();
+                return;
+            }
+
+            const arcSize = (2 * Math.PI) / options.length;
+
+            options.forEach((opt, index) => {
+                const angle = currentAngle + index * arcSize;
+                
+                // Vẽ mảng hình quạt
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, angle, angle + arcSize);
+                ctx.lineTo(centerX, centerY);
+                
+                // Tô màu gradient nhẹ tạo chiều sâu cho từng ô màu
+                const grad = ctx.createRadialGradient(centerX, centerY, 10, centerX, centerY, radius);
+                grad.addColorStop(0, adjustColorBrightness(opt.color, -15)); // Hơi sẫm ở tâm một chút để tăng chiều sâu
+                grad.addColorStop(1, opt.color);                           // Sáng rực rỡ ở rìa
+                ctx.fillStyle = grad;
+                ctx.fill();
+
+                // Viền phân tách trắng mỏng tinh tế phù hợp giao diện sáng
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.45)";
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+
+                // Thiết kế nhãn chữ nằm gọn bên trong quạt
+                ctx.translate(centerX, centerY);
+                ctx.rotate(angle + arcSize / 2);
+                
+                ctx.fillStyle = "#ffffff";
+                // Đổ bóng chữ rõ ràng để luôn đọc được trên mọi màu nền
+                ctx.shadowColor = "rgba(15, 23, 42, 0.4)";
+                ctx.shadowBlur = 4;
+                ctx.shadowOffsetY = 1;
+                
+                // Định cỡ chữ tự động dựa trên độ dài tên và số ô
+                let fontSize = 15;
+                if (options.length > 15) fontSize = 10;
+                else if (options.length > 10) fontSize = 12;
+                else if (options.length > 6) fontSize = 14;
+
+                ctx.font = `bold ${fontSize}px Inter`;
+                ctx.textAlign = "right";
+                ctx.textBaseline = "middle";
+
+                // Giới hạn chữ không bị tràn ra ngoài rìa
+                let text = opt.text;
+                if (text.length > 15) text = text.substring(0, 13) + "...";
+                
+                ctx.fillText(text, radius - 25, 0);
+                ctx.restore();
+            });
+
+            // Vẽ viền tròn trang trí ngoài cùng (Chrome border màu trắng xịn sò)
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+            ctx.lineWidth = 6;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // --- 3. ĐIỀU KHIỂN & VẬT LÝ QUAY (ANIMATION LOOP) ---
+        let lastTickAngle = 0;
+
+        function spinWheel() {
+            if (isSpinning || options.length === 0) return;
+            
+            initAudio();
+            isSpinning = true;
+            document.getElementById('spinBtn').disabled = true;
+            document.getElementById('spinBtn').classList.add('opacity-50');
+
+            // Tính toán lực quay và lực cản ngẫu nhiên cực kì mượt mà
+            let velocity = Math.random() * 0.3 + 0.4; // Tốc độ ban đầu
+            const deceleration = 0.985 + (Math.random() * 0.005); // Lực ma sát nhẹ
+            lastTickAngle = currentAngle;
+
+            function animate() {
+                if (velocity < 0.002) {
+                    // Dừng quay hoàn toàn
+                    isSpinning = false;
+                    document.getElementById('spinBtn').disabled = false;
+                    document.getElementById('spinBtn').classList.remove('opacity-50');
+                    calculateResult();
+                    return;
+                }
+
+                currentAngle += velocity;
+                velocity *= deceleration; // Giảm tốc dần
+
+                // Tính toán để kích hoạt âm thanh click khi qua phân đoạn mới
+                const segmentAngle = (2 * Math.PI) / options.length;
+                const normalizedAngle = (3 / 2 * Math.PI - currentAngle) % (2 * Math.PI);
+                const prevNormalized = (3 / 2 * Math.PI - lastTickAngle) % (2 * Math.PI);
+                
+                const currentSec = Math.floor(((normalizedAngle < 0 ? normalizedAngle + 2 * Math.PI : normalizedAngle)) / segmentAngle);
+                const prevSec = Math.floor(((prevNormalized < 0 ? prevNormalized + 2 * Math.PI : prevNormalized)) / segmentAngle);
+
+                if (currentSec !== prevSec) {
+                    playTickSound();
+                }
+
+                lastTickAngle = currentAngle;
+                drawWheel();
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        // Tính toán và hiển thị kết quả dựa trên góc dừng
+        function calculateResult() {
+            const segmentAngle = (2 * Math.PI) / options.length;
+            
+            let angle = (3 / 2 * Math.PI - currentAngle) % (2 * Math.PI);
+            if (angle < 0) angle += 2 * Math.PI;
+
+            const winningIndex = Math.floor(angle / segmentAngle);
+            const winner = options[winningIndex];
+
+            // Hiển thị kết quả ra Modal phong cách sáng mới
+            document.getElementById('modalResultText').innerText = winner.text;
+            
+            const modal = document.getElementById('resultModal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.querySelector('.transform').classList.remove('scale-90');
+            modal.querySelector('.transform').classList.add('scale-100');
+
+            // Ghi nhận lịch sử
+            addToHistory(winner.text);
+            
+            // Ăn mừng bằng pháo hoa lấp lánh (Confetti) và âm thanh
+            playWinSound();
+            triggerConfetti();
+        }
+
+        function triggerConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('resultModal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.querySelector('.transform').classList.add('scale-90');
+            modal.querySelector('.transform').classList.remove('scale-100');
+        }
+
+        // --- 4. QUẢN LÝ TÙY CHỈNH LỰA CHỌN (UI & STATE) ---
+        function renderOptions() {
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            options.forEach((opt, index) => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between gap-3 bg-white/95 pl-3 pr-2 py-2 rounded-xl border border-slate-200/60 group hover:border-slate-300 transition shadow-sm';
+                item.innerHTML = `
+                    <div class="flex items-center gap-2.5 overflow-hidden">
+                        <!-- Ô chọn màu tròn thẩm mỹ -->
+                        <input type="color" value="${opt.color}" onchange="changeOptionColor(${opt.id}, this.value)" class="w-5 h-5 rounded-full border-0 bg-transparent cursor-pointer outline-none flex-shrink-0">
+                        <span class="text-sm font-semibold text-slate-700 truncate pr-2">${escapeHTML(opt.text)}</span>
+                    </div>
+                    <button onclick="removeOption(${opt.id})" class="text-slate-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-500/10 transition flex-shrink-0">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                `;
+                container.appendChild(item);
+            });
+
+            document.getElementById('optionsCount').innerText = `${options.length} lựa chọn`;
+            drawWheel();
+        }
+
+        function handleAddOption(e) {
+            e.preventDefault();
+            const input = document.getElementById('newOptionInput');
+            const text = input.value.trim();
+
+            if (!text) return;
+            if (options.length >= 30) {
+                alertCustom("Chỉ có thể thêm tối đa 30 lựa chọn!");
+                return;
+            }
+
+            // Bảng màu rực rỡ, độ tương phản tốt với chữ trắng
+            const neonPalette = ["#EC4899", "#8B5CF6", "#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#06B6D4", "#14B8A6", "#F43F5E", "#84CC16"];
+            const color = neonPalette[Math.floor(Math.random() * neonPalette.length)];
+
+            options.push({
+                id: Date.now() + Math.random(),
+                text: text,
+                color: color
+            });
+
+            input.value = '';
+            renderOptions();
+        }
+
+        function removeOption(id) {
+            options = options.filter(opt => opt.id !== id);
+            renderOptions();
+        }
+
+        function changeOptionColor(id, color) {
+            const index = options.findIndex(opt => opt.id === id);
+            if (index !== -1) {
+                options[index].color = color;
+                drawWheel();
+            }
+        }
+
+        function shuffleOptions() {
+            for (let i = options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [options[i], options[j]] = [options[j], options[i]];
+            }
+            renderOptions();
+        }
+
+        function clearAllOptions() {
+            options = [];
+            renderOptions();
+        }
+
+        // --- 5. LỊCH SỬ KẾT QUẢ ---
+        function addToHistory(text) {
+            const now = new Date();
+            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+            
+            history.unshift({ text, time: timeStr });
+            if (history.length > 10) history.pop();
+
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyContainer');
+            if (history.length === 0) {
+                container.innerHTML = '<div class="text-center py-6 text-slate-400 text-sm">Chưa có kết quả nào được chọn.</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            history.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between bg-white/90 px-4 py-2.5 rounded-xl border border-slate-200/60 shadow-sm';
+                div.innerHTML = `
+                    <span class="text-sm font-semibold text-slate-700">${escapeHTML(item.text)}</span>
+                    <span class="text-xs text-slate-400 font-semibold">${item.time}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function clearHistory() {
+            history = [];
+            renderHistory();
+        }
+
+        // --- 6. PHƯƠNG THỨC TRỢ GIÚP (HELPERS) ---
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        // Tự động tối/sáng màu sắc để tạo gradient đẹp mắt cho Canvas
+        function adjustColorBrightness(hex, percent) {
+            let R = parseInt(hex.substring(1, 3), 16);
+            let G = parseInt(hex.substring(3, 5), 16);
+            let B = parseInt(hex.substring(5, 7), 16);
+
+            R = parseInt(R * (100 + percent) / 100);
+            G = parseInt(G * (100 + percent) / 100);
+            B = parseInt(B * (100 + percent) / 100);
+
+            R = (R < 255) ? R : 255;
+            G = (G < 255) ? G : 255;
+            B = (B < 255) ? B : 255;
+
+            R = (R > 0) ? R : 0;
+            G = (G > 0) ? G : 0;
+            B = (B > 0) ? B : 0;
+
+            const rHex = R.toString(16).padStart(2, '0');
+            const gHex = G.toString(16).padStart(2, '0');
+            const bHex = B.toString(16).padStart(2, '0');
+
+            return `#${rHex}${gHex}${bHex}`;
+        }
+
+        // Tắt/Mở âm thanh (Được tinh chỉnh class cho đồng bộ giao diện sáng)
+        function toggleSound() {
+            isSoundEnabled = !isSoundEnabled;
+            const soundIcon = document.getElementById('soundIcon');
+            const soundBtn = document.getElementById('soundToggle');
+            if (isSoundEnabled) {
+                soundIcon.className = 'fa-solid fa-volume-high text-xl';
+                soundBtn.className = 'px-5 py-4 bg-white hover:bg-slate-50 text-slate-700 rounded-2xl border border-slate-200 transition active:scale-95 flex items-center justify-center shadow-sm';
+            } else {
+                soundIcon.className = 'fa-solid fa-volume-xmark text-xl';
+                soundBtn.className = 'px-5 py-4 bg-red-50 hover:bg-red-100 text-red-600 rounded-2xl border border-red-200 transition active:scale-95 flex items-center justify-center shadow-sm';
+            }
+        }
+
+        // Tải các bộ mẫu (Presets) được chuẩn bị sẵn
+        function loadPreset() {
+            const select = document.getElementById('presetSelect');
+            const presetKey = select.value;
+            if (presetKey && presets[presetKey]) {
+                options = presets[presetKey].map((p, index) => ({
+                    id: Date.now() + index,
+                    text: p.text,
+                    color: p.color
+                }));
+                renderOptions();
+                currentAngle = 0;
+                drawWheel();
+            }
+        }
+
+        // Custom thông báo không dùng alert() mặc định trình duyệt (Đồng bộ giao diện sáng)
+        function alertCustom(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-5 right-5 z-50 bg-white/95 border border-red-200/80 text-red-600 px-5 py-3 rounded-2xl shadow-xl transition-all duration-300 transform translate-y-10 opacity-0 flex items-center gap-2 font-semibold text-sm';
+            toast.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>${msg}</span>`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // --- 7. KHỞI TẠO HỆ THỐNG ---
+        window.addEventListener('load', () => {
+            resizeCanvas();
+            renderOptions();
+            window.addEventListener('resize', resizeCanvas);
+        });
+    </script>
+</body>
+</html>
