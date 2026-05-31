@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="vi" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cẩm Nang Thi Hội - Đình Siêu Tốc (Bản Đầy Đủ - 1 Màn Hình)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        /* Custom scrollbar siêu mảnh để không chiếm diện tích */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; /* slate-300 */
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #10b981; /* emerald-500 */
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col text-slate-800 select-text">
+
+    <!-- TOP HEADER BAR (Tối ưu hóa diện tích tối đa) -->
+    <header class="bg-white border-b border-slate-200 px-3 md:px-4 py-1.5 shrink-0 flex items-center justify-between gap-2 md:gap-4 h-12 shadow-sm">
+        <div class="flex items-center space-x-1.5 md:space-x-2 shrink-0">
+            <span class="p-1 md:p-1.5 bg-emerald-100 rounded text-emerald-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-4.5 md:w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+            </span>
+            <div class="hidden xs:block">
+                <h1 id="main-exam-title" class="text-[10px] md:text-xs font-black text-slate-900 tracking-wider uppercase leading-none">THI HỘI - THI ĐÌNH</h1>
+                <p class="text-[8px] md:text-[9px] text-slate-400 font-medium mt-0.5 leading-none">Bản câu hỏi đầy đủ gốc</p>
+            </div>
+        </div>
+
+        <!-- TABS CHUYỂN ĐỔI CHẾ ĐỘ THI (Thi Hương / Thi Hội - Đình) -->
+        <div class="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200 shrink-0">
+            <button 
+                id="tab-hoi-dinh" 
+                onclick="switchExamMode('hoi-dinh')" 
+                class="px-2.5 py-1 text-[10px] md:text-xs font-bold rounded-md transition-all bg-white text-emerald-600 shadow-sm"
+            >
+                Hội - Đình
+            </button>
+            <button 
+                id="tab-huong" 
+                onclick="switchExamMode('huong')" 
+                class="px-2.5 py-1 text-[10px] md:text-xs font-bold rounded-md transition-all text-slate-600 hover:text-slate-900"
+            >
+                Thi Hương
+            </button>
+        </div>
+
+        <!-- SEARCH BOX TRỰC DIỆN CHÍNH GIỮA (Lớn, cực kỳ nhạy bén) -->
+        <div class="flex-1 max-w-xs md:max-w-md relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none text-slate-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 md:h-3.5 md:w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="#10b981" />
+                </svg>
+            </span>
+            <input 
+                type="text" 
+                id="search-input" 
+                placeholder="Tìm nhanh không dấu..." 
+                class="w-full pl-7 pr-7 py-0.5 bg-slate-50 border border-emerald-500/30 focus:border-emerald-500 rounded-md text-slate-900 placeholder-slate-400 focus:outline-none transition-all text-[11px] md:text-xs font-bold h-7 md:h-7.5"
+                oninput="handleSearch()"
+                autocomplete="off"
+            >
+            <!-- Clear Button -->
+            <button 
+                id="clear-btn" 
+                onclick="clearSearch()" 
+                class="absolute inset-y-0 right-0 flex items-center pr-2 text-slate-400 hover:text-rose-500 transition-colors hidden"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="hidden lg:flex items-center space-x-2 text-[9px] text-slate-400 font-medium shrink-0">
+            <span>Ấn <kbd class="px-1.5 py-0.5 bg-slate-100 border rounded text-slate-600 font-bold">ESC</kbd> để xóa nhanh tìm kiếm</span>
+        </div>
+    </header>
+
+    <!-- MOBILE COLUMN SWITCHER (Chỉ hiển thị trên di động/máy tính bảng nhỏ) -->
+    <div id="mobile-col-navbar" class="lg:hidden flex bg-white border-b border-slate-200 p-1 shrink-0 overflow-x-auto gap-1">
+        <!-- Chèn động các nút chuyển cột bằng Javascript tùy theo chế độ thi -->
+    </div>
+
+    <!-- MAIN WORKSPACE: Chia 4 cột cố định chiều cao, không tràn màn hình -->
+    <main class="flex-1 p-1.5 md:p-2 grid grid-cols-1 lg:grid-cols-4 gap-1.5 md:gap-2 overflow-hidden bg-slate-100">
+        
+        <!-- CỘT 1: TOÁN HỌC & LOGIC / ĐỐ MẸO QUAN TRỌNG I -->
+        <section id="sec-toan" class="col-section bg-white border border-slate-200 rounded-lg p-2 flex flex-col h-full overflow-hidden shadow-sm hidden lg:flex">
+            <div class="flex items-center justify-between border-b border-violet-100 pb-1 mb-1.5 shrink-0">
+                <span class="text-[11px] font-black text-violet-700 tracking-wide uppercase flex items-center">
+                    <span class="w-1.5 h-1.5 rounded-full bg-violet-500 mr-1.5 animate-pulse"></span>
+                    <span id="col-toan-title">1. TOÁN & LOGIC</span> (<span id="count-toan">0</span>)
+                </span>
+                <span id="col-toan-subtitle" class="text-[9px] text-slate-400 font-bold uppercase">Phép tính</span>
+            </div>
+            <!-- Danh sách câu hỏi cuộn nội bộ -->
+            <div id="col-toan" class="flex-1 overflow-y-auto space-y-1 pr-0.5">
+                <!-- Chèn động -->
+            </div>
+        </section>
+
+        <!-- CỘT 2: HÓA HỌC / ĐỐ MẸO QUAN TRỌNG II -->
+        <section id="sec-hoa" class="col-section bg-white border border-slate-200 rounded-lg p-2 flex flex-col h-full overflow-hidden shadow-sm hidden lg:flex">
+            <div class="flex items-center justify-between border-b border-pink-100 pb-1 mb-1.5 shrink-0">
+                <span class="text-[11px] font-black text-pink-700 tracking-wide uppercase flex items-center">
+                    <span class="w-1.5 h-1.5 rounded-full bg-pink-500 mr-1.5 animate-pulse"></span>
+                    <span id="col-hoa-title">2. HÓA HỌC</span> (<span id="count-hoa">0</span>)
+                </span>
+                <span id="col-hoa-subtitle" class="text-[9px] text-slate-400 font-bold uppercase">Ký hiệu & Chất</span>
+            </div>
+            <!-- Danh sách câu hỏi cuộn nội bộ -->
+            <div id="col-hoa" class="flex-1 overflow-y-auto space-y-1 pr-0.5">
+                <!-- Chèn động -->
+            </div>
+        </section>
+
+        <!-- CỘT 3: VẬT LÝ & HỆ SI / ĐỒ VẬT & TỰ NHIÊN I -->
+        <section id="sec-vatly" class="col-section bg-white border border-slate-200 rounded-lg p-2 flex flex-col h-full overflow-hidden shadow-sm hidden lg:flex">
+            <div class="flex items-center justify-between border-b border-amber-100 pb-1 mb-1.5 shrink-0">
+                <span class="text-[11px] font-black text-amber-700 tracking-wide uppercase flex items-center">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5 animate-pulse"></span>
+                    <span id="col-vatly-title">3. VẬT LÝ & HỆ SI</span> (<span id="count-vatly">0</span>)
+                </span>
+                <span id="col-vatly-subtitle" class="text-[9px] text-slate-400 font-bold uppercase">Đơn vị chuẩn</span>
+            </div>
+            <!-- Danh sách câu hỏi cuộn nội bộ -->
+            <div id="col-vatly" class="flex-1 overflow-y-auto space-y-1 pr-0.5">
+                <!-- Chèn động -->
+            </div>
+        </section>
+
+        <!-- CỘT 4: ĐỐ MẸO / ĐỒ VẬT & TỰ NHIÊN II -->
+        <section id="sec-domeo" class="col-section bg-white border border-slate-200 rounded-lg p-2 flex flex-col h-full overflow-hidden shadow-sm hidden lg:flex">
+            <div class="flex items-center justify-between border-b border-emerald-100 pb-1 mb-1.5 shrink-0">
+                <span class="text-[11px] font-black text-emerald-700 tracking-wide uppercase flex items-center">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
+                    <span id="col-domeo-title">4. ĐỐ MẸO VUI</span> (<span id="count-domeo">0</span>)
+                </span>
+                <span id="col-domeo-subtitle" class="text-[9px] text-slate-400 font-bold uppercase">Phản xạ nhanh</span>
+            </div>
+            <!-- Danh sách câu hỏi cuộn nội bộ -->
+            <div id="col-domeo" class="flex-1 overflow-y-auto space-y-1 pr-0.5">
+                <!-- Chèn động -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Database Script -->
+    <script>
+        // Trạng thái phần thi hiện tại ("hoi-dinh" hoặc "huong")
+        let currentExamMode = "hoi-dinh";
+        // Cột hiển thị hiện tại trên Mobile ("toan", "hoa", "vatly", "domeo")
+        let activeMobileCol = "toan";
+
+        // Cơ sở dữ liệu câu hỏi đầy đủ từ văn bản gốc của bạn
+        const QUESTIONS_DB = [
+            // --- THI HỘI - THI ĐÌNH (exam: "hoi-dinh") ---
+            // TOÁN HỌC & LOGIC (topic: "toan")
+            {
+                id: 1,
+                exam: "hoi-dinh",
+                topic: "toan",
+                q: "Một chiếc ô tô di chuyển với vận tốc 60 km/giờ trong 3 giờ. Quãng đường đi được là:",
+                a: "180 km",
+                note: "Nhẩm: Vận tốc x Thời gian = 60 x 3 = 180"
+            },
+            {
+                id: 2,
+                exam: "hoi-dinh",
+                topic: "toan",
+                q: "Nước trái cây được pha theo tỷ lệ si rô : nước = 1 : 4. Nếu có 40 ml si rô thì cần bao nhiêu ml nước?",
+                a: "160 ml",
+                note: "Nhẩm: 40 x 4 = 160"
+            },
+            {
+                id: 3,
+                exam: "hoi-dinh",
+                topic: "toan",
+                q: "Các điểm số là 2, 4, 6, 8, 10. Giá trị trung bình (số trung bình cộng) là:",
+                a: "6",
+                note: "Nhẩm: Số ở giữa của chuỗi tăng dần đều"
+            },
+            {
+                id: 4,
+                exam: "hoi-dinh",
+                topic: "toan",
+                q: "Một số nhân với 3 rồi trừ đi 5 thì được 16. Số đó là số nào?",
+                a: "7",
+                note: "Tính ngược: (16 + 5) / 3 = 7"
+            },
+            {
+                id: 5,
+                exam: "hoi-dinh",
+                topic: "toan",
+                q: "Hai số tự nhiên có tổng bằng 9 và tích bằng 20. Hai số đó là:",
+                a: "4 & 5",
+                note: "Nhẩm nhanh: 4 + 5 = 9 và 4 x 5 = 20"
+            },
+            {
+                id: 6,
+                exam: "hoi-dinh",
+                topic: "toan",
+                q: "Một dãy số bắt đầu từ 3 và tăng thêm 2 đơn vị mỗi lần. Số hạng thứ 5 là:",
+                a: "11",
+                note: "Dãy số bao gồm: 3, 5, 7, 9, 11"
+            },
+            {
+                id: 7,
+                exam: "hoi-dinh",
+                topic: "toan",
+                q: "Một tam giác vuông có các cạnh góc vuông là 6 cm và 8 cm. Chiều dài của cạnh huyền là bao nhiêu?",
+                a: "10 cm",
+                note: "Theo định lý Pitago: √(6² + 8²) = 10"
+            },
+            {
+                id: 8,
+                exam: "hoi-dinh",
+                topic: "toan",
+                q: "Một dịch vụ tính phí cố định là 3 đơn vị tiền tệ cộng với 2 đơn vị tiền tệ cho mỗi km. Đối với quãng đường 5 km, tổng chi phí là:",
+                a: "13",
+                note: "Phép tính: 3 + (2 x 5) = 13"
+            },
+            {
+                id: 9,
+                exam: "hoi-dinh",
+                topic: "toan",
+                q: "Một món hàng có giá 250 đơn vị tiền tệ và được giảm giá 20%. Giá sau khi giảm là:",
+                a: "200",
+                note: "Phép tính: 250 - (250 x 0.20) = 200"
+            },
+            {
+                id: 10,
+                exam: "hoi-dinh",
+                topic: "toan",
+                q: "Một con xúc xắc sáu mặt công bằng được tung một lần. Cơ hội nhận được một số chẵn là bao nhiêu phần trăm?",
+                a: "0.5 (hoặc 50%)",
+                note: "Các mặt chẵn gồm 2, 4, 6 (3 trong số 6 mặt)"
+            },
+
+            // HÓA HỌC (topic: "hoa")
+            {
+                id: 11,
+                exam: "hoi-dinh",
+                topic: "hoa",
+                q: "Công thức hóa học của nước là:",
+                a: "H2O",
+                note: "Lưu ý: Trong game đôi khi có thể hiển thị dạng lỗi là H20"
+            },
+            {
+                id: 12,
+                exam: "hoi-dinh",
+                topic: "hoa",
+                q: "Ký hiệu hóa học của natri là?",
+                a: "Na",
+                note: "Bắt nguồn từ tên Latin Natrium"
+            },
+            {
+                id: 13,
+                exam: "hoi-dinh",
+                topic: "hoa",
+                q: "Ký hiệu hóa học của Sắt là:",
+                a: "Fe",
+                note: "Ferrum"
+            },
+            {
+                id: 14,
+                exam: "hoi-dinh",
+                topic: "hoa",
+                q: "Có bao nhiêu nguyên tử hydro trong một phân tử H2O?",
+                a: "2",
+                note: "Nước chứa 2 nguyên tử H và 1 nguyên tử O"
+            },
+            {
+                id: 15,
+                exam: "hoi-dinh",
+                topic: "hoa",
+                q: "Chất nào sau đây là một axit？",
+                a: "HCl",
+                note: "Axit clohiđric"
+            },
+            {
+                id: 16,
+                exam: "hoi-dinh",
+                topic: "hoa",
+                q: "Chất nào sau đây là một bazơ ?",
+                a: "NaOH",
+                note: "Natri hiđroxit"
+            },
+            {
+                id: 17,
+                exam: "hoi-dinh",
+                topic: "hoa",
+                q: "Chất nào sau đây là một khí hiếm?",
+                a: "Neon (Ne)",
+                note: "Nhóm khí quý hiếm trơ"
+            },
+            {
+                id: 18,
+                exam: "hoi-dinh",
+                topic: "hoa",
+                q: "Ở nhiệt độ ~25°C và áp suất 1 atm, oxy ở dạng:",
+                a: "Khí (Gas)",
+                note: "Trạng thái tự nhiên của ô-xy"
+            },
+            {
+                id: 19,
+                exam: "hoi-dinh",
+                topic: "hoa",
+                q: "Nước biển là một:",
+                a: "Hỗn hợp",
+                note: "Gồm nước, muối ăn và khoáng chất"
+            },
+            {
+                id: 20,
+                exam: "hoi-dinh",
+                topic: "hoa",
+                q: "Băng tan thành nước lỏng là một:",
+                a: "Biến đổi vật lý",
+                note: "Chỉ chuyển đổi trạng thái vật chất"
+            },
+
+            // VẬT LÝ & HỆ SI (topic: "vatly")
+            {
+                id: 21,
+                exam: "hoi-dinh",
+                topic: "vatly",
+                q: "Trong hệ đo lường quốc tế đơn vị của điện trở là:",
+                a: "ôm (Ω)",
+                note: "Ký hiệu: Ω"
+            },
+            {
+                id: 22,
+                exam: "hoi-dinh",
+                topic: "vatly",
+                q: "Trong Hệ đo lường quốc tế đơn vị của cường độ dòng điện là:",
+                a: "ampe (A)",
+                note: "Ký hiệu: A"
+            },
+            {
+                id: 23,
+                exam: "hoi-dinh",
+                topic: "vatly",
+                q: "Trong Hệ đo lường quốc tế đơn vị của khối lượng là:",
+                a: "kilôgam (kg)",
+                note: "Ký hiệu: kg"
+            },
+            {
+                id: 24,
+                exam: "hoi-dinh",
+                topic: "vatly",
+                q: "Trong Hệ đo lường quốc tế đơn vị của chiều dài là:",
+                a: "Mét (m)",
+                note: "Ký hiệu: m"
+            },
+            {
+                id: 25,
+                exam: "hoi-dinh",
+                topic: "vatly",
+                q: "Trong Hệ đo lường quốc tế đơn vị của thời gian là:",
+                a: "giây (s)",
+                note: "Ký hiệu: s"
+            },
+            {
+                id: 26,
+                exam: "hoi-dinh",
+                topic: "vatly",
+                q: "Trong Hệ đo lường quốc tế đơn vị của nhiệt độ là:",
+                a: "kenvin (K)",
+                note: "Ký hiệu: K"
+            },
+            {
+                id: 27,
+                exam: "hoi-dinh",
+                topic: "vatly",
+                q: "Trong Hệ đo lường quốc tế đơn vị của áp suất là:",
+                a: "pascan (Pa)",
+                note: "Ký hiệu: Pa"
+            },
+            {
+                id: 28,
+                exam: "hoi-dinh",
+                topic: "vatly",
+                q: "Trong Hệ đo lường quốc tế đơn vị của công suất là:",
+                a: "oát (W)",
+                note: "Ký hiệu: W"
+            },
+            {
+                id: 29,
+                exam: "hoi-dinh",
+                topic: "vatly",
+                q: "Trong Hệ đo lường quốc tế đơn vị của năng lượng là:",
+                a: "jun (J)",
+                note: "Ký hiệu: J"
+            },
+            {
+                id: 30,
+                exam: "hoi-dinh",
+                topic: "vatly",
+                q: "Đơn vị cơ bản của nhiệt độ trong Hệ đơn vị đo lường chuẩn quốc tế là:",
+                a: "Kelvin (K)",
+                note: "Viết hoa chữ cái đầu Kelvin"
+            },
+            {
+                id: 31,
+                exam: "hoi-dinh",
+                topic: "vatly",
+                q: "Dụng cụ nào được sử dụng để đo nhiệt độ?",
+                a: "Nhiệt kế",
+                note: "Dụng cụ cảm ứng nhiệt"
+            },
+
+            // ĐỐ MẸO & LOGIC VUI (topic: "domeo")
+            {
+                id: 32,
+                exam: "hoi-dinh",
+                topic: "domeo",
+                q: "Cái nào nặng hơn: 1 Kg Kim loại hay 1 Kg Bông?",
+                a: "Bằng nhau",
+                note: "Cùng có khối lượng là 1 Kg"
+            },
+            {
+                id: 33,
+                exam: "hoi-dinh",
+                topic: "domeo",
+                q: "Cái nào nặng hơn: 1 Kg Kim loại hay 2 Kg Bông?",
+                a: "Bông",
+                note: "Vì 2 Kg lớn hơn 1 Kg rất rõ ràng"
+            },
+            {
+                id: 34,
+                exam: "hoi-dinh",
+                topic: "domeo",
+                q: "Một năm có bao nhiêu tháng có 28 ngày?",
+                a: "12 tháng",
+                note: "Tháng nào trong năm cũng có ít nhất 28 ngày"
+            },
+
+            // --- THI HƯƠNG (exam: "huong") ---
+            // TỔNG HỢP CÁC CÂU ĐỐ MẸO QUAN TRỌNG KHÁC (Phần 1 - topic: "toan")
+            {
+                id: 35,
+                exam: "huong",
+                topic: "toan",
+                q: "Thứ gì bạn lấy đi càng nhiều thì nó càng lớn?",
+                a: "Động (Cái hố)",
+                note: "Đất đào đi càng nhiều thì cái hố càng to"
+            },
+            {
+                id: 36,
+                exam: "huong",
+                topic: "toan",
+                q: "Thứ gì luôn tăng mà không bao giờ giảm?",
+                a: "Tuổi",
+                note: "Tuổi tác của con người chỉ có tăng dần"
+            },
+            {
+                id: 37,
+                exam: "huong",
+                topic: "toan",
+                q: "Thứ gì càng \"lau khô\" thì bản thân lại càng ướt?",
+                a: "Khăn tắm",
+                note: "Thấm hút nước từ cơ thể khiến nó ướt"
+            },
+            {
+                id: 38,
+                exam: "huong",
+                topic: "toan",
+                q: "Chỉ cần gọi tên là \"phá vỡ\" nó. Đó là gì?",
+                a: "Trầm mặc (Sự im lặng)",
+                note: "Khi phát ra âm thanh thì sự im lặng không còn"
+            },
+
+            // TỔNG HỢP CÁC CÂU ĐỐ MẸO QUAN TRỌNG KHÁC (Phần 2 - topic: "hoa")
+            {
+                id: 39,
+                exam: "huong",
+                topic: "hoa",
+                q: "Tháng nào trong năm có 28 ngày?",
+                a: "Tất cả các tháng",
+                note: "Tháng nào cũng có ít nhất ngày 28"
+            },
+            {
+                id: 40,
+                exam: "huong",
+                topic: "hoa",
+                q: "Thứ gì có thể đi khắp thế giới nhưng luôn ở trong một góc?",
+                a: "Con tem",
+                note: "Dán ở góc của phong thư"
+            },
+            {
+                id: 41,
+                exam: "huong",
+                topic: "hoa",
+                q: "Thứ gì có thể làm đầy cả căn phòng nhưng không chiếm diện tích?",
+                a: "Quang (Ánh sáng)",
+                note: "Ánh sáng tỏa khắp nơi mà không có thể tích vật lý"
+            },
+            {
+                id: 42,
+                exam: "huong",
+                topic: "hoa",
+                q: "Thứ gì \"nói\" không cần miệng, \"nghe\" không cần tai?",
+                a: "Tiếng vang",
+                note: "Dội lại âm thanh từ vách đá"
+            },
+
+            // CHỦ ĐỀ ĐỒ VẬT & TỰ NHIÊN (Phần 1 - topic: "vatly")
+            {
+                id: 43,
+                exam: "huong",
+                topic: "vatly",
+                q: "Thứ gì có các phím và tạo ra âm nhạc nhưng không mở được khóa?",
+                a: "Đàn piano",
+                note: "Phím đàn piano tiếng Anh gọi là 'keys' giống chìa khóa"
+            },
+            {
+                id: 44,
+                exam: "huong",
+                topic: "vatly",
+                q: "Cái gì có nhiều \"răng\" nhưng không bao giờ cắn?",
+                a: "Lược",
+                note: "Răng lược dùng để chải tóc"
+            },
+            {
+                id: 45,
+                exam: "huong",
+                topic: "vatly",
+                q: "Thứ gì \"chạy/chảy\" nhưng không bao giờ đi bộ?",
+                a: "Dòng sông",
+                note: "Dòng nước chảy liên tục"
+            },
+            {
+                id: 46,
+                exam: "huong",
+                topic: "vatly",
+                q: "Hành tinh nào được gọi là \"Hành tinh Đỏ\"?",
+                a: "Sao Hỏa",
+                note: "Do oxit sắt dồi dào trên bề mặt làm hành tinh có màu đỏ"
+            },
+            {
+                id: 47,
+                exam: "huong",
+                topic: "vatly",
+                q: "Thứ gì có \"xương sống\" nhưng không có xương?",
+                a: "Sách",
+                note: "Gáy sách nâng đỡ các trang giấy"
+            },
+
+            // CHỦ ĐỀ ĐỒ VẬT & TỰ NHIÊN (Phần 2 - topic: "domeo")
+            {
+                id: 48,
+                exam: "huong",
+                topic: "domeo",
+                q: "Thứ gì phải \"làm vỡ\" trước khi dùng?",
+                a: "Trứng Gà",
+                note: "Cần đập vỡ vỏ trứng để chế biến"
+            },
+            {
+                id: 49,
+                exam: "huong",
+                topic: "domeo",
+                q: "Thứ gì bao quanh sân mà không di chuyển?",
+                a: "Hàng rào",
+                note: "Đứng yên một chỗ che chắn sân vườn"
+            },
+            {
+                id: 50,
+                exam: "huong",
+                topic: "domeo",
+                q: "Thứ gì có bốn chân nhưng không biết đi?",
+                a: "Cái bàn",
+                note: "Chỉ đứng cố định nâng đỡ đồ vật"
+            },
+            {
+                id: 51,
+                exam: "huong",
+                topic: "domeo",
+                q: "Thứ gì có nhiều \"vòng tuổi\" nhưng không có ngón tay?",
+                a: "Cây",
+                note: "Vòng gỗ biểu thị năm tuổi của thân cây"
+            }
+        ];
+
+        // Chuẩn hóa xóa dấu tiếng Việt phục vụ tra cứu siêu tốc không dấu
+        function removeVietnameseTones(str) {
+            str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+            str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+            str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+            str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+            str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+            str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+            str = str.replace(/đ/g, "d");
+            str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+            str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+            str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+            str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+            str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+            str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+            str = str.replace(/Đ/g, "D");
+            str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); 
+            str = str.replace(/\u02C6|\u0306|\u031B/g, ""); 
+            return str.toLowerCase().trim();
+        }
+
+        // Chuyển đổi qua lại giữa Thi Hội - Đình và Thi Hương
+        function switchExamMode(mode) {
+            currentExamMode = mode;
+            activeMobileCol = "toan"; // Reset về cột 1 khi chuyển đổi chế độ thi
+            
+            const tabHoiDinh = document.getElementById('tab-hoi-dinh');
+            const tabHuong = document.getElementById('tab-huong');
+            const mainExamTitle = document.getElementById('main-exam-title');
+
+            if (mode === 'hoi-dinh') {
+                tabHoiDinh.className = "px-2.5 py-1 text-[10px] md:text-xs font-bold rounded-md transition-all bg-white text-emerald-600 shadow-sm border border-slate-200";
+                tabHuong.className = "px-2.5 py-1 text-[10px] md:text-xs font-bold rounded-md transition-all text-slate-600 hover:text-slate-900";
+                mainExamTitle.innerText = "THI HỘI - THI ĐÌNH";
+
+                // Cập nhật tiêu đề cột cho Thi Hội - Đình
+                document.getElementById('col-toan-title').innerText = "1. TOÁN & LOGIC";
+                document.getElementById('col-toan-subtitle').innerText = "Phép tính";
+                
+                document.getElementById('col-hoa-title').innerText = "2. HÓA HỌC";
+                document.getElementById('col-hoa-subtitle').innerText = "Ký hiệu & Chất";
+                
+                document.getElementById('col-vatly-title').innerText = "3. VẬT LÝ & HỆ SI";
+                document.getElementById('col-vatly-subtitle').innerText = "Đơn vị chuẩn";
+                
+                document.getElementById('col-domeo-title').innerText = "4. ĐỐ MẸO VUI";
+                document.getElementById('col-domeo-subtitle').innerText = "Phản xạ nhanh";
+            } else {
+                tabHuong.className = "px-2.5 py-1 text-[10px] md:text-xs font-bold rounded-md transition-all bg-white text-emerald-600 shadow-sm border border-slate-200";
+                tabHoiDinh.className = "px-2.5 py-1 text-[10px] md:text-xs font-bold rounded-md transition-all text-slate-600 hover:text-slate-900";
+                mainExamTitle.innerText = "THI HƯƠNG";
+                
+                // Cập nhật tiêu đề cột cho Thi Hương
+                document.getElementById('col-toan-title').innerText = "1. ĐỐ MẸO QUAN TRỌNG I";
+                document.getElementById('col-toan-subtitle').innerText = "Đố mẹo";
+                
+                document.getElementById('col-hoa-title').innerText = "2. ĐỐ MẸO QUAN TRỌNG II";
+                document.getElementById('col-hoa-subtitle').innerText = "Đố mẹo";
+                
+                document.getElementById('col-vatly-title').innerText = "3. ĐỒ VẬT & TỰ NHIÊN I";
+                document.getElementById('col-vatly-subtitle').innerText = "Đồ vật & Tự nhiên";
+                
+                document.getElementById('col-domeo-title').innerText = "4. ĐỒ VẬT & TỰ NHIÊN II";
+                document.getElementById('col-domeo-subtitle').innerText = "Đồ vật & Tự nhiên";
+            }
+
+            // Xóa rỗng tìm kiếm cũ khi đổi Tab để tránh lẫn lộn dữ liệu
+            clearSearch();
+        }
+
+        // Khởi chạy ứng dụng và tự động focus ô tìm kiếm
+        window.onload = function() {
+            renderMobileColSelector();
+            renderAllColumns();
+            document.getElementById('search-input').focus();
+        };
+
+        // Vẽ và cập nhật thanh điều hướng cột trên Mobile
+        function renderMobileColSelector() {
+            const container = document.getElementById('mobile-col-navbar');
+            container.innerHTML = '';
+
+            // Định nghĩa danh sách nút hiển thị theo Exam Mode
+            const tabsData = currentExamMode === "hoi-dinh" ? [
+                { id: "toan", label: "Toán & Logic" },
+                { id: "hoa", label: "Hóa học" },
+                { id: "vatly", label: "Vật lý & SI" },
+                { id: "domeo", label: "Đố mẹo" }
+            ] : [
+                { id: "toan", label: "Đố mẹo I" },
+                { id: "hoa", label: "Đố mẹo II" },
+                { id: "vatly", label: "Tự nhiên I" },
+                { id: "domeo", label: "Tự nhiên II" }
+            ];
+
+            tabsData.forEach(tab => {
+                const btn = document.createElement('button');
+                btn.className = `flex-1 py-1.5 px-3 text-[10px] md:text-xs font-bold rounded-md transition-all whitespace-nowrap text-center ${
+                    activeMobileCol === tab.id 
+                    ? "bg-emerald-500 text-white shadow-sm" 
+                    : "bg-slate-100 text-slate-600 hover:text-slate-900"
+                }`;
+                btn.innerText = tab.label;
+                btn.setAttribute('onclick', `switchMobileColumn('${tab.id}')`);
+                container.appendChild(btn);
+            });
+        }
+
+        // Chuyển đổi cột hiển thị trên thiết bị di động
+        function switchMobileColumn(colId) {
+            activeMobileCol = colId;
+            renderMobileColSelector();
+            updateMobileColumnVisibility();
+        }
+
+        // Đồng bộ hóa trạng thái hiển thị các cột (Ẩn cột không hoạt động trên mobile, hiện tất cả trên desktop)
+        function updateMobileColumnVisibility() {
+            const sectionMap = {
+                toan: document.getElementById('sec-toan'),
+                hoa: document.getElementById('sec-hoa'),
+                vatly: document.getElementById('sec-vatly'),
+                domeo: document.getElementById('sec-domeo')
+            };
+
+            Object.keys(sectionMap).forEach(key => {
+                const sec = sectionMap[key];
+                if (key === activeMobileCol) {
+                    sec.className = "col-section bg-white border border-slate-200 rounded-lg p-2 flex flex-col h-full overflow-hidden shadow-sm flex lg:flex";
+                } else {
+                    sec.className = "col-section bg-white border border-slate-200 rounded-lg p-2 flex flex-col h-full overflow-hidden shadow-sm hidden lg:flex";
+                }
+            });
+        }
+
+        // Xử lý sự kiện tìm kiếm và đồng bộ
+        function handleSearch() {
+            const val = document.getElementById('search-input').value;
+            const clearBtn = document.getElementById('clear-btn');
+            if (val.trim() !== '') {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+            renderAllColumns();
+        }
+
+        // Xóa sạch ô tìm kiếm nhanh bằng nút bấm hoặc ESC
+        function clearSearch() {
+            const input = document.getElementById('search-input');
+            input.value = '';
+            document.getElementById('clear-btn').classList.add('hidden');
+            input.focus();
+            renderAllColumns();
+        }
+
+        // Bộ máy nạp và vẽ giao diện tối ưu hóa tốc độ cao
+        function renderAllColumns() {
+            const query = document.getElementById('search-input').value.trim();
+            const normalizedQuery = removeVietnameseTones(query);
+
+            // Phân tách dữ liệu lọc theo chế độ thi đang chọn
+            const examFilteredData = QUESTIONS_DB.filter(item => item.exam === currentExamMode);
+
+            const filteredData = examFilteredData.filter(item => {
+                if (normalizedQuery === '') return true;
+                const normQ = removeVietnameseTones(item.q);
+                const normA = removeVietnameseTones(item.a);
+                const normNote = removeVietnameseTones(item.note || '');
+                return normQ.includes(normalizedQuery) || normA.includes(normalizedQuery) || normNote.includes(normalizedQuery);
+            });
+
+            // Phân chia dữ liệu theo nhóm cột (Tái sử dụng các nhóm toan, hoa, vatly, domeo)
+            const colToanItems = filteredData.filter(x => x.topic === 'toan');
+            const colHoaItems = filteredData.filter(x => x.topic === 'hoa');
+            const colVatlyItems = filteredData.filter(x => x.topic === 'vatly');
+            const colDomeoItems = filteredData.filter(x => x.topic === 'domeo');
+
+            // Cập nhật số lượng đầu mục trong tiêu đề các cột
+            document.getElementById('count-toan').innerText = colToanItems.length;
+            document.getElementById('count-hoa').innerText = colHoaItems.length;
+            document.getElementById('count-vatly').innerText = colVatlyItems.length;
+            document.getElementById('count-domeo').innerText = colDomeoItems.length;
+
+            // Tiến hành vẽ cột hàng ngang
+            renderSingleColumn('col-toan', colToanItems, query);
+            renderSingleColumn('col-hoa', colHoaItems, query);
+            renderSingleColumn('col-vatly', colVatlyItems, query);
+            renderSingleColumn('col-domeo', colDomeoItems, query);
+
+            // Đồng bộ bộ chọn cột di động và trạng thái ẩn/hiện cột
+            renderMobileColSelector();
+            updateMobileColumnVisibility();
+        }
+
+        // Vẽ từng hàng cho một cột chỉ định - HIỂN THỊ CHIỀU NGANG (Đáp án bên phải, không click copy)
+        function renderSingleColumn(containerId, items, query) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            if (items.length === 0) {
+                container.innerHTML = `<div class="text-[10px] text-slate-400 italic py-4 text-center">Trống...</div>`;
+                return;
+            }
+
+            items.forEach(item => {
+                const highlightedQ = highlightText(item.q, query);
+                const highlightedA = highlightText(item.a, query);
+
+                // Tạo thẻ hàng dẹt định dạng flex-row, căn chỉnh giữa: Câu hỏi trái, đáp án phải. Hoàn toàn tĩnh
+                const row = document.createElement('div');
+                row.className = "p-1.5 rounded border border-slate-100 bg-white hover:bg-slate-50 flex flex-row items-center justify-between gap-2 shadow-sm min-h-[42px] cursor-default select-text";
+
+                row.innerHTML = `
+                    <div class="text-[10.5px] font-semibold text-slate-800 leading-snug flex-1 pr-1 select-text">
+                        ${highlightedQ}
+                        ${item.note ? `<span class="text-[8.5px] font-normal text-slate-400 block italic leading-none mt-0.5 select-text">${item.note}</span>` : ''}
+                    </div>
+                    <div class="flex items-center shrink-0">
+                        <span class="px-1.5 py-0.5 text-[10.5px] font-black bg-emerald-500 text-white rounded shadow-sm border border-emerald-600 tracking-wide select-all whitespace-nowrap">
+                            ${highlightedA}
+                        </span>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // Tự động Highlight cụm từ tìm kiếm
+        function highlightText(text, keyword) {
+            if (!keyword.trim()) return text;
+            try {
+                const escaped = keyword.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                const regex = new RegExp(`(${escaped})`, 'gi');
+                return text.replace(regex, `<mark class="bg-yellow-200 text-slate-900 rounded-sm font-bold">$1</mark>`);
+            } catch(e) {
+                return text;
+            }
+        }
+
+        // Sự kiện phím nóng ESC để xóa nhanh tìm kiếm
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                clearSearch();
+            }
+            if (event.key === '/' && document.activeElement.id !== 'search-input') {
+                event.preventDefault();
+                document.getElementById('search-input').focus();
+            }
+        });
+    </script>
+</body>
+</html>
