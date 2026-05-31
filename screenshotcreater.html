@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full bg-slate-950">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trình Tạo Screenshot CH Play Chuyên Nghiệp</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Montserrat:wght@400;600;800&family=Playfair+Display:ital,wght@0,600;1,400&family=Roboto:wght@400;700&family=Lexend:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* Custom scrollbar for control panel */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.3);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.5);
+        }
+        /* Custom font family application classes */
+        .font-inter { font-family: 'Inter', sans-serif; }
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        .font-roboto { font-family: 'Roboto', sans-serif; }
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        .font-lexend { font-family: 'Lexend', sans-serif; }
+    </style>
+</head>
+<body class="h-full text-slate-100 flex flex-col font-inter overflow-hidden">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between shrink-0">
+        <div class="flex items-center space-x-3">
+            <div class="bg-gradient-to-tr from-indigo-500 to-pink-500 p-2 rounded-lg shadow-lg">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">Screenshot CH Play Pro</h1>
+                <p class="text-xs text-slate-400">Tạo ảnh giới thiệu ứng dụng chuẩn Google Play Store</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button id="btnRandomGradient" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 py-2 px-3 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18"></path></svg>
+                Random Màu Nền
+            </button>
+            <button id="btnExport" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold py-2 px-5 rounded-lg text-sm transition shadow-lg shadow-emerald-950/40 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Tải Xuống PNG
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Left Sidebar - Control Panel -->
+        <aside class="w-96 bg-slate-900/90 border-r border-slate-800 flex flex-col h-full shrink-0 custom-scrollbar overflow-y-auto">
+            
+            <!-- Tab Controls -->
+            <div class="border-b border-slate-800 flex text-xs font-semibold">
+                <button onclick="switchTab('tab-layout')" id="btn-tab-layout" class="flex-1 py-3 text-center border-b-2 border-indigo-500 text-indigo-400 bg-slate-900">Bố Cục</button>
+                <button onclick="switchTab('tab-design')" id="btn-tab-design" class="flex-1 py-3 text-center border-b-2 border-transparent text-slate-400 hover:text-slate-200">Thiết Kế</button>
+                <button onclick="switchTab('tab-text')" id="btn-tab-text" class="flex-1 py-3 text-center border-b-2 border-transparent text-slate-400 hover:text-slate-200">Văn Bản</button>
+            </div>
+
+            <!-- TAB CONTENTS -->
+            <div class="p-5 space-y-6 flex-1">
+
+                <!-- TAB 1: BỐ CỤC & ẢNH CHỤP MÀN HÌNH -->
+                <div id="tab-layout" class="space-y-6">
+                    <!-- Ảnh chụp màn hình -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-semibold tracking-wider uppercase text-slate-400">Hình ảnh ứng dụng</label>
+                        <div class="flex flex-col gap-2">
+                            <label class="border-2 border-dashed border-slate-700 hover:border-indigo-500 bg-slate-950/50 rounded-xl p-4 text-center cursor-pointer transition flex flex-col items-center justify-center group">
+                                <svg class="w-8 h-8 text-slate-500 group-hover:text-indigo-400 mb-2 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <span class="text-xs text-slate-300 font-medium">Tải ảnh chụp của bạn lên</span>
+                                <span class="text-[10px] text-slate-500 mt-1">Hỗ trợ PNG, JPG (Độ phân giải đứng)</span>
+                                <input type="file" id="screenshotInput" accept="image/*" class="hidden">
+                            </label>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-500 italic">Hoặc sử dụng:</span>
+                                <button id="btnUseSample" class="text-xs text-indigo-400 hover:text-indigo-300 hover:underline">Ảnh Demo Của Web</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kích thước xuất ảnh -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-semibold tracking-wider uppercase text-slate-400">Độ phân giải ảnh xuất</label>
+                        <select id="canvasResolution" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                            <option value="1242x2688" selected>1242 x 2688 (Chuẩn Smartphone dọc cao)</option>
+                            <option value="1080x1920">1080 x 1920 (Tỷ lệ 16:9 truyền thống)</option>
+                            <option value="1080x2400">1080 x 2400 (Tỷ lệ 20:9 hiện đại)</option>
+                        </select>
+                    </div>
+
+                    <!-- Bố cục thiết bị -->
+                    <div class="space-y-3">
+                        <label class="block text-xs font-semibold tracking-wider uppercase text-slate-400">Vị trí & Bố cục</label>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="setLayout('text-top')" id="layout-text-top" class="p-3 rounded-lg border-2 border-indigo-500 bg-slate-950 text-left transition flex flex-col justify-between h-20">
+                                <div class="w-full bg-indigo-500 h-1.5 rounded mb-1"></div>
+                                <div class="w-2/3 bg-slate-700 h-1 rounded mb-4"></div>
+                                <div class="w-1/2 mx-auto bg-slate-600 h-6 rounded-t border-t border-x border-slate-500"></div>
+                            </button>
+                            <button onclick="setLayout('text-bottom')" id="layout-text-bottom" class="p-3 rounded-lg border-2 border-slate-800 bg-slate-950/30 text-left hover:border-slate-700 transition flex flex-col justify-between h-20">
+                                <div class="w-1/2 mx-auto bg-slate-600 h-6 rounded-b border-b border-x border-slate-500"></div>
+                                <div class="mt-auto">
+                                    <div class="w-full bg-slate-500 h-1.5 rounded mb-1"></div>
+                                    <div class="w-2/3 bg-slate-700 h-1 rounded"></div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mẫu thiết lập sẵn (Presets) -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-semibold tracking-wider uppercase text-slate-400">Phong cách mẫu nhanh</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="applyPreset('cyberpunk')" class="bg-slate-950 border border-slate-800 hover:border-indigo-500 p-2.5 rounded-lg text-left text-xs transition">
+                                <div class="h-2 w-full bg-gradient-to-r from-fuchsia-500 to-indigo-500 rounded mb-1"></div>
+                                <span class="font-semibold block text-[11px]">Cyber Gradient</span>
+                            </button>
+                            <button onclick="applyPreset('clean-dark')" class="bg-slate-950 border border-slate-800 hover:border-indigo-500 p-2.5 rounded-lg text-left text-xs transition">
+                                <div class="h-2 w-full bg-gradient-to-r from-slate-900 to-zinc-800 rounded mb-1"></div>
+                                <span class="font-semibold block text-[11px]">Carbon Stealth</span>
+                            </button>
+                            <button onclick="applyPreset('sunset')" class="bg-slate-950 border border-slate-800 hover:border-indigo-500 p-2.5 rounded-lg text-left text-xs transition">
+                                <div class="h-2 w-full bg-gradient-to-r from-amber-500 to-pink-600 rounded mb-1"></div>
+                                <span class="font-semibold block text-[11px]">Sunset Warmth</span>
+                            </button>
+                            <button onclick="applyPreset('mint-tech')" class="bg-slate-950 border border-slate-800 hover:border-indigo-500 p-2.5 rounded-lg text-left text-xs transition">
+                                <div class="h-2 w-full bg-gradient-to-r from-emerald-400 to-indigo-900 rounded mb-1"></div>
+                                <span class="font-semibold block text-[11px]">Tech Emerald</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: THIẾT KẾ (NỀN & KHUNG THIẾT BỊ) -->
+                <div id="tab-design" class="space-y-6 hidden">
+                    
+                    <!-- Background Settings -->
+                    <div class="space-y-4">
+                        <label class="block text-xs font-semibold tracking-wider uppercase text-slate-400">Hình Nền</label>
+                        
+                        <!-- Color Pickers for Gradient -->
+                        <div class="grid grid-cols-3 gap-2">
+                            <div>
+                                <span class="text-[10px] text-slate-500 block mb-1">Điểm đầu</span>
+                                <div class="flex items-center space-x-1.5 bg-slate-950 p-1.5 rounded-lg border border-slate-800">
+                                    <input type="color" id="bgGradStart" value="#4f46e5" class="w-6 h-6 rounded cursor-pointer bg-transparent border-0">
+                                    <span class="text-[10px] font-mono select-all uppercase" id="lblGradStart">#4f46e5</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-500 block mb-1">Điểm giữa</span>
+                                <div class="flex items-center space-x-1.5 bg-slate-950 p-1.5 rounded-lg border border-slate-800">
+                                    <input type="color" id="bgGradMid" value="#3b82f6" class="w-6 h-6 rounded cursor-pointer bg-transparent border-0">
+                                    <span class="text-[10px] font-mono select-all uppercase" id="lblGradMid">#3b82f6</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-500 block mb-1">Điểm cuối</span>
+                                <div class="flex items-center space-x-1.5 bg-slate-950 p-1.5 rounded-lg border border-slate-800">
+                                    <input type="color" id="bgGradEnd" value="#ec4899" class="w-6 h-6 rounded cursor-pointer bg-transparent border-0">
+                                    <span class="text-[10px] font-mono select-all uppercase" id="lblGradEnd">#ec4899</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gradient Angle -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-400">Góc Gradient</span>
+                                <span id="lblGradAngle" class="font-mono text-slate-300">135°</span>
+                            </div>
+                            <input type="range" id="bgGradAngle" min="0" max="360" value="135" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                        </div>
+
+                        <!-- Abstract Backdrop Orbs (glowing effects) -->
+                        <div class="flex items-center justify-between bg-slate-950/50 p-3 rounded-lg border border-slate-800">
+                            <div>
+                                <span class="text-xs font-semibold block">Vòng sáng huyền ảo (Backdrop Orbs)</span>
+                                <span class="text-[10px] text-slate-500">Tạo hiệu ứng chiều sâu 3D phía sau thiết bị</span>
+                            </div>
+                            <input type="checkbox" id="toggleOrbs" checked class="w-4 h-4 text-indigo-600 bg-slate-950 border-slate-800 rounded focus:ring-indigo-500">
+                        </div>
+                    </div>
+
+                    <!-- Phone Mockup Settings -->
+                    <div class="space-y-4 border-t border-slate-800 pt-5">
+                        <label class="block text-xs font-semibold tracking-wider uppercase text-slate-400">Cài đặt khung điện thoại</label>
+
+                        <!-- Device Color -->
+                        <div class="space-y-1.5">
+                            <span class="text-xs text-slate-400">Màu vỏ điện thoại</span>
+                            <div class="flex gap-2">
+                                <button onclick="setDeviceColor('#1e293b')" class="flex-1 py-1.5 bg-slate-800 border border-slate-700 rounded text-[11px] text-slate-300 active-device-color">Titan Đen</button>
+                                <button onclick="setDeviceColor('#e2e8f0')" class="flex-1 py-1.5 bg-slate-100 border border-slate-200 rounded text-[11px] text-slate-800">Bạc Ánh Kim</button>
+                                <button onclick="setDeviceColor('#0f172a')" class="flex-1 py-1.5 bg-slate-950 border border-slate-800 rounded text-[11px] text-slate-400">Đen Bóng</button>
+                            </div>
+                        </div>
+
+                        <!-- Device Tilt / Rotation -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-400">Góc nghiêng thiết bị</span>
+                                <span id="lblDeviceRotation" class="font-mono text-slate-300">-5°</span>
+                            </div>
+                            <input type="range" id="deviceRotation" min="-25" max="25" value="-5" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                        </div>
+
+                        <!-- Device Scale -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-400">Tỷ lệ kích thước</span>
+                                <span id="lblDeviceScale" class="font-mono text-slate-300">80%</span>
+                            </div>
+                            <input type="range" id="deviceScale" min="50" max="110" value="80" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                        </div>
+
+                        <!-- Offset Y (Vertical placement) -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-400">Vị trí theo chiều dọc (Y Offset)</span>
+                                <span id="lblDeviceOffsetY" class="font-mono text-slate-300">100px</span>
+                            </div>
+                            <input type="range" id="deviceOffsetY" min="-300" max="300" value="100" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                        </div>
+
+                        <!-- Bezel Thickness -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-400">Độ dày viền màn hình</span>
+                                <span id="lblBezelWidth" class="font-mono text-slate-300">18px</span>
+                            </div>
+                            <input type="range" id="bezelWidth" min="10" max="35" value="18" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: CHỮ & VĂN BẢN -->
+                <div id="tab-text" class="space-y-6 hidden">
+                    
+                    <!-- Text Align & Fonts -->
+                    <div class="space-y-4">
+                        <label class="block text-xs font-semibold tracking-wider uppercase text-slate-400">Kiểu chữ & Căn lề</label>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <span class="text-[10px] text-slate-500 block mb-1">Phông chữ</span>
+                                <select id="fontFamily" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                                    <option value="font-inter" selected>Inter (Hiện đại)</option>
+                                    <option value="font-lexend">Lexend (Trẻ trung)</option>
+                                    <option value="font-montserrat">Montserrat (Đậm đà)</option>
+                                    <option value="font-roboto">Roboto (Cổ điển)</option>
+                                    <option value="font-playfair">Playfair (Sang trọng)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-500 block mb-1">Căn lề chữ</span>
+                                <div class="flex rounded-lg bg-slate-950 border border-slate-800 p-0.5">
+                                    <button onclick="setTextAlign('left')" id="btn-align-left" class="flex-1 py-1 text-center text-xs hover:bg-slate-900 rounded transition text-slate-400">Trái</button>
+                                    <button onclick="setTextAlign('center')" id="btn-align-center" class="flex-1 py-1 text-center text-xs bg-slate-800 text-indigo-400 rounded transition font-semibold">Giữa</button>
+                                    <button onclick="setTextAlign('right')" id="btn-align-right" class="flex-1 py-1 text-center text-xs hover:bg-slate-900 rounded transition text-slate-400">Phải</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Title Settings -->
+                    <div class="space-y-3 border-t border-slate-800 pt-5">
+                        <label class="block text-xs font-semibold tracking-wider uppercase text-slate-400">Tiêu đề chính (Title)</label>
+                        
+                        <input type="text" id="titleText" value="QUẢN LÝ THÔNG MINH" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 placeholder-slate-700">
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="space-y-1">
+                                <span class="text-[10px] text-slate-500">Màu tiêu đề</span>
+                                <div class="flex items-center space-x-1.5 bg-slate-950 p-1.5 rounded-lg border border-slate-800">
+                                    <input type="color" id="titleColor" value="#ffffff" class="w-5 h-5 rounded cursor-pointer bg-transparent border-0">
+                                    <span class="text-[10px] font-mono select-all uppercase" id="lblTitleColor">#ffffff</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <span class="text-[10px] text-slate-500">Kích thước</span>
+                                <div class="flex items-center justify-between text-xs bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800 h-[38px]">
+                                    <input type="range" id="titleSize" min="30" max="90" value="64" class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subtitle Settings -->
+                    <div class="space-y-3 border-t border-slate-800 pt-5">
+                        <label class="block text-xs font-semibold tracking-wider uppercase text-slate-400">Phụ đề (Subtitle)</label>
+                        
+                        <textarea id="subtitleText" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 placeholder-slate-700" placeholder="Viết mô tả ngắn gọn...">Giải pháp tối ưu hóa hiệu suất làm việc nhóm và cá nhân hoàn hảo.</textarea>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="space-y-1">
+                                <span class="text-[10px] text-slate-500">Màu phụ đề</span>
+                                <div class="flex items-center space-x-1.5 bg-slate-950 p-1.5 rounded-lg border border-slate-800">
+                                    <input type="color" id="subtitleColor" value="#e2e8f0" class="w-5 h-5 rounded cursor-pointer bg-transparent border-0">
+                                    <span class="text-[10px] font-mono select-all uppercase" id="lblSubtitleColor">#e2e8f0</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <span class="text-[10px] text-slate-500">Kích thước</span>
+                                <div class="flex items-center justify-between text-xs bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800 h-[38px]">
+                                    <input type="range" id="subtitleSize" min="20" max="55" value="32" class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Text Shadows & Placement -->
+                    <div class="space-y-3 border-t border-slate-800 pt-5">
+                        <label class="block text-xs font-semibold tracking-wider uppercase text-slate-400">Đổ bóng chữ</label>
+                        <div class="flex items-center justify-between bg-slate-950/50 p-3 rounded-lg border border-slate-800">
+                            <div>
+                                <span class="text-xs font-semibold block">Đổ bóng nhẹ chữ</span>
+                                <span class="text-[10px] text-slate-500">Tăng độ rõ nét trên nền sáng</span>
+                            </div>
+                            <input type="checkbox" id="textShadowEnabled" checked class="w-4 h-4 text-indigo-600 bg-slate-950 border-slate-800 rounded focus:ring-indigo-500">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Developer Banner Footer -->
+            <div class="p-4 border-t border-slate-800 bg-slate-950/40 text-[11px] text-slate-500 flex justify-between">
+                <span>Developer Tool</span>
+                <span>Phiên bản v2.0 - 2026</span>
+            </div>
+        </aside>
+
+        <!-- Right Workspace - Visual Live Preview Canvas -->
+        <main class="flex-1 bg-slate-950 p-6 flex flex-col justify-center items-center overflow-hidden relative">
+            
+            <!-- Grid Background styling -->
+            <div class="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none"></div>
+
+            <div class="text-center mb-3 text-xs text-slate-400 flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Bản xem trước trực tiếp (Thu nhỏ để vừa màn hình làm việc)</span>
+                <span class="bg-slate-800 px-2 py-0.5 rounded font-mono text-[10px]" id="lblZoomInfo">Zoom: 30%</span>
+            </div>
+
+            <!-- Wrapper to scale down the massive 1242x2688 (or other sizes) canvas appropriately -->
+            <div class="relative shadow-2xl rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center max-h-[75vh] max-w-full" style="aspect-ratio: 1242/2688;">
+                <!-- HTML5 Realtime Canvas -->
+                <canvas id="screenshotCanvas" width="1242" height="2688" class="h-full w-auto max-h-[75vh] object-contain block bg-slate-900"></canvas>
+            </div>
+
+            <!-- Drag & Drop Overlay Notice -->
+            <div id="dropOverlay" class="absolute inset-0 bg-indigo-950/80 backdrop-blur border-4 border-dashed border-indigo-500 m-8 rounded-2xl flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-300 z-50">
+                <svg class="w-16 h-16 text-indigo-400 animate-bounce mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                <h3 class="text-xl font-bold text-white mb-2">Thả ảnh vào đây để tải lên</h3>
+                <p class="text-sm text-indigo-200">Chúng tôi sẽ tự động cập nhật ảnh chụp ứng dụng của bạn.</p>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Toast Notification Message UI -->
+    <div id="toastMessage" class="fixed bottom-6 right-6 bg-slate-900 text-white border border-slate-800 shadow-xl px-5 py-3 rounded-xl flex items-center space-x-3 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <div class="p-1 rounded bg-emerald-500 text-slate-900" id="toastIcon">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+        <div>
+            <p class="text-xs font-semibold" id="toastTitle">Thành công</p>
+            <p class="text-[10px] text-slate-400" id="toastDesc">Ảnh chụp của bạn đã được tải thành công.</p>
+        </div>
+    </div>
+
+    <!-- Core Javascript Code -->
+    <script>
+        // Global State
+        const state = {
+            width: 1242,
+            height: 2688,
+            layout: 'text-top', // 'text-top', 'text-bottom'
+            bgGradStart: '#4f46e5',
+            bgGradMid: '#3b82f6',
+            bgGradEnd: '#ec4899',
+            bgGradAngle: 135,
+            toggleOrbs: true,
+            deviceColor: '#1e293b',
+            deviceRotation: -5,
+            deviceScale: 80,
+            deviceOffsetY: 100,
+            bezelWidth: 18,
+            fontFamily: 'font-inter',
+            textAlign: 'center',
+            titleText: 'QUẢN LÝ THÔNG MINH',
+            titleColor: '#ffffff',
+            titleSize: 64,
+            subtitleText: 'Giải pháp tối ưu hóa hiệu suất làm việc nhóm và cá nhân hoàn hảo.',
+            subtitleColor: '#e2e8f0',
+            subtitleSize: 32,
+            textShadowEnabled: true,
+            screenshotImage: null // Loaded Image Object
+        };
+
+        // DOM elements
+        const canvas = document.getElementById('screenshotCanvas');
+        const ctx = canvas.getContext('2d');
+        const screenInput = document.getElementById('screenshotInput');
+        const dropOverlay = document.getElementById('dropOverlay');
+
+        // Initial launch
+        window.onload = function() {
+            // Generate standard beautiful procedural sample app screen as fallback on load
+            generateSampleScreenshot();
+            
+            // Setup Event Listeners
+            setupEventListeners();
+            
+            // Render first frame
+            setTimeout(render, 300); // Give fonts some time to fetch
+        };
+
+        // Generates beautiful simulated app dashboard so the tool works wonderfully out of the box
+        function generateSampleScreenshot() {
+            const sampleCanvas = document.createElement('canvas');
+            // Ensure sample matches standard aspect ratio 9:19.5 typically used
+            sampleCanvas.width = 1000;
+            sampleCanvas.height = 2100;
+            const sCtx = sampleCanvas.getContext('2d');
+
+            // Draw premium App interface
+            // 1. App background
+            sCtx.fillStyle = '#0b0f19';
+            sCtx.fillRect(0, 0, 1000, 2100);
+
+            // 2. Status bar
+            sCtx.fillStyle = '#0f172a';
+            sCtx.fillRect(0, 0, 1000, 80);
+            
+            sCtx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            sCtx.font = 'bold 32px sans-serif';
+            sCtx.fillText('09:41', 60, 52);
+            
+            // WiFi, Battery icons (simulated)
+            sCtx.fillText('📶 🔋', 850, 52);
+
+            // 3. Navigation Header
+            sCtx.fillStyle = '#111827';
+            sCtx.fillRect(0, 80, 1000, 160);
+
+            sCtx.fillStyle = '#ffffff';
+            sCtx.font = 'bold 44px sans-serif';
+            sCtx.fillText('Bảng Điều Khiển', 60, 175);
+            
+            // Search / Bell icon placeholder
+            sCtx.fillStyle = '#374151';
+            sCtx.beginPath();
+            sCtx.arc(900, 165, 30, 0, Math.PI * 2);
+            sCtx.fill();
+            sCtx.fillStyle = '#ffffff';
+            sCtx.font = '30px sans-serif';
+            sCtx.textAlign = 'center';
+            sCtx.fillText('🔔', 900, 175);
+            sCtx.textAlign = 'left'; // Reset
+
+            // 4. Welcome Section & Banner Card
+            let grad = sCtx.createLinearGradient(60, 300, 940, 300);
+            grad.addColorStop(0, '#6366f1');
+            grad.addColorStop(1, '#a855f7');
+            sCtx.fillStyle = grad;
+            drawRoundedRect(sCtx, 60, 280, 880, 280, 30);
+            sCtx.fill();
+
+            sCtx.fillStyle = '#ffffff';
+            sCtx.font = 'bold 42px sans-serif';
+            sCtx.fillText('Dự án "PlayStore UI"', 100, 370);
+            sCtx.font = '32px sans-serif';
+            sCtx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+            sCtx.fillText('Tiến độ hoàn thành hiện đã đạt mức 87%', 100, 430);
+
+            // Progress bar in card
+            sCtx.fillStyle = 'rgba(255,255,255,0.2)';
+            drawRoundedRect(sCtx, 100, 480, 680, 20, 10);
+            sCtx.fill();
+            sCtx.fillStyle = '#34d399';
+            drawRoundedRect(sCtx, 100, 480, 590, 20, 10);
+            sCtx.fill();
+
+            sCtx.fillStyle = '#ffffff';
+            sCtx.font = 'bold 30px sans-serif';
+            sCtx.fillText('87%', 800, 498);
+
+            // 5. Stat grid (Cards)
+            const cardY = 600;
+            const cardH = 260;
+            // Card 1
+            sCtx.fillStyle = '#1f2937';
+            drawRoundedRect(sCtx, 60, cardY, 410, cardH, 25);
+            sCtx.fill();
+            sCtx.fillStyle = '#38bdf8';
+            sCtx.font = 'bold 64px sans-serif';
+            sCtx.fillText('12', 100, 710);
+            sCtx.font = '28px sans-serif';
+            sCtx.fillStyle = '#9ca3af';
+            sCtx.fillText('Công việc cần xử lý', 100, 780);
+
+            // Card 2
+            sCtx.fillStyle = '#1f2937';
+            drawRoundedRect(sCtx, 530, cardY, 410, cardH, 25);
+            sCtx.fill();
+            sCtx.fillStyle = '#f43f5e';
+            sCtx.font = 'bold 64px sans-serif';
+            sCtx.fillText('4.8h', 570, 710);
+            sCtx.font = '28px sans-serif';
+            sCtx.fillStyle = '#9ca3af';
+            sCtx.fillText('Trung bình hoàn thành', 570, 780);
+
+            // 6. Detailed Graph section
+            sCtx.fillStyle = '#111827';
+            drawRoundedRect(sCtx, 60, 900, 880, 450, 30);
+            sCtx.fill();
+
+            sCtx.fillStyle = '#ffffff';
+            sCtx.font = 'bold 36px sans-serif';
+            sCtx.fillText('Thống Kê Năng Suất', 100, 970);
+
+            // Draw line chart graph
+            sCtx.strokeStyle = '#6366f1';
+            sCtx.lineWidth = 8;
+            sCtx.beginPath();
+            sCtx.moveTo(120, 1250);
+            sCtx.bezierCurveTo(250, 1100, 350, 1200, 500, 1050);
+            sCtx.bezierCurveTo(650, 900, 750, 1150, 880, 1010);
+            sCtx.stroke();
+
+            // Dots on chart
+            sCtx.fillStyle = '#38bdf8';
+            const dots = [{x:120,y:1250}, {x:500,y:1050}, {x:880,y:1010}];
+            dots.forEach(dot => {
+                sCtx.beginPath();
+                sCtx.arc(dot.x, dot.y, 14, 0, Math.PI * 2);
+                sCtx.fill();
+                sCtx.strokeStyle = '#ffffff';
+                sCtx.lineWidth = 3;
+                sCtx.stroke();
+            });
+
+            // 7. Recent Items List
+            sCtx.fillStyle = '#ffffff';
+            sCtx.font = 'bold 38px sans-serif';
+            sCtx.fillText('Thành Viên Tích Cực', 60, 1420);
+
+            const avatars = [
+                {name: 'Nguyễn Văn Minh', role: 'UI/UX Designer', color: '#ec4899', initial: 'M'},
+                {name: 'Lê Thị Khánh Huyền', role: 'Mobile Dev', color: '#10b981', initial: 'H'},
+                {name: 'Trần Hoàng Bách', role: 'Project Manager', color: '#f59e0b', initial: 'B'}
+            ];
+
+            avatars.forEach((av, idx) => {
+                const itemY = 1480 + (idx * 160);
+                // Item container
+                sCtx.fillStyle = '#111827';
+                drawRoundedRect(sCtx, 60, itemY, 880, 130, 20);
+                sCtx.fill();
+
+                // Avatar bubble
+                sCtx.fillStyle = av.color;
+                sCtx.beginPath();
+                sCtx.arc(140, itemY + 65, 40, 0, Math.PI * 2);
+                sCtx.fill();
+                
+                sCtx.fillStyle = '#ffffff';
+                sCtx.font = 'bold 34px sans-serif';
+                sCtx.textAlign = 'center';
+                sCtx.fillText(av.initial, 140, itemY + 77);
+                sCtx.textAlign = 'left';
+
+                // Profile text
+                sCtx.fillStyle = '#ffffff';
+                sCtx.font = 'bold 32px sans-serif';
+                sCtx.fillText(av.name, 210, itemY + 55);
+                sCtx.fillStyle = '#9ca3af';
+                sCtx.font = '26px sans-serif';
+                sCtx.fillText(av.role, 210, itemY + 95);
+
+                // Indicator
+                sCtx.fillStyle = '#10b981';
+                sCtx.beginPath();
+                sCtx.arc(880, itemY + 65, 12, 0, Math.PI * 2);
+                sCtx.fill();
+            });
+
+            // Set state image from generated canvas
+            const img = new Image();
+            img.onload = function() {
+                state.screenshotImage = img;
+                render();
+            };
+            img.src = sampleCanvas.toDataURL('image/png');
+        }
+
+        // Setup User Input Controls & Sliders
+        function setupEventListeners() {
+            // Screen image file loader
+            screenInput.addEventListener('change', function(e) {
+                if(e.target.files && e.target.files[0]) {
+                    loadUploadedImage(e.target.files[0]);
+                }
+            });
+
+            // Bind values of colors & sliders
+            const inputBindings = [
+                { id: 'bgGradStart', stateKey: 'bgGradStart', labelId: 'lblGradStart' },
+                { id: 'bgGradMid', stateKey: 'bgGradMid', labelId: 'lblGradMid' },
+                { id: 'bgGradEnd', stateKey: 'bgGradEnd', labelId: 'lblGradEnd' },
+                { id: 'bgGradAngle', stateKey: 'bgGradAngle', labelId: 'lblGradAngle', unit: '°' },
+                { id: 'deviceRotation', stateKey: 'deviceRotation', labelId: 'lblDeviceRotation', unit: '°' },
+                { id: 'deviceScale', stateKey: 'deviceScale', labelId: 'lblDeviceScale', unit: '%' },
+                { id: 'deviceOffsetY', stateKey: 'deviceOffsetY', labelId: 'lblDeviceOffsetY', unit: 'px' },
+                { id: 'bezelWidth', stateKey: 'bezelWidth', labelId: 'lblBezelWidth', unit: 'px' },
+                { id: 'titleColor', stateKey: 'titleColor', labelId: 'lblTitleColor' },
+                { id: 'titleSize', stateKey: 'titleSize' },
+                { id: 'subtitleColor', stateKey: 'subtitleColor', labelId: 'lblSubtitleColor' },
+                { id: 'subtitleSize', stateKey: 'subtitleSize' },
+                { id: 'titleText', stateKey: 'titleText' },
+                { id: 'subtitleText', stateKey: 'subtitleText' }
+            ];
+
+            inputBindings.forEach(binding => {
+                const el = document.getElementById(binding.id);
+                if(el) {
+                    el.addEventListener('input', function(e) {
+                        let val = e.target.value;
+                        if(e.target.type === 'range') {
+                            val = parseInt(val);
+                        }
+                        state[binding.stateKey] = val;
+                        
+                        if(binding.labelId) {
+                            const lbl = document.getElementById(binding.labelId);
+                            lbl.textContent = val + (binding.unit || '');
+                        }
+                        render();
+                    });
+                }
+            });
+
+            // Toggle Backdrop Orbs
+            document.getElementById('toggleOrbs').addEventListener('change', function(e) {
+                state.toggleOrbs = e.target.checked;
+                render();
+            });
+
+            // Toggle Text Shadow
+            document.getElementById('textShadowEnabled').addEventListener('change', function(e) {
+                state.textShadowEnabled = e.target.checked;
+                render();
+            });
+
+            // Font Family Dropdown
+            document.getElementById('fontFamily').addEventListener('change', function(e) {
+                state.fontFamily = e.target.value;
+                render();
+            });
+
+            // Canvas Aspect/Resolution Dropdown
+            document.getElementById('canvasResolution').addEventListener('change', function(e) {
+                const [w, h] = e.target.value.split('x').map(Number);
+                state.width = w;
+                state.height = h;
+                
+                // Adjust parent wrapper aspect ratio
+                canvas.width = w;
+                canvas.height = h;
+                canvas.parentElement.style.aspectRatio = `${w}/${h}`;
+                
+                // Keep zoom indicator updated
+                updateZoomIndicator();
+                render();
+            });
+
+            // Use Sample Screenshot Trigger
+            document.getElementById('btnUseSample').addEventListener('click', function() {
+                generateSampleScreenshot();
+                showToast("Đã áp dụng", "Ứng dụng mẫu đã được thiết lập làm màn hình chính.");
+            });
+
+            // Randomize Gradients Action
+            document.getElementById('btnRandomGradient').addEventListener('click', function() {
+                const colors = [
+                    ['#ec4899', '#f43f5e', '#e11d48'], // Pink/Rose
+                    ['#6366f1', '#4f46e5', '#312e81'], // Indigo
+                    ['#10b981', '#06b6d4', '#0f172a'], // Cool Emerald
+                    ['#f59e0b', '#d97706', '#7c2d12'], // Amber Warm
+                    ['#06b6d4', '#3b82f6', '#1d4ed8'], // Ocean Teal
+                    ['#84cc16', '#10b981', '#064e3b'], // Lime/Mint
+                    ['#a855f7', '#ec4899', '#1e1b4b'], // Tech Sunset
+                    ['#0f172a', '#1e293b', '#020617'], // Dark Premium Slate
+                ];
+                const randGroup = colors[Math.floor(Math.random() * colors.length)];
+                
+                state.bgGradStart = randGroup[0];
+                state.bgGradMid = randGroup[1];
+                state.bgGradEnd = randGroup[2];
+                state.bgGradAngle = Math.floor(Math.random() * 360);
+
+                // Update UI elements
+                document.getElementById('bgGradStart').value = state.bgGradStart;
+                document.getElementById('bgGradMid').value = state.bgGradMid;
+                document.getElementById('bgGradEnd').value = state.bgGradEnd;
+                document.getElementById('bgGradAngle').value = state.bgGradAngle;
+
+                document.getElementById('lblGradStart').textContent = state.bgGradStart;
+                document.getElementById('lblGradMid').textContent = state.bgGradMid;
+                document.getElementById('lblGradEnd').textContent = state.bgGradEnd;
+                document.getElementById('lblGradAngle').textContent = state.bgGradAngle + '°';
+
+                render();
+                showToast("Thay đổi màu nền", "Bảng màu gradient ngẫu nhiên tuyệt đẹp đã được áp dụng.");
+            });
+
+            // Export PNG
+            document.getElementById('btnExport').addEventListener('click', downloadCanvas);
+
+            // Drag and Drop Handling
+            window.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                dropOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            });
+
+            dropOverlay.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                dropOverlay.classList.add('opacity-0', 'pointer-events-none');
+            });
+
+            window.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dropOverlay.classList.add('opacity-0', 'pointer-events-none');
+                
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    loadUploadedImage(e.dataTransfer.files[0]);
+                }
+            });
+
+            // Window Resize to monitor zoom ratio
+            window.addEventListener('resize', updateZoomIndicator);
+            updateZoomIndicator();
+        }
+
+        // Helper to load uploaded screen file
+        function loadUploadedImage(file) {
+            if(!file.type.match('image.*')) {
+                showToast("Lỗi định dạng", "Vui lòng chỉ tải lên tập tin hình ảnh (PNG, JPG).", "error");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    state.screenshotImage = img;
+                    render();
+                    showToast("Tải ảnh lên thành công", "Màn hình ứng dụng của bạn đã sẵn sàng thiết kế.");
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Calculate and display preview scale zoom percentage
+        function updateZoomIndicator() {
+            const rect = canvas.getBoundingClientRect();
+            const actualWidth = canvas.width;
+            const percentage = Math.round((rect.width / actualWidth) * 100);
+            document.getElementById('lblZoomInfo').textContent = `Tỷ lệ xem: ${percentage}%`;
+        }
+
+        // Apply pre-designed styles
+        function applyPreset(presetName) {
+            switch(presetName) {
+                case 'cyberpunk':
+                    state.bgGradStart = '#701a75';
+                    state.bgGradMid = '#4715a5';
+                    state.bgGradEnd = '#a21caf';
+                    state.bgGradAngle = 135;
+                    state.deviceRotation = -7;
+                    state.deviceScale = 82;
+                    state.deviceOffsetY = 80;
+                    state.titleColor = '#ffffff';
+                    state.subtitleColor = '#f5d0fe';
+                    state.deviceColor = '#1e293b';
+                    break;
+                case 'clean-dark':
+                    state.bgGradStart = '#0f172a';
+                    state.bgGradMid = '#1e293b';
+                    state.bgGradEnd = '#020617';
+                    state.bgGradAngle = 180;
+                    state.deviceRotation = 0;
+                    state.deviceScale = 78;
+                    state.deviceOffsetY = 120;
+                    state.titleColor = '#ffffff';
+                    state.subtitleColor = '#94a3b8';
+                    state.deviceColor = '#0f172a';
+                    break;
+                case 'sunset':
+                    state.bgGradStart = '#f59e0b';
+                    state.bgGradMid = '#d946ef';
+                    state.bgGradEnd = '#db2777';
+                    state.bgGradAngle = 45;
+                    state.deviceRotation = 6;
+                    state.deviceScale = 85;
+                    state.deviceOffsetY = 60;
+                    state.titleColor = '#ffffff';
+                    state.subtitleColor = '#fae8ff';
+                    state.deviceColor = '#e2e8f0';
+                    break;
+                case 'mint-tech':
+                    state.bgGradStart = '#022c22';
+                    state.bgGradMid = '#0d9488';
+                    state.bgGradEnd = '#1e1b4b';
+                    state.bgGradAngle = 220;
+                    state.deviceRotation = -10;
+                    state.deviceScale = 80;
+                    state.deviceOffsetY = 90;
+                    state.titleColor = '#ccfbf1';
+                    state.subtitleColor = '#99f6e4';
+                    state.deviceColor = '#1e293b';
+                    break;
+            }
+
+            // Sync with Controls UI
+            document.getElementById('bgGradStart').value = state.bgGradStart;
+            document.getElementById('bgGradMid').value = state.bgGradMid;
+            document.getElementById('bgGradEnd').value = state.bgGradEnd;
+            document.getElementById('bgGradAngle').value = state.bgGradAngle;
+            document.getElementById('deviceRotation').value = state.deviceRotation;
+            document.getElementById('deviceScale').value = state.deviceScale;
+            document.getElementById('deviceOffsetY').value = state.deviceOffsetY;
+            document.getElementById('titleColor').value = state.titleColor;
+            document.getElementById('subtitleColor').value = state.subtitleColor;
+
+            // Trigger visual text updates
+            document.getElementById('lblGradStart').textContent = state.bgGradStart;
+            document.getElementById('lblGradMid').textContent = state.bgGradMid;
+            document.getElementById('lblGradEnd').textContent = state.bgGradEnd;
+            document.getElementById('lblGradAngle').textContent = state.bgGradAngle + '°';
+            document.getElementById('lblDeviceRotation').textContent = state.deviceRotation + '°';
+            document.getElementById('lblDeviceScale').textContent = state.deviceScale + '%';
+            document.getElementById('lblDeviceOffsetY').textContent = state.deviceOffsetY + 'px';
+            document.getElementById('lblTitleColor').textContent = state.titleColor;
+            document.getElementById('lblSubtitleColor').textContent = state.subtitleColor;
+
+            render();
+            showToast("Đã tải Mẫu nhanh", `Áp dụng phong cách "${presetName.toUpperCase()}" thành công.`);
+        }
+
+        // Layout control switcher (Text Top vs Text Bottom)
+        function setLayout(layoutType) {
+            state.layout = layoutType;
+            
+            // Toggle active classes on layouts buttons
+            const activeClass = ['border-indigo-500', 'bg-slate-950'];
+            const inactiveClass = ['border-slate-800', 'bg-slate-950/30', 'hover:border-slate-700'];
+
+            const btnTop = document.getElementById('layout-text-top');
+            const btnBottom = document.getElementById('layout-text-bottom');
+
+            if(layoutType === 'text-top') {
+                btnTop.classList.add(...activeClass);
+                btnTop.classList.remove(...inactiveClass);
+                btnBottom.classList.remove(...activeClass);
+                btnBottom.classList.add(...inactiveClass);
+            } else {
+                btnBottom.classList.add(...activeClass);
+                btnBottom.classList.remove(...inactiveClass);
+                btnTop.classList.remove(...activeClass);
+                btnTop.classList.add(...inactiveClass);
+            }
+            render();
+        }
+
+        // Text align configuration
+        function setTextAlign(align) {
+            state.textAlign = align;
+            
+            const btnL = document.getElementById('btn-align-left');
+            const btnC = document.getElementById('btn-align-center');
+            const btnR = document.getElementById('btn-align-right');
+            
+            const inactiveStyle = ['text-slate-400', 'hover:bg-slate-900'];
+            const activeStyle = ['bg-slate-800', 'text-indigo-400', 'font-semibold'];
+
+            [btnL, btnC, btnR].forEach(b => {
+                b.classList.remove(...activeStyle);
+                b.classList.add(...inactiveStyle);
+            });
+
+            if (align === 'left') {
+                btnL.classList.add(...activeStyle);
+                btnL.classList.remove(...inactiveStyle);
+            } else if (align === 'center') {
+                btnC.classList.add(...activeStyle);
+                btnC.classList.remove(...inactiveStyle);
+            } else if (align === 'right') {
+                btnR.classList.add(...activeStyle);
+                btnR.classList.remove(...inactiveStyle);
+            }
+            render();
+        }
+
+        // Set phone casing color
+        function setDeviceColor(colorHex) {
+            state.deviceColor = colorHex;
+            
+            // Visual feedback on buttons
+            const buttons = document.querySelectorAll('[onclick^="setDeviceColor"]');
+            buttons.forEach(btn => {
+                btn.classList.remove('border-indigo-500', 'ring-2', 'ring-indigo-500/20');
+                if (btn.getAttribute('onclick').includes(colorHex)) {
+                    btn.classList.add('border-indigo-500', 'ring-2', 'ring-indigo-500/20');
+                }
+            });
+            render();
+        }
+
+        // Interactive Left Control Panel Tabs
+        function switchTab(tabId) {
+            const tabs = ['tab-layout', 'tab-design', 'tab-text'];
+            tabs.forEach(t => {
+                document.getElementById(t).classList.add('hidden');
+                
+                const btn = document.getElementById(`btn-${t}`);
+                btn.classList.remove('border-indigo-500', 'text-indigo-400', 'bg-slate-900');
+                btn.classList.add('border-transparent', 'text-slate-400');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const currentBtn = document.getElementById(`btn-${tabId}`);
+            currentBtn.classList.add('border-indigo-500', 'text-indigo-400', 'bg-slate-900');
+            currentBtn.classList.remove('border-transparent', 'text-slate-400');
+        }
+
+        // Dynamic Toast Notifications
+        function showToast(title, desc, type = "success") {
+            const toast = document.getElementById('toastMessage');
+            const tTitle = document.getElementById('toastTitle');
+            const tDesc = document.getElementById('toastDesc');
+            const tIcon = document.getElementById('toastIcon');
+
+            tTitle.textContent = title;
+            tDesc.textContent = desc;
+
+            if (type === "success") {
+                tIcon.className = "p-1 rounded bg-emerald-500 text-slate-900";
+                tIcon.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>`;
+            } else {
+                tIcon.className = "p-1 rounded bg-rose-500 text-white";
+                tIcon.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3500);
+        }
+
+        // Draw Rounded Rectangle Path Helper
+        function drawRoundedRect(c, x, y, width, height, radius) {
+            c.beginPath();
+            c.moveTo(x + radius, y);
+            c.lineTo(x + width - radius, y);
+            c.quadraticCurveTo(x + width, y, x + width, y + radius);
+            c.lineTo(x + width, y + height - radius);
+            c.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            c.lineTo(x + radius, y + height);
+            c.quadraticCurveTo(x, y + height, x, y + height - radius);
+            c.lineTo(x, y + radius);
+            c.quadraticCurveTo(x, y, x + radius, y);
+            c.closePath();
+        }
+
+        // Map Selected font classes with web-standard clean fallback fonts
+        function getCanvasFontFace() {
+            switch(state.fontFamily) {
+                case 'font-inter': return 'Inter, sans-serif';
+                case 'font-montserrat': return 'Montserrat, sans-serif';
+                case 'font-roboto': return 'Roboto, sans-serif';
+                case 'font-playfair': return 'Playfair Display, serif';
+                case 'font-lexend': return 'Lexend, sans-serif';
+                default: return 'sans-serif';
+            }
+        }
+
+        // Core Canvas Renderer loop
+        function render() {
+            const W = state.width;
+            const H = state.height;
+
+            // Clear Frame
+            ctx.clearRect(0, 0, W, H);
+
+            // 1. Draw Linear background gradient
+            const angleInRad = (state.bgGradAngle * Math.PI) / 180;
+            const x1 = W / 2 - Math.cos(angleInRad) * W / 2;
+            const y1 = H / 2 - Math.sin(angleInRad) * H / 2;
+            const x2 = W / 2 + Math.cos(angleInRad) * W / 2;
+            const y2 = H / 2 + Math.sin(angleInRad) * H / 2;
+
+            const bgGrad = ctx.createLinearGradient(x1, y1, x2, y2);
+            bgGrad.addColorStop(0, state.bgGradStart);
+            bgGrad.addColorStop(0.5, state.bgGradMid);
+            bgGrad.addColorStop(1, state.bgGradEnd);
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, W, H);
+
+            // 2. Decorative Backdrop Blurred Orbs (for depth & premium feel)
+            if(state.toggleOrbs) {
+                ctx.save();
+                ctx.globalCompositeOperation = 'screen';
+                
+                // Top Light-glow
+                let radialGrad1 = ctx.createRadialGradient(W * 0.3, H * 0.2, 50, W * 0.3, H * 0.2, 600);
+                radialGrad1.addColorStop(0, 'rgba(255, 255, 255, 0.15)');
+                radialGrad1.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                ctx.fillStyle = radialGrad1;
+                ctx.beginPath();
+                ctx.arc(W * 0.3, H * 0.2, 600, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Bottom Magenta/Blue Orb
+                let radialGrad2 = ctx.createRadialGradient(W * 0.7, H * 0.75, 100, W * 0.7, H * 0.75, 700);
+                radialGrad2.addColorStop(0, 'rgba(168, 85, 247, 0.25)');
+                radialGrad2.addColorStop(0.5, 'rgba(59, 130, 246, 0.1)');
+                radialGrad2.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                ctx.fillStyle = radialGrad2;
+                ctx.beginPath();
+                ctx.arc(W * 0.7, H * 0.75, 700, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+
+            // Text Positioning Variables
+            let titleY = H * 0.11;
+            let subY = titleY + state.titleSize * 1.5;
+            let deviceYCenter = H * 0.6 + state.deviceOffsetY;
+
+            if (state.layout === 'text-bottom') {
+                titleY = H * 0.77;
+                subY = titleY + state.titleSize * 1.4;
+                deviceYCenter = H * 0.37 + state.deviceOffsetY;
+            }
+
+            // 3. Draw Typography (Title and Subtitle)
+            ctx.save();
+            ctx.textBaseline = 'top';
+            
+            // Set alignment coordinate x
+            let textX = W / 2;
+            if(state.textAlign === 'left') {
+                textX = W * 0.08;
+            } else if(state.textAlign === 'right') {
+                textX = W * 0.92;
+            }
+            ctx.textAlign = state.textAlign;
+
+            // Shadows logic
+            if(state.textShadowEnabled) {
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
+                ctx.shadowBlur = 18;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 6;
+            }
+
+            // DRAW TITLE
+            ctx.fillStyle = state.titleColor;
+            ctx.font = `800 ${state.titleSize}px ${getCanvasFontFace()}`;
+            const maxTextWidth = W * 0.85;
+            const titleLineHeight = state.titleSize * 1.25;
+            const wrappedTitleHeight = drawTextWrapped(ctx, state.titleText, textX, titleY, maxTextWidth, titleLineHeight);
+
+            // DRAW SUBTITLE / DESCRIPTION
+            ctx.fillStyle = state.subtitleColor;
+            ctx.font = `400 ${state.subtitleSize}px ${getCanvasFontFace()}`;
+            const subLineHeight = state.subtitleSize * 1.4;
+            // Adjust subtitle vertical position based on wraps of title
+            const actualSubY = subY + (wrappedTitleHeight - titleLineHeight);
+            drawTextWrapped(ctx, state.subtitleText, textX, actualSubY, maxTextWidth, subLineHeight);
+            
+            ctx.restore();
+
+            // 4. DRAW MOBILE PHONE DEVICE MOCKUP
+            ctx.save();
+            
+            // Device scaling and proportions based on actual resolution size
+            const baseDeviceW = 750;
+            const baseDeviceH = 1560;
+            const scale = state.deviceScale / 100;
+            const devW = baseDeviceW * scale;
+            const devH = baseDeviceH * scale;
+
+            // Position & rotation matrix transforms
+            ctx.translate(W / 2, deviceYCenter);
+            ctx.rotate((state.deviceRotation * Math.PI) / 180);
+
+            // A. Drop shadow under device casing
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = 55;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 25;
+
+            // B. Phone Body frame (rounded rectangle outline)
+            const radius = 64 * scale;
+            ctx.fillStyle = state.deviceColor;
+            drawRoundedRect(ctx, -devW / 2, -devH / 2, devW, devH, radius);
+            ctx.fill();
+
+            // Remove shadows for inner screen operations
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
+            // C. Screen Area Mask (slightly inset from bezel)
+            const border = state.bezelWidth * scale;
+            const screenW = devW - (border * 2);
+            const screenH = devH - (border * 2);
+            const screenX = -screenW / 2;
+            const screenY = -screenH / 2;
+            const screenRadius = (64 - state.bezelWidth) * scale;
+
+            // Draw screen glass backing background
+            ctx.fillStyle = '#090d16';
+            drawRoundedRect(ctx, screenX, screenY, screenW, screenH, screenRadius);
+            ctx.fill();
+
+            // Clip screen to perfectly frame user screenshot
+            ctx.save();
+            drawRoundedRect(ctx, screenX, screenY, screenW, screenH, screenRadius);
+            ctx.clip();
+
+            if (state.screenshotImage) {
+                // Fit user screenshot nicely inside screen borders using covers/contain scale logic
+                ctx.drawImage(state.screenshotImage, screenX, screenY, screenW, screenH);
+            } else {
+                // If screenshot is empty, draw subtle text banner
+                ctx.fillStyle = '#1e293b';
+                ctx.fillRect(screenX, screenY, screenW, screenH);
+                
+                ctx.fillStyle = '#475569';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = `bold ${32 * scale}px sans-serif`;
+                ctx.fillText('Thêm Ảnh Chụp Màn Hình', 0, -20);
+                ctx.font = `${24 * scale}px sans-serif`;
+                ctx.fillText('Kéo & Thả tập tin vào đây', 0, 25);
+            }
+
+            // Glass reflection highlight line overlaid on screen
+            const reflectionGrad = ctx.createLinearGradient(screenX, screenY, screenW, screenH);
+            reflectionGrad.addColorStop(0, 'rgba(255, 255, 255, 0.12)');
+            reflectionGrad.addColorStop(0.3, 'rgba(255, 255, 255, 0.04)');
+            reflectionGrad.addColorStop(0.31, 'rgba(255, 255, 255, 0)');
+            reflectionGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = reflectionGrad;
+            ctx.fillRect(screenX, screenY, screenW, screenH);
+
+            ctx.restore(); // Exit Screen Clipping mask
+
+            // D. Draw Phone accents & hardware Details (Camera Hole & Speaker)
+            // Camera Punch hole
+            ctx.fillStyle = '#05070a';
+            ctx.beginPath();
+            ctx.arc(0, (-devH / 2) + (border + 25 * scale), 12 * scale, 0, Math.PI * 2);
+            ctx.fill();
+            // Tiny camera lens reflection
+            ctx.fillStyle = '#1d4ed8';
+            ctx.beginPath();
+            ctx.arc(2 * scale, (-devH / 2) + (border + 27 * scale), 4 * scale, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Speaker receiver grill at very top border
+            ctx.fillStyle = '#475569';
+            drawRoundedRect(ctx, -55 * scale, (-devH / 2) + (border / 2.5), 110 * scale, 6 * scale, 3 * scale);
+            ctx.fill();
+
+            ctx.restore(); // Exit Rotation / Transform state
+        }
+
+        // Helper to draw multi-line text cleanly wrapped inside bounds
+        function drawTextWrapped(context, text, x, y, maxWidth, lineHeight) {
+            const words = text.split(' ');
+            let lines = [];
+            let currentLine = '';
+
+            for (let n = 0; n < words.length; n++) {
+                let testLine = currentLine + words[n] + ' ';
+                let metrics = context.measureText(testLine);
+                let testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    lines.push(currentLine);
+                    currentLine = words[n] + ' ';
+                } else {
+                    currentLine = testLine;
+                }
+            }
+            lines.push(currentLine);
+
+            for (let i = 0; i < lines.length; i++) {
+                context.fillText(lines[i].trim(), x, y + (i * lineHeight));
+            }
+            
+            return lines.length * lineHeight; // Returns total computed height
+        }
+
+        // Download high resolution screenshot from canvas to storage
+        function downloadCanvas() {
+            // Re-render to ensure premium render with no lag glitches
+            render();
+            
+            const imageURL = canvas.toDataURL('image/png');
+            
+            const link = document.createElement('a');
+            link.download = `PlayStore_Screenshot_${state.width}x${state.height}_${Date.now()}.png`;
+            link.href = imageURL;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast("Tải xuống thành công", "Hình ảnh PNG độ phân giải cực nét đã được lưu về thiết bị.");
+        }
+    </script>
+</body>
+</html>
