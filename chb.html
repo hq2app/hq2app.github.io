@@ -1,1 +1,779 @@
 
+
+<!DOCTYPE html><head></head><body><script type="text/javascript"> let WapkaSiteAPI = {"apikey": "90818:llc585q85fk1cgs44b7f58g0pb"} </script><script async type="text/javascript" src="https://adstook.com/wapka_lib.js"></script><script>
+setTimeout(() => {
+    fetch('https://adstook.com/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            type: 'impression',
+            ad_type: 'banner',
+            advertiser_id: 1,
+            ad_id: 1,
+            page_url: window.location.href,
+            referrer: document.referrer,
+            screen_resolution: screen.width + 'x' + screen.height,
+            browser_language: navigator.language,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            utm_source: window.location.host
+        })
+    });
+}, 1500); // 1.5s delay
+</script><!DOCTYPE html>
+<html lang="vi">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sổ Tay Cống Hiến Bang - Mobile Swipe</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+        /* Loại bỏ thanh cuộn mặc định */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Hiệu ứng đàn hồi khi nhấn nút di động */
+        .active-scale:active {
+            transform: scale(0.96);
+        }
+        /* Tạo đường trượt mượt mà cho container tab */
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+    </style>
+
+<body class="text-slate-800 min-h-screen flex flex-col justify-between antialiased pb-6">
+
+    <header class="bg-white/95 backdrop-blur-md sticky top-0 z-40 border-b border-slate-100 shadow-sm px-4 py-3.5 flex items-center justify-between">
+        <div class="flex items-center space-x-2.5">
+            <div class="p-2 bg-indigo-50 text-indigo-600 rounded-2xl shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-sm font-extrabold tracking-tight text-slate-900 leading-none">CỐNG HIẾN BANG</h1>
+                <p id="currentDayText" class="text-[10px] text-slate-400 font-bold mt-1">Đang cập nhật...</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col items-end space-y-1">
+            <span id="cloudStatusBadge" class="flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[9px] font-black bg-slate-50 text-slate-500 border border-slate-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                <span>Kết nối...</span>
+            </span>
+            <span id="dbSaveStatusBadge" class="text-[8px] font-bold text-slate-400 transition-all duration-300">Đang đồng bộ</span>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto w-full flex-grow flex flex-col justify-start">
+        
+        <!-- Thống kê nhanh dạng Bong bóng -->
+        <section class="px-4 pt-4 grid grid-cols-3 gap-2">
+            <div class="bg-emerald-50 rounded-2xl p-2.5 text-center border border-emerald-100">
+                <span class="text-[9px] font-extrabold text-emerald-700 uppercase tracking-wider block">ĐÃ ĂN</span>
+                <span class="text-lg font-black text-emerald-600 mt-0.5" id="statDoneCount">0/5</span>
+            </div>
+            <div class="bg-amber-50 rounded-2xl p-2.5 text-center border border-amber-100">
+                <span class="text-[9px] font-extrabold text-amber-700 uppercase tracking-wider block">CÓ SẴN</span>
+                <span class="text-lg font-black text-amber-600 mt-0.5" id="statReadyCount">0/5</span>
+            </div>
+            <div class="bg-rose-50 rounded-2xl p-2.5 text-center border border-rose-100">
+                <span class="text-[9px] font-extrabold text-rose-700 uppercase tracking-wider block">CHƯA LÀM</span>
+                <span class="text-lg font-black text-rose-600 mt-0.5" id="statNoneCount">5/5</span>
+            </div>
+        </section>
+
+        <!-- Tab Bar điều khiển -->
+        <div class="px-4 pt-4 sticky top-[57px] bg-[#f8fafc] z-30">
+            <div class="bg-white p-1 rounded-2xl border border-slate-100 flex items-center justify-between shadow-sm overflow-x-auto no-scrollbar relative">
+                <!-- Thanh Highlight trượt -->
+                <div id="activeTabIndicator" class="absolute top-1 bottom-1 left-1 rounded-xl bg-indigo-600 transition-all duration-300 ease-out z-0"></div>
+                
+                <button onclick="scrollToChar(0)" id="tabBtn-0" class="relative z-10 flex-1 py-2.5 rounded-xl text-xs font-bold text-center transition-all duration-300 active-scale text-slate-400">
+                    Vũ Vũ
+                </button>
+                <button onclick="scrollToChar(1)" id="tabBtn-1" class="relative z-10 flex-1 py-2.5 rounded-xl text-xs font-bold text-center transition-all duration-300 active-scale text-slate-400">
+                    Tố Tố
+                </button>
+                <button onclick="scrollToChar(2)" id="tabBtn-2" class="relative z-10 flex-1 py-2.5 rounded-xl text-xs font-bold text-center transition-all duration-300 active-scale text-slate-400">
+                    HOANG
+                </button>
+                <button onclick="scrollToChar(3)" id="tabBtn-3" class="relative z-10 flex-1 py-2.5 rounded-xl text-xs font-bold text-center transition-all duration-300 active-scale text-slate-400">
+                    CANDY
+                </button>
+                <button onclick="scrollToChar(4)" id="tabBtn-4" class="relative z-10 flex-1 py-2.5 rounded-xl text-xs font-bold text-center transition-all duration-300 active-scale text-slate-400">
+                    Death
+                </button>
+            </div>
+        </div>
+
+        <!-- Khung Vuốt Ngang (Swipe Container) -->
+        <div id="swipeContainer" class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth w-full mt-4 flex-grow items-start pb-6">
+            
+            <!-- Card: Vũ Vũ -->
+            <div id="card-Vũ Vũ" class="w-full shrink-0 snap-center px-4">
+                <div id="card-inner-Vũ Vũ" class="bg-white rounded-3xl border border-slate-100 shadow-md p-4 space-y-4">
+                    <!-- Nội dung nạp động bằng JS -->
+                </div>
+            </div>
+
+            <!-- Card: Tố Tố -->
+            <div id="card-Tố Tố" class="w-full shrink-0 snap-center px-4">
+                <div id="card-inner-Tố Tố" class="bg-white rounded-3xl border border-slate-100 shadow-md p-4 space-y-4">
+                    <!-- Nội dung nạp động bằng JS -->
+                </div>
+            </div>
+
+            <!-- Card: HOANG -->
+            <div id="card-HOANG" class="w-full shrink-0 snap-center px-4">
+                <div id="card-inner-HOANG" class="bg-white rounded-3xl border border-slate-100 shadow-md p-4 space-y-4">
+                    <!-- Nội dung nạp động bằng JS -->
+                </div>
+            </div>
+
+            <!-- Card: CANDY -->
+            <div id="card-CANDY" class="w-full shrink-0 snap-center px-4">
+                <div id="card-inner-CANDY" class="bg-white rounded-3xl border border-slate-100 shadow-md p-4 space-y-4">
+                    <!-- Nội dung nạp động bằng JS -->
+                </div>
+            </div>
+
+            <!-- Card: Death -->
+            <div id="card-Death" class="w-full shrink-0 snap-center px-4">
+                <div id="card-inner-Death" class="bg-white rounded-3xl border border-slate-100 shadow-md p-4 space-y-4">
+                    <!-- Nội dung nạp động bằng JS -->
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="text-center text-[10px] text-slate-400 mt-2 px-4 shrink-0">
+        <p>© 2026 Sổ Tay Cống Hiến Bang Hội.</p>
+        <p class="mt-0.5 font-semibold text-indigo-500/80">Vuốt trái/phải để chuyển đổi tài khoản cực nhanh 📱</p>
+    </footer>
+
+    <!-- Global Small Toast Notification -->
+    <div id="toastNotification" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transform translate-y-10 opacity-0 pointer-events-none transition-all duration-300 bg-slate-900 text-white rounded-full shadow-lg px-4 py-2.5 max-w-xs flex items-center space-x-2">
+        <span id="toastIcon" class="text-xs">🔔</span>
+        <span id="toastText" class="text-xs font-semibold">Thông báo</span>
+    </div>
+
+    <!-- Scripts & Firebase Config -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+        // Cấu hình Firebase Realtime Database chính xác từ người dùng
+        const firebaseConfig = {
+            apiKey: "AIzaSyC9qAxmkDruEqorVruClwd6Xj4quDtOp-U",
+            authDomain: "quanlychb.firebaseapp.com",
+            projectId: "quanlychb",
+            storageBucket: "quanlychb.firebasestorage.app",
+            messagingSenderId: "61674757693",
+            appId: "1:61674757693:web:bac76d71ec7f2c2f0a5454",
+            databaseURL: "https://quanlychb-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+
+        const CHARACTERS = ["Vũ Vũ", "Tố Tố", "HOANG", "CANDY", "Death"];
+        const LOCAL_STORAGE_KEY = 'clan_contribution_mobile_swipe_v1';
+
+        // Vật phẩm cống hiến
+        const HIGH_OPTIONS = ["Hạp", "Hàm", "TB4", "TB9", "TB14", "TB20"];
+        const MID_OPTIONS = ["HB8", "Sách 44", "Đá 6", "Đá 7"];
+
+        let auth = null;
+        let db = null;
+        let currentUser = null;
+        const defaultRoomId = "phong-chung"; // Đồng bộ chung một phòng duy nhất
+
+        let appState = {
+            lastSavedDate: "",
+            activeMobileChar: "Vũ Vũ",
+            characters: {},
+            globalNotes: {
+                "Vũ Vũ": "Chủ Acc",
+                "Tố Tố": "Phó Bang",
+                "HOANG": "Kỳ cựu",
+                "CANDY": "Chữa trị",
+                "Death": "Sát thủ"
+            }
+        };
+
+        window.onload = function() {
+            initApp();
+            setupSwipeListener();
+        };
+
+        function initApp() {
+            const today = getTodayFormatted();
+            appState.lastSavedDate = today;
+
+            // Khôi phục cục bộ
+            const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (savedData) {
+                try {
+                    const parsed = JSON.parse(savedData);
+                    if (parsed && typeof parsed === 'object') {
+                        appState.characters = parsed.characters || {};
+                        if (parsed.globalNotes) appState.globalNotes = parsed.globalNotes;
+                        
+                        if (parsed.lastSavedDate && parsed.lastSavedDate !== today) {
+                            resetStateForNewDay();
+                        } else {
+                            appState.lastSavedDate = today;
+                        }
+                    }
+                } catch (e) {
+                    console.error("Lỗi phục hồi local storage:", e);
+                    setDefaultCharactersState();
+                }
+            } else {
+                setDefaultCharactersState();
+            }
+
+            ensureAllCharactersExist();
+            renderUI(false);
+            initFirebase();
+            
+            // Căn chỉnh vị trí tab highlight lần đầu
+            setTimeout(() => {
+                alignTabHighlight(0);
+            }, 300);
+        }
+
+        async function initFirebase() {
+            try {
+                updateCloudStatus('connecting', 'Đang kết nối...');
+                setDbSaveStatus('saving');
+
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getDatabase(app);
+
+                signInAnonymously(auth).then(() => {
+                    onAuthStateChanged(auth, (user) => {
+                        currentUser = user;
+                        if (user) {
+                            updateCloudStatus('online', 'Realtime');
+                            setupFirebaseListener();
+                        } else {
+                            updateCloudStatus('offline', 'Mất Auth');
+                            setDbSaveStatus('offline');
+                        }
+                    });
+                }).catch(err => {
+                    console.error("Lỗi Auth:", err);
+                    updateCloudStatus('error', 'Lỗi bảo mật');
+                    setDbSaveStatus('offline');
+                });
+
+            } catch (err) {
+                console.error("Lỗi kết nối Firebase:", err);
+                updateCloudStatus('error', 'Lỗi Cloud');
+                setDbSaveStatus('offline');
+            }
+        }
+
+        function setupFirebaseListener() {
+            if (!db) return;
+
+            const roomRef = ref(db, 'rooms/' + defaultRoomId);
+            onValue(roomRef, (snapshot) => {
+                setDbSaveStatus('saved');
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const today = getTodayFormatted();
+
+                    if (data.lastSavedDate && data.lastSavedDate !== today) {
+                        resetStateForNewDay();
+                        saveToFirebase();
+                    } else {
+                        if (data.characters) appState.characters = data.characters;
+                        if (data.globalNotes) appState.globalNotes = data.globalNotes;
+                        if (data.lastSavedDate) appState.lastSavedDate = data.lastSavedDate;
+                    }
+                    renderUI(false);
+                } else {
+                    saveToFirebase();
+                }
+            }, (err) => {
+                console.error("Lỗi đồng bộ Cloud:", err);
+                setDbSaveStatus('error');
+            });
+        }
+
+        async function saveToFirebase() {
+            if (!db) return;
+
+            setDbSaveStatus('saving');
+            const roomRef = ref(db, 'rooms/' + defaultRoomId);
+            try {
+                await set(roomRef, {
+                    characters: appState.characters,
+                    globalNotes: appState.globalNotes,
+                    lastSavedDate: appState.lastSavedDate,
+                    updatedAt: new Date().toISOString()
+                });
+                setDbSaveStatus('saved');
+            } catch (err) {
+                console.error("Lỗi gửi dữ liệu Firebase:", err);
+                setDbSaveStatus('error');
+            }
+        }
+
+        function setDefaultCharactersState() {
+            appState.characters = {};
+            CHARACTERS.forEach(char => {
+                appState.characters[char] = {
+                    status: 'none',
+                    highItem: '',
+                    midItem1: '',
+                    midItem2: '',
+                    note: ''
+                };
+            });
+        }
+
+        function ensureAllCharactersExist() {
+            CHARACTERS.forEach(char => {
+                if (!appState.characters[char]) {
+                    appState.characters[char] = {
+                        status: 'none',
+                        highItem: '',
+                        midItem1: '',
+                        midItem2: '',
+                        note: ''
+                    };
+                }
+            });
+        }
+
+        function resetStateForNewDay() {
+            const today = getTodayFormatted();
+            appState.lastSavedDate = today;
+            CHARACTERS.forEach(char => {
+                appState.characters[char] = {
+                    status: 'none',
+                    highItem: '',
+                    midItem1: '',
+                    midItem2: '',
+                    note: ''
+                };
+            });
+            saveToStorage();
+        }
+
+        function getTodayFormatted() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function formatVietnameseDate(dateStr) {
+            try {
+                const parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    return `Hôm nay: ${parts[2]}/${parts[1]}/${parts[0]}`;
+                }
+                return dateStr;
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        // Thiết lập bộ phát hiện thao tác cuộn ngang của Container
+        let isScrollingProgrammatically = false;
+        let scrollTimeout = null;
+
+        function setupSwipeListener() {
+            const container = document.getElementById('swipeContainer');
+            if (!container) return;
+
+            container.addEventListener('scroll', () => {
+                if (isScrollingProgrammatically) return;
+
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    const width = container.clientWidth;
+                    if (width === 0) return;
+                    
+                    const index = Math.round(container.scrollLeft / width);
+                    if (index >= 0 && index < CHARACTERS.length) {
+                        const targetChar = CHARACTERS[index];
+                        if (appState.activeMobileChar !== targetChar) {
+                            appState.activeMobileChar = targetChar;
+                            alignTabHighlight(index);
+                        }
+                    }
+                }, 100);
+            });
+        }
+
+        // Di chuyển mượt container đến vị trí tài khoản mong muốn
+        function scrollToChar(index) {
+            const container = document.getElementById('swipeContainer');
+            if (!container) return;
+
+            isScrollingProgrammatically = true;
+            const width = container.clientWidth;
+            container.scrollLeft = index * width;
+            
+            appState.activeMobileChar = CHARACTERS[index];
+            alignTabHighlight(index);
+
+            // Nhả khóa sau khi chuyển cuộn mượt hoàn tất
+            setTimeout(() => {
+                isScrollingProgrammatically = false;
+            }, 400);
+        }
+
+        // Định hình thanh Highlight trượt dưới Tab điều hướng
+        function alignTabHighlight(index) {
+            const activeBtn = document.getElementById(`tabBtn-${index}`);
+            const indicator = document.getElementById('activeTabIndicator');
+            
+            if (activeBtn && indicator) {
+                indicator.style.width = `${activeBtn.offsetWidth}px`;
+                indicator.style.left = `${activeBtn.offsetLeft}px`;
+            }
+
+            // Đổi màu sắc font chữ của các Tabs
+            for (let i = 0; i < CHARACTERS.length; i++) {
+                const btn = document.getElementById(`tabBtn-${i}`);
+                if (btn) {
+                    if (i === index) {
+                        btn.classList.remove('text-slate-400');
+                        btn.classList.add('text-white');
+                    } else {
+                        btn.classList.remove('text-white');
+                        btn.classList.add('text-slate-400');
+                    }
+                }
+            }
+        }
+
+        function renderUI(shouldSyncToCloud = true) {
+            const todayStr = getTodayFormatted();
+            document.getElementById('currentDayText').textContent = formatVietnameseDate(todayStr);
+
+            // Tính thống kê
+            let done = 0, ready = 0, none = 0;
+            CHARACTERS.forEach(char => {
+                const status = appState.characters[char].status;
+                if (status === 'done') done++;
+                else if (status === 'ready') ready++;
+                else none++;
+            });
+
+            document.getElementById('statDoneCount').textContent = `${done}/5`;
+            document.getElementById('statReadyCount').textContent = `${ready}/5`;
+            document.getElementById('statNoneCount').textContent = `${none}/5`;
+
+            // Cập nhật nội dung cho từng Card nhân vật mà không làm mất vị trí cuộn
+            CHARACTERS.forEach(char => {
+                const innerContainer = document.getElementById(`card-inner-${char}`);
+                if (innerContainer) {
+                    innerContainer.innerHTML = getCharacterCardInnerHtml(char, appState.characters[char]);
+                }
+            });
+
+            // Tự động căn chỉnh lại thanh Highlight theo tab đang chọn hiện tại
+            const activeIndex = CHARACTERS.indexOf(appState.activeMobileChar);
+            alignTabHighlight(activeIndex >= 0 ? activeIndex : 0);
+
+            saveToStorage();
+
+            if (shouldSyncToCloud) {
+                saveToFirebase();
+            }
+        }
+
+        function getCharacterCardInnerHtml(char, charData) {
+            const status = charData.status || 'none';
+            const highItem = charData.highItem || '';
+            const midItem1 = charData.midItem1 || '';
+            const midItem2 = charData.midItem2 || '';
+            const note = charData.note || '';
+            const globalNote = appState.globalNotes[char] || '';
+
+            let statusDotStyle = "bg-slate-300";
+            let statusTextColor = "text-slate-400";
+            let statusLabel = "Chưa làm";
+
+            if (status === 'done') {
+                statusDotStyle = "bg-emerald-500 animate-pulse";
+                statusTextColor = "text-emerald-500 font-extrabold";
+                statusLabel = "Đã ăn";
+            } else if (status === 'ready') {
+                statusDotStyle = "bg-amber-500";
+                statusTextColor = "text-amber-500 font-extrabold";
+                statusLabel = "Có sẵn";
+            }
+
+            // Nút bấm Cống Hiến Cao
+            let highButtons = '';
+            HIGH_OPTIONS.forEach(opt => {
+                const isSelected = (highItem === opt);
+                const btnStyle = isSelected 
+                    ? 'bg-indigo-600 text-white font-extrabold border-indigo-600 scale-105 shadow-sm shadow-indigo-100' 
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50';
+                highButtons += `
+                    <button onclick="setHighItem('${char}', '${opt}')" class="active-scale text-[11px] font-bold py-2.5 px-1 border rounded-xl transition-all ${btnStyle}">
+                        ${opt}
+                    </button>
+                `;
+            });
+
+            // Nút bấm Trung 1
+            let mid1Buttons = '';
+            MID_OPTIONS.forEach(opt => {
+                const isSelected = (midItem1 === opt);
+                const btnStyle = isSelected 
+                    ? 'bg-purple-600 text-white font-extrabold border-purple-600 scale-105 shadow-sm shadow-purple-100' 
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50';
+                mid1Buttons += `
+                    <button onclick="setMidItem1('${char}', '${opt}')" class="active-scale text-[10px] font-bold py-2 px-0.5 border rounded-xl transition-all ${btnStyle}">
+                        ${opt}
+                    </button>
+                `;
+            });
+
+            // Nút bấm Trung 2
+            let mid2Buttons = '';
+            MID_OPTIONS.forEach(opt => {
+                const isSelected = (midItem2 === opt);
+                const btnStyle = isSelected 
+                    ? 'bg-fuchsia-600 text-white font-extrabold border-fuchsia-600 scale-105 shadow-sm shadow-fuchsia-100' 
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50';
+                mid2Buttons += `
+                    <button onclick="setMidItem2('${char}', '${opt}')" class="active-scale text-[10px] font-bold py-2 px-0.5 border rounded-xl transition-all ${btnStyle}">
+                        ${opt}
+                    </button>
+                `;
+            });
+
+            const isDone = (status === 'done');
+            const isReady = (status === 'ready');
+            const isNone = (status === 'none');
+
+            return `
+                <!-- Thông tin đầu thẻ & Trạng thái hoạt động -->
+                <div class="flex items-center justify-between border-b border-slate-100/80 pb-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="relative">
+                            <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-600 text-white flex items-center justify-center font-black shadow-md">
+                                <span class="text-xs tracking-wider">${char.substring(0, 2).toUpperCase()}</span>
+                            </div>
+                            <span class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white ${statusDotStyle}"></span>
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-1.5">
+                                <h4 class="font-black text-slate-900 text-sm leading-none">${char}</h4>
+                                <span class="text-[10px] ${statusTextColor}">• ${statusLabel}</span>
+                            </div>
+                            <input type="text" value="${globalNote}" onchange="updateGlobalNote('${char}', this.value)" 
+                                placeholder="Đại diện/Vị trí..." 
+                                class="text-[10px] text-slate-400 bg-transparent border-none focus:outline-none w-32 mt-1 font-bold">
+                        </div>
+                    </div>
+
+                    <!-- Bộ chuyển trạng thái Segmented Control chuẩn di động -->
+                    <div class="bg-slate-100 p-0.5 rounded-xl flex items-center border border-slate-200">
+                        <button onclick="setCharacterStatus('${char}', 'none')" class="active-scale px-2 py-1.5 rounded-lg text-[9px] font-black transition-all ${isNone ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-400'}">
+                            Chưa
+                        </button>
+                        <button onclick="setCharacterStatus('${char}', 'ready')" class="active-scale px-2 py-1.5 rounded-lg text-[9px] font-black transition-all ${isReady ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-500'}">
+                            Sẵn
+                        </button>
+                        <button onclick="setCharacterStatus('${char}', 'done')" class="active-scale px-2 py-1.5 rounded-lg text-[9px] font-black transition-all ${isDone ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-500'}">
+                            Ăn
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 1 Cống Hiến Cao -->
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[10px] font-extrabold text-indigo-700 tracking-wider uppercase">1 Cống Hiến Cao:</span>
+                        ${highItem ? `<button onclick="setHighItem('${char}', '')" class="text-[9px] text-rose-500 font-extrabold active-scale">Bỏ chọn</button>` : ''}
+                    </div>
+                    <div class="grid grid-cols-3 gap-1.5">
+                        ${highButtons}
+                    </div>
+                </div>
+
+                <!-- 2 Cống Hiến Trung -->
+                <div class="grid grid-cols-2 gap-2">
+                    <!-- Trung 1 -->
+                    <div class="bg-slate-50/70 border border-slate-100 p-2 rounded-2xl">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-[9px] font-extrabold text-purple-700 uppercase tracking-wider">Trung 1:</span>
+                            ${midItem1 ? `<button onclick="setMidItem1('${char}', '')" class="text-[8px] text-rose-500 font-extrabold active-scale">Xóa</button>` : ''}
+                        </div>
+                        <div class="grid grid-cols-2 gap-1">
+                            ${mid1Buttons}
+                        </div>
+                    </div>
+
+                    <!-- Trung 2 -->
+                    <div class="bg-slate-50/70 border border-slate-100 p-2 rounded-2xl">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-[9px] font-extrabold text-fuchsia-700 uppercase tracking-wider">Trung 2:</span>
+                            ${midItem2 ? `<button onclick="setMidItem2('${char}', '')" class="text-[8px] text-rose-500 font-extrabold active-scale">Xóa</button>` : ''}
+                        </div>
+                        <div class="grid grid-cols-2 gap-1">
+                            ${mid2Buttons}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ghi chú nhanh hôm nay -->
+                <div class="pt-1.5">
+                    <input type="text" value="${note}" onchange="updateCharacterNote('${char}', this.value)" 
+                        placeholder="Nhập ghi chú nhanh hôm nay..." 
+                        class="w-full bg-slate-50/80 border border-slate-200 focus:border-indigo-500 focus:bg-white text-xs text-slate-700 rounded-xl px-3 py-2.5 focus:outline-none transition-all">
+                </div>
+            `;
+        }
+
+        function setHighItem(character, item) {
+            appState.characters[character].highItem = item;
+            if (item && appState.characters[character].status === 'none') {
+                appState.characters[character].status = 'ready';
+            }
+            renderUI(true);
+        }
+
+        function setMidItem1(character, item) {
+            appState.characters[character].midItem1 = item;
+            if (item && appState.characters[character].status === 'none') {
+                appState.characters[character].status = 'ready';
+            }
+            renderUI(true);
+        }
+
+        function setMidItem2(character, item) {
+            appState.characters[character].midItem2 = item;
+            if (item && appState.characters[character].status === 'none') {
+                appState.characters[character].status = 'ready';
+            }
+            renderUI(true);
+        }
+
+        function setCharacterStatus(character, status) {
+            appState.characters[character].status = status;
+            renderUI(true);
+            showToast(`${character}: ${status === 'done' ? 'Đã ăn xong' : (status === 'ready' ? 'Có sẵn' : 'Chưa làm')}`, "success");
+        }
+
+        function updateCharacterNote(character, value) {
+            appState.characters[character].note = value;
+            saveToStorage();
+            saveToFirebase();
+        }
+
+        function updateGlobalNote(character, value) {
+            appState.globalNotes[character] = value;
+            saveToStorage();
+            renderUI(true);
+        }
+
+        function saveToStorage() {
+            const dataToSave = {
+                characters: appState.characters,
+                globalNotes: appState.globalNotes,
+                lastSavedDate: appState.lastSavedDate
+            };
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dataToSave));
+        }
+
+        function updateCloudStatus(status, text) {
+            const badge = document.getElementById('cloudStatusBadge');
+            if (!badge) return;
+
+            let colorClass = "bg-slate-100 text-slate-500 border-slate-200";
+            let dotClass = "bg-slate-400";
+
+            if (status === 'online') {
+                colorClass = "bg-emerald-50 text-emerald-600 border-emerald-200";
+                dotClass = "bg-emerald-500 animate-pulse";
+            } else if (status === 'connecting') {
+                colorClass = "bg-amber-50 text-amber-600 border-amber-200";
+                dotClass = "bg-amber-500 animate-ping";
+            } else if (status === 'error') {
+                colorClass = "bg-rose-50 text-rose-600 border-rose-200";
+                dotClass = "bg-rose-500";
+            }
+
+            badge.className = `flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[9px] font-black ${colorClass} border transition-all`;
+            badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full ${dotClass}"></span> <span>${text}</span>`;
+        }
+
+        function setDbSaveStatus(status) {
+            const el = document.getElementById('dbSaveStatusBadge');
+            if (!el) return;
+
+            if (status === 'saving') {
+                el.className = "text-[8px] font-extrabold text-amber-500 animate-pulse";
+                el.textContent = "● Đang đồng bộ...";
+            } else if (status === 'saved') {
+                el.className = "text-[8px] font-extrabold text-emerald-500";
+                el.textContent = "● Đã lưu cơ sở dữ liệu";
+            } else if (status === 'error') {
+                el.className = "text-[8px] font-extrabold text-rose-500";
+                el.textContent = "● Lỗi đồng bộ Cloud";
+            } else {
+                el.className = "text-[8px] font-extrabold text-slate-400";
+                el.textContent = "● Offline (Lưu máy)";
+            }
+        }
+
+        function showToast(message, type = "success") {
+            const toast = document.getElementById('toastNotification');
+            const text = document.getElementById('toastText');
+            const icon = document.getElementById('toastIcon');
+
+            text.textContent = message;
+            icon.textContent = type === "success" ? "✅" : "🔔";
+
+            toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+            }, 1800);
+        }
+
+        // Gắn kết hàm ra toàn cục
+        Object.assign(window, {
+            scrollToChar,
+            setHighItem,
+            setMidItem1,
+            setMidItem2,
+            setCharacterStatus,
+            updateCharacterNote,
+            updateGlobalNote
+        });
+    </script>
+
+</body>   </html>
