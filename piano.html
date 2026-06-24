@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full select-none">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Piano Pro Mobile</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter & Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Tone.js for high fidelity web audio synthesis -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- Tonejs/Midi for binary MIDI file decoding -->
+    <script src="https://unpkg.com/@tonejs/midi"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at center, #111827 0%, #030712 100%);
+            overscroll-behavior: none;
+        }
+        .header-font {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* Custom scrollbar for active songs scroll panel */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(31, 41, 55, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.5);
+            border-radius: 9999px;
+        }
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        /* Key visual active/glowing effects */
+        .white-key-active {
+            background: linear-gradient(to bottom, #f3f4f6 0%, #93c5fd 100%) !important;
+            transform: translateY(2px);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4) !important;
+        }
+        .black-key-active {
+            background: linear-gradient(to bottom, #1f2937 0%, #2563eb 100%) !important;
+            transform: translateY(2px) scaleX(0.95);
+            box-shadow: 0 8px 12px -3px rgba(37, 99, 235, 0.6) !important;
+        }
+        /* Neon text effects */
+        .neon-glow-blue {
+            text-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+        }
+        .neon-glow-emerald {
+            text-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+        }
+    </style>
+</head>
+<body class="h-full w-full overflow-hidden text-slate-100 flex flex-col justify-between">
+
+    <!-- Orientation Alert (Shown only when vertical on phones) -->
+    <div id="orientation-overlay" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-6 text-center lg:hidden hidden">
+        <div class="animate-bounce mb-6 text-blue-500">
+            <i class="fa-solid fa-rotate-right text-6xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold mb-2 header-font text-blue-400">Vui lòng xoay ngang điện thoại</h2>
+        <p class="text-slate-400 max-w-sm">Ứng dụng Piano Pro đạt trải nghiệm tốt nhất ở chế độ nằm ngang (Landscape).</p>
+    </div>
+
+    <!-- Audio Engine Initialization Overlay -->
+    <div id="init-overlay" class="fixed inset-0 z-40 bg-slate-950/95 flex flex-col items-center justify-center p-6 text-center">
+        <div class="glass-panel p-8 rounded-2xl max-w-md border border-blue-500/30 shadow-2xl shadow-blue-500/10">
+            <div class="w-20 h-20 bg-blue-600/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-blue-500/20">
+                <i class="fa-solid fa-music text-3xl text-blue-400 animate-pulse"></i>
+            </div>
+            <h1 class="text-3xl font-extrabold header-font text-white mb-2 tracking-wide">PIANO PRO <span class="text-blue-500">MOBILE</span></h1>
+            <p class="text-slate-400 text-sm mb-6 leading-relaxed">Bộ giải mã âm thanh chuẩn Studio. Hãy bấm nút bên dưới để cấp quyền và khởi động hệ thống âm thanh.</p>
+            <button id="btn-start" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-blue-500/20 active:scale-95 transition duration-150 text-lg uppercase tracking-wider">
+                Khởi động Piano
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Control Header -->
+    <header class="w-full glass-panel px-4 py-3 flex items-center justify-between z-10 gap-4 shrink-0 shadow-lg">
+        <!-- Brand & Engine Status -->
+        <div class="flex items-center gap-3">
+            <div class="h-9 w-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-keyboard text-white text-sm"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-sm tracking-wide header-font">PIANO <span class="text-blue-400">PRO</span></h1>
+                <div class="flex items-center gap-1.5">
+                    <span id="status-indicator" class="h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
+                    <span id="status-text" class="text-[10px] text-slate-400 font-medium uppercase tracking-widest">Đang tải...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Synthesizer Controls -->
+        <div class="flex items-center gap-4">
+            <!-- Instrument Selection -->
+            <div class="flex flex-col">
+                <label class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1">Nhạc cụ</label>
+                <div class="relative">
+                    <select id="select-instrument" class="bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-200 outline-none focus:border-blue-500 appearance-none pr-8 cursor-pointer min-w-[120px]">
+                        <option value="piano">Acoustic Piano</option>
+                        <option value="epiano">E-Piano Synth</option>
+                        <option value="organ">Church Organ</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-2.5 text-[10px] text-slate-400 pointer-events-none"></i>
+                </div>
+            </div>
+
+            <!-- Demo Songs -->
+            <div class="flex flex-col">
+                <label class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1">Bài nhạc mẫu</label>
+                <div class="relative">
+                    <select id="select-demo" class="bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-200 outline-none focus:border-blue-500 appearance-none pr-8 cursor-pointer min-w-[160px]">
+                        <option value="">-- Chọn bài mẫu --</option>
+                        <option value="furelise">Für Elise (Beethoven)</option>
+                        <option value="canon">Canon in D (Pachelbel)</option>
+                        <option value="twinkle">Twinkle Twinkle</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-2.5 text-[10px] text-slate-400 pointer-events-none"></i>
+                </div>
+            </div>
+
+            <!-- MIDI Upload Handler -->
+            <div class="flex flex-col">
+                <label class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1">Tải file MIDI (.mid)</label>
+                <label for="midi-file" class="bg-slate-800 border border-dashed border-slate-600 hover:border-blue-500 hover:bg-slate-700/50 rounded-lg px-3 py-1.5 text-xs font-medium text-blue-400 outline-none flex items-center gap-2 cursor-pointer transition">
+                    <i class="fa-solid fa-file-import"></i>
+                    <span id="midi-filename">Chọn file</span>
+                </label>
+                <input type="file" id="midi-file" accept=".mid,.midi" class="hidden">
+            </div>
+        </div>
+
+        <!-- MIDI Auto-play & Volume Panel -->
+        <div class="flex items-center gap-4 bg-slate-950/40 p-1.5 rounded-xl border border-slate-800">
+            <!-- Playback Controls -->
+            <div class="flex items-center gap-2">
+                <button id="btn-play" class="h-9 w-9 rounded-lg bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white flex items-center justify-center shadow-lg shadow-emerald-600/20 transition disabled:opacity-40 disabled:pointer-events-none" title="Chạy tự động">
+                    <i class="fa-solid fa-play"></i>
+                </button>
+                <button id="btn-pause" class="h-9 w-9 rounded-lg bg-amber-600 hover:bg-amber-500 active:scale-95 text-white flex items-center justify-center shadow-lg shadow-amber-600/20 transition hidden" title="Tạm dừng">
+                    <i class="fa-solid fa-pause"></i>
+                </button>
+                <button id="btn-stop" class="h-9 w-9 rounded-lg bg-rose-600 hover:bg-rose-500 active:scale-95 text-white flex items-center justify-center shadow-lg shadow-rose-600/20 transition disabled:opacity-40 disabled:pointer-events-none" title="Dừng hẳn">
+                    <i class="fa-solid fa-square"></i>
+                </button>
+            </div>
+
+            <!-- Tempo Slider -->
+            <div class="flex flex-col w-20">
+                <div class="flex justify-between items-center text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">
+                    <span>Tốc độ</span>
+                    <span id="label-bpm" class="text-blue-400">120</span>
+                </div>
+                <input type="range" id="slider-tempo" min="40" max="240" value="120" class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500">
+            </div>
+
+            <!-- Note Label Toggle -->
+            <div class="flex items-center gap-1.5 ml-2 border-l border-slate-800 pl-3">
+                <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Nốt</span>
+                <button id="btn-toggle-labels" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-slate-700 transition-colors duration-200 ease-in-out focus:outline-none">
+                    <span id="toggle-circle" class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-4"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Interactive Falling Notes Display (Synthesia cascade style) -->
+    <main class="relative w-full flex-grow bg-slate-950 overflow-hidden">
+        <!-- Visual Grid Overlay representing keyboard lanes -->
+        <div id="lanes-overlay" class="absolute inset-0 pointer-events-none z-0 flex opacity-[0.03]"></div>
+        
+        <!-- Interactive Waterfall Canvas -->
+        <canvas id="canvas-visualizer" class="absolute inset-0 w-full h-full z-10 pointer-events-none"></canvas>
+
+        <!-- Dynamic Message Center -->
+        <div id="message-container" class="absolute top-4 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+            <div id="toast-message" class="bg-slate-900/90 text-blue-400 text-xs px-4 py-2 rounded-full border border-blue-500/20 font-medium tracking-wide flex items-center gap-2 shadow-xl opacity-0 transition-all duration-300 translate-y-2">
+                <i class="fa-solid fa-circle-info text-blue-400"></i>
+                <span id="toast-text">Sẵn sàng chơi nhạc!</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Piano Keyboard Panel -->
+    <footer class="w-full bg-slate-950 z-20 select-none shrink-0 border-t border-slate-900">
+        <!-- Octave & Controls Indicator Bar -->
+        <div class="flex justify-between items-center bg-slate-900/40 px-4 py-1.5 text-xs text-slate-400 border-b border-slate-900">
+            <div class="flex items-center gap-1">
+                <i class="fa-solid fa-circle-nodes text-blue-500"></i>
+                <span>Gợi ý: Sử dụng bàn phím máy tính hàng <strong>A S D F G H J...</strong></span>
+            </div>
+            <!-- Octave Shifter UI -->
+            <div class="flex items-center gap-2">
+                <button id="btn-octave-down" class="px-2.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold transition">
+                    <i class="fa-solid fa-minus mr-1"></i> OCTAVE
+                </button>
+                <span id="label-octave" class="font-bold text-blue-400 text-[11px] tracking-wide px-1">C3 - B5</span>
+                <button id="btn-octave-up" class="px-2.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold transition">
+                    OCTAVE <i class="fa-solid fa-plus ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Realistic Keyboard Wrapper -->
+        <div class="relative w-full h-44 md:h-52 bg-slate-950 flex select-none" id="piano-keys-wrapper">
+            <!-- White keys container -->
+            <div id="white-keys" class="absolute inset-0 flex w-full h-full select-none"></div>
+            <!-- Black keys container -->
+            <div id="black-keys" class="absolute inset-0 flex pointer-events-none w-full h-full select-none"></div>
+        </div>
+    </footer>
+
+    <script>
+        /* State Variables */
+        let activeSynth = null;
+        let isEngineInitialized = false;
+        let showLabels = true;
+        let octaveOffset = 0; // 0 = default (C3 to B5)
+        let midiFileLoaded = null;
+        let midiPart = null;
+        let currentBpm = 120;
+        let loadedMidiNotes = []; // Flattened notes array for falling visualizer
+        let playStartTime = 0;
+        let isPlaying = false;
+        
+        // Active touch mapping
+        const activePressedNotes = new Map(); // tracks touchID -> noteName
+
+        // Layout parameters
+        // Standard Range: 21 White Keys (C3 to B5) = 3 Octaves
+        const noteMapping = [
+            { note: "C", isBlack: false }, { note: "C#", isBlack: true },
+            { note: "D", isBlack: false }, { note: "D#", isBlack: true },
+            { note: "E", isBlack: false },
+            { note: "F", isBlack: false }, { note: "F#", isBlack: true },
+            { note: "G", isBlack: false }, { note: "G#", isBlack: true },
+            { note: "A", isBlack: false }, { note: "A#", isBlack: true },
+            { note: "B", isBlack: false }
+        ];
+
+        // Synthesizers dictionary
+        const synths = {};
+
+        // Track state of falling visualizer notes
+        const activeVisualNotes = [];
+
+        /* Built-in Song Data (Beethoven, Pachelbel, etc.) */
+        const demoSongs = {
+            twinkle: [
+                { time: 0.0, name: "C4", duration: 0.5 }, { time: 0.5, name: "C4", duration: 0.5 },
+                { time: 1.0, name: "G4", duration: 0.5 }, { time: 1.5, name: "G4", duration: 0.5 },
+                { time: 2.0, name: "A4", duration: 0.5 }, { time: 2.5, name: "A4", duration: 0.5 },
+                { time: 3.0, name: "G4", duration: 1.0 },
+                { time: 4.0, name: "F4", duration: 0.5 }, { time: 4.5, name: "F4", duration: 0.5 },
+                { time: 5.0, name: "E4", duration: 0.5 }, { time: 5.5, name: "E4", duration: 0.5 },
+                { time: 6.0, name: "D4", duration: 0.5 }, { time: 6.5, name: "D4", duration: 0.5 },
+                { time: 7.0, name: "C4", duration: 1.0 }
+            ],
+            furelise: [
+                { time: 0.0, name: "E5", duration: 0.2 }, { time: 0.2, name: "D#5", duration: 0.2 },
+                { time: 0.4, name: "E5", duration: 0.2 }, { time: 0.6, name: "D#5", duration: 0.2 },
+                { time: 0.8, name: "E5", duration: 0.2 }, { time: 1.0, name: "B4", duration: 0.2 },
+                { time: 1.2, name: "D5", duration: 0.2 }, { time: 1.4, name: "C5", duration: 0.2 },
+                { time: 1.6, name: "A4", duration: 0.6 },
+                { time: 2.2, name: "C3", duration: 0.3 }, { time: 2.2, name: "E3", duration: 0.3 }, { time: 2.2, name: "A3", duration: 0.3 },
+                { time: 2.5, name: "E4", duration: 0.2 }, { time: 2.7, name: "A4", duration: 0.2 },
+                { time: 2.9, name: "B4", duration: 0.6 },
+                { time: 3.5, name: "E3", duration: 0.3 }, { time: 3.5, name: "G#3", duration: 0.3 }, { time: 3.5, name: "B3", duration: 0.3 },
+                { time: 3.8, name: "G#4", duration: 0.2 }, { time: 4.0, name: "B4", duration: 0.2 },
+                { time: 4.2, name: "C5", duration: 0.6 },
+                { time: 4.8, name: "A2", duration: 0.3 }, { time: 4.8, name: "E3", duration: 0.3 }, { time: 4.8, name: "A3", duration: 0.3 },
+                { time: 5.1, name: "E4", duration: 0.2 }, { time: 5.3, name: "E5", duration: 0.2 },
+                { time: 5.5, name: "D#5", duration: 0.2 }, { time: 5.7, name: "E5", duration: 0.2 },
+                { time: 5.9, name: "D#5", duration: 0.2 }, { time: 6.1, name: "E5", duration: 0.2 },
+                { time: 6.3, name: "B4", duration: 0.2 }, { time: 6.5, name: "D5", duration: 0.2 },
+                { time: 6.7, name: "C5", duration: 0.2 }, { time: 6.9, name: "A4", duration: 0.6 }
+            ],
+            canon: [
+                // Ground Bass line with melody notes
+                { time: 0.0, name: "F#4", duration: 1.0 }, { time: 0.0, name: "D3", duration: 1.0 },
+                { time: 1.0, name: "E4", duration: 1.0 }, { time: 1.0, name: "A2", duration: 1.0 },
+                { time: 2.0, name: "D4", duration: 1.0 }, { time: 2.0, name: "B2", duration: 1.0 },
+                { time: 3.0, name: "C#4", duration: 1.0 }, { time: 3.0, name: "F#2", duration: 1.0 },
+                { time: 4.0, name: "B3", duration: 1.0 }, { time: 4.0, name: "G2", duration: 1.0 },
+                { time: 5.0, name: "A3", duration: 1.0 }, { time: 5.0, name: "D2", duration: 1.0 },
+                { time: 6.0, name: "B3", duration: 1.0 }, { time: 6.0, name: "G2", duration: 1.0 },
+                { time: 7.0, name: "C#4", duration: 1.0 }, { time: 7.0, name: "A2", duration: 1.0 },
+                // Section 2
+                { time: 8.0, name: "A4", duration: 0.5 }, { time: 8.5, name: "F#4", duration: 0.5 }, { time: 8.0, name: "D3", duration: 1.0 },
+                { time: 9.0, name: "G4", duration: 0.5 }, { time: 9.5, name: "E4", duration: 0.5 }, { time: 9.0, name: "A2", duration: 1.0 },
+                { time: 10.0, name: "F#4", duration: 0.5 }, { time: 10.5, name: "D4", duration: 0.5 }, { time: 10.0, name: "B2", duration: 1.0 },
+                { time: 11.0, name: "E4", duration: 0.5 }, { time: 11.5, name: "C#4", duration: 0.5 }, { time: 11.0, name: "F#2", duration: 1.0 },
+                { time: 12.0, name: "D4", duration: 0.5 }, { time: 12.5, name: "B3", duration: 0.5 }, { time: 12.0, name: "G2", duration: 1.0 },
+                { time: 13.0, name: "E4", duration: 0.5 }, { time: 13.5, name: "A3", duration: 0.5 }, { time: 13.0, name: "D2", duration: 1.0 },
+                { time: 14.0, name: "D4", duration: 0.5 }, { time: 14.5, name: "G4", duration: 0.5 }, { time: 14.0, name: "G2", duration: 1.0 },
+                { time: 15.0, name: "F#4", duration: 0.5 }, { time: 15.5, name: "G4", duration: 0.5 }, { time: 15.0, name: "A2", duration: 1.0 }
+            ]
+        };
+
+        /* Initialize Synths with custom envelopes */
+        function initSynthesizers() {
+            const masterReverb = new Tone.Reverb({ decay: 2.2, wet: 0.3 }).toDestination();
+            const delay = new Tone.FeedbackDelay("8n.", 0.15).toDestination();
+
+            // Acoustic Grand Piano Modeling
+            synths.piano = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "triangle" },
+                envelope: {
+                    attack: 0.005,
+                    decay: 1.2,
+                    sustain: 0.08,
+                    release: 0.8
+                }
+            }).connect(masterReverb);
+
+            // Vintage FM Electric Piano
+            synths.epiano = new Tone.PolySynth(Tone.FMSynth, {
+                harmonyRatio: 3,
+                modulationIndex: 7,
+                oscillator: { type: "sine" },
+                envelope: {
+                    attack: 0.01,
+                    decay: 1.4,
+                    sustain: 0.15,
+                    release: 0.9
+                },
+                modulation: { type: "sine" },
+                modulationEnvelope: { attack: 0.1, decay: 0.3, sustain: 0.4, release: 0.2 }
+            }).connect(masterReverb).connect(delay);
+
+            // Majestic Pipe Organ
+            synths.organ = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "amsine", harmonicity: 0.5 },
+                envelope: {
+                    attack: 0.06,
+                    decay: 0.1,
+                    sustain: 1.0,
+                    release: 0.25
+                }
+            }).connect(masterReverb);
+
+            activeSynth = synths.piano;
+            isEngineInitialized = true;
+
+            // Update UI status
+            document.getElementById("status-indicator").className = "h-2 w-2 rounded-full bg-emerald-500 shadow-md shadow-emerald-500/50";
+            document.getElementById("status-text").innerText = "Sẵn sàng";
+            document.getElementById("status-text").classList.add("neon-glow-emerald");
+            showToast("Hệ thống âm thanh sẵn sàng!", "emerald");
+        }
+
+        /* Build the Piano Keys Layout Dynamically */
+        function renderKeyboard() {
+            const whiteContainer = document.getElementById("white-keys");
+            const blackContainer = document.getElementById("black-keys");
+
+            whiteContainer.innerHTML = "";
+            blackContainer.innerHTML = "";
+
+            // Calculate note start depending on Octave Offset
+            // Base Range starts at C3 + offset, span is 21 white keys (which corresponds to 3 full octaves: 36 total keys)
+            const baseOctave = 3 + octaveOffset;
+            const keys = [];
+
+            // Generate sequence of keys
+            for (let i = 0; i < 3; i++) {
+                const oct = baseOctave + i;
+                noteMapping.forEach(m => {
+                    keys.push({
+                        name: `${m.note}${oct}`,
+                        isBlack: m.isBlack
+                    });
+                });
+            }
+
+            // Grouping to arrange elements nicely
+            const whiteKeys = keys.filter(k => !k.isBlack);
+            const totalWhite = whiteKeys.length;
+            
+            // Render White Keys
+            whiteKeys.forEach((k, idx) => {
+                const keyElem = document.createElement("div");
+                keyElem.className = "white-key flex-1 bg-gradient-to-b from-white to-slate-100 hover:to-slate-200 border-r border-slate-300 rounded-b-md relative select-none cursor-pointer transition-colors shadow-[0_2px_4px_rgba(0,0,0,0.1)] flex flex-col justify-end pb-3 items-center";
+                keyElem.dataset.note = k.name;
+                keyElem.style.zIndex = "1";
+
+                const label = document.createElement("span");
+                label.className = "note-label text-[10px] md:text-xs font-bold text-slate-500 tracking-tighter select-none pointer-events-none transition-opacity duration-200";
+                label.innerText = showLabels ? translateNoteToVietnamese(k.name) : "";
+                keyElem.appendChild(label);
+
+                whiteContainer.appendChild(keyElem);
+            });
+
+            // Render Black Keys with relative positioning
+            let whiteIdx = 0;
+            keys.forEach((k, idx) => {
+                if (!k.isBlack) {
+                    whiteIdx++;
+                    return;
+                }
+
+                // Placing black keys precisely between white keys
+                const leftPercent = (whiteIdx / totalWhite) * 100;
+
+                const keyElem = document.createElement("div");
+                keyElem.className = "black-key absolute h-[60%] bg-gradient-to-b from-slate-800 to-black hover:from-slate-700 hover:to-slate-900 border-x border-b border-slate-950 rounded-b shadow-lg pointer-events-auto select-none cursor-pointer transition-transform duration-100";
+                keyElem.dataset.note = k.name;
+                // Black key width is roughly 60% of white key width
+                const keyWidthPercent = (0.6 / totalWhite) * 100;
+                keyElem.style.width = `${keyWidthPercent}%`;
+                keyElem.style.left = `calc(${leftPercent}% - ${keyWidthPercent / 2}%)`;
+                keyElem.style.zIndex = "10";
+
+                const label = document.createElement("span");
+                label.className = "note-label text-[7px] md:text-[9px] font-semibold text-slate-400 select-none pointer-events-none absolute bottom-1 w-full text-center transition-opacity duration-200";
+                label.innerText = showLabels ? translateNoteToVietnamese(k.name) : "";
+                keyElem.appendChild(label);
+
+                blackContainer.appendChild(keyElem);
+            });
+
+            setupTouchListeners();
+            rebuildLanesOverlay(whiteKeys, keys);
+        }
+
+        // Help visualize lanes on the visualizer canvas matching key layouts
+        function rebuildLanesOverlay(whiteKeys, allKeys) {
+            const container = document.getElementById("lanes-overlay");
+            container.innerHTML = "";
+            whiteKeys.forEach(() => {
+                const lane = document.createElement("div");
+                lane.className = "flex-1 border-r border-slate-700/40 h-full";
+                container.appendChild(lane);
+            });
+        }
+
+        // Convert key notations to local/traditional naming standards
+        function translateNoteToVietnamese(noteName) {
+            // "C4" -> "Đồ (C4)"
+            const noteLetter = noteName.replace(/[0-9]/g, '');
+            const octave = noteName.replace(/[^0-9]/g, '');
+            const dict = {
+                "C": "C", "C#": "C#", "D": "D", "D#": "D#", "E": "E",
+                "F": "F", "F#": "F#", "G": "G", "G#": "G#", "A": "A",
+                "A#": "A#", "B": "B"
+            };
+            return `${dict[noteLetter]}${octave}`;
+        }
+
+        /* Mouse and Poly-Touch Interaction */
+        function setupTouchListeners() {
+            const allKeys = document.querySelectorAll(".white-key, .black-key");
+
+            const getNoteFromPoint = (x, y) => {
+                // Determine if pointer is hovering black keys first (since they are on top)
+                const blackElems = document.querySelectorAll(".black-key");
+                for (let elem of blackElems) {
+                    const rect = elem.getBoundingClientRect();
+                    if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+                        return elem.dataset.note;
+                    }
+                }
+                const whiteElems = document.querySelectorAll(".white-key");
+                for (let elem of whiteElems) {
+                    const rect = elem.getBoundingClientRect();
+                    if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+                        return elem.dataset.note;
+                    }
+                }
+                return null;
+            };
+
+            const triggerNoteOn = (note) => {
+                if (!note) return;
+                playNote(note);
+                highlightKeyVisual(note, true);
+            };
+
+            const triggerNoteOff = (note) => {
+                if (!note) return;
+                stopNote(note);
+                highlightKeyVisual(note, false);
+            };
+
+            // Touch support (iOS/Android Multi-touch)
+            const handleTouchStart = (e) => {
+                e.preventDefault();
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    const t = e.changedTouches[i];
+                    const note = getNoteFromPoint(t.clientX, t.clientY);
+                    if (note) {
+                        activePressedNotes.set(t.identifier, note);
+                        triggerNoteOn(note);
+                    }
+                }
+            };
+
+            const handleTouchMove = (e) => {
+                e.preventDefault();
+                for (let i = 0; i < e.touches.length; i++) {
+                    const t = e.touches[i];
+                    const newNote = getNoteFromPoint(t.clientX, t.clientY);
+                    const oldNote = activePressedNotes.get(t.identifier);
+                    if (newNote && newNote !== oldNote) {
+                        if (oldNote) triggerNoteOff(oldNote);
+                        activePressedNotes.set(t.identifier, newNote);
+                        triggerNoteOn(newNote);
+                    }
+                }
+            };
+
+            const handleTouchEnd = (e) => {
+                e.preventDefault();
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    const t = e.changedTouches[i];
+                    const note = activePressedNotes.get(t.identifier);
+                    if (note) {
+                        triggerNoteOff(note);
+                        activePressedNotes.delete(t.identifier);
+                    }
+                }
+            };
+
+            const pianoWrapper = document.getElementById("piano-keys-wrapper");
+            
+            // Remove previous event listeners
+            pianoWrapper.removeEventListener("touchstart", handleTouchStart);
+            pianoWrapper.removeEventListener("touchmove", handleTouchMove);
+            pianoWrapper.removeEventListener("touchend", handleTouchEnd);
+            pianoWrapper.removeEventListener("touchcancel", handleTouchEnd);
+
+            // Attach new listeners
+            pianoWrapper.addEventListener("touchstart", handleTouchStart, { passive: false });
+            pianoWrapper.addEventListener("touchmove", handleTouchMove, { passive: false });
+            pianoWrapper.addEventListener("touchend", handleTouchEnd, { passive: false });
+            pianoWrapper.addEventListener("touchcancel", handleTouchEnd, { passive: false });
+
+            // Mouse fallbacks
+            let isMouseDown = false;
+            let lastMouseNote = null;
+
+            allKeys.forEach(k => {
+                k.addEventListener("mousedown", (e) => {
+                    e.preventDefault();
+                    isMouseDown = true;
+                    const note = k.dataset.note;
+                    lastMouseNote = note;
+                    triggerNoteOn(note);
+                });
+
+                k.addEventListener("mouseenter", (e) => {
+                    if (isMouseDown) {
+                        const note = k.dataset.note;
+                        if (lastMouseNote && lastMouseNote !== note) {
+                            triggerNoteOff(lastMouseNote);
+                        }
+                        lastMouseNote = note;
+                        triggerNoteOn(note);
+                    }
+                });
+
+                k.addEventListener("mouseup", (e) => {
+                    isMouseDown = false;
+                    if (lastMouseNote) {
+                        triggerNoteOff(lastMouseNote);
+                        lastMouseNote = null;
+                    }
+                });
+            });
+
+            document.addEventListener("mouseup", () => {
+                if (isMouseDown && lastMouseNote) {
+                    triggerNoteOff(lastMouseNote);
+                    isMouseDown = false;
+                    lastMouseNote = null;
+                }
+            });
+        }
+
+        /* Standard PC Keyboard Mapping mapping keyboard characters to notes */
+        const keyboardKeysMap = {
+            'a': 'C4', 'w': 'C#4', 's': 'D4', 'e': 'D#4', 'd': 'E4', 'f': 'F4',
+            't': 'F#4', 'g': 'G4', 'y': 'G#4', 'h': 'A4', 'u': 'A#4', 'j': 'B4',
+            'k': 'C5', 'o': 'C#5', 'l': 'D5', 'p': 'D#5', ';': 'E5'
+        };
+
+        const activeKeyboardNotes = new Set();
+
+        window.addEventListener("keydown", (e) => {
+            if (e.repeat) return;
+            const key = e.key.toLowerCase();
+            if (keyboardKeysMap[key]) {
+                const note = keyboardKeysMap[key];
+                // Shift notes matching current octave selection
+                const adjustedNote = shiftNoteOctave(note, octaveOffset);
+                if (!activeKeyboardNotes.has(adjustedNote)) {
+                    activeKeyboardNotes.add(adjustedNote);
+                    playNote(adjustedNote);
+                    highlightKeyVisual(adjustedNote, true);
+                }
+            }
+        });
+
+        window.addEventListener("keyup", (e) => {
+            const key = e.key.toLowerCase();
+            if (keyboardKeysMap[key]) {
+                const note = keyboardKeysMap[key];
+                const adjustedNote = shiftNoteOctave(note, octaveOffset);
+                if (activeKeyboardNotes.has(adjustedNote)) {
+                    activeKeyboardNotes.delete(adjustedNote);
+                    stopNote(adjustedNote);
+                    highlightKeyVisual(adjustedNote, false);
+                }
+            }
+        });
+
+        function shiftNoteOctave(noteString, shift) {
+            const noteLetter = noteString.replace(/[0-9]/g, '');
+            const octave = parseInt(noteString.replace(/[^0-9]/g, ''));
+            return `${noteLetter}${octave + shift}`;
+        }
+
+        /* Synthesizer audio trigger methods */
+        function playNote(noteName) {
+            if (!isEngineInitialized) return;
+            try {
+                activeSynth.triggerAttack(noteName, Tone.now());
+            } catch (err) {
+                console.error("Lỗi phát nốt:", err);
+            }
+        }
+
+        function stopNote(noteName) {
+            if (!isEngineInitialized) return;
+            try {
+                activeSynth.triggerRelease(noteName, Tone.now() + 0.1);
+            } catch (err) {
+                console.error("Lỗi nhả nốt:", err);
+            }
+        }
+
+        /* Highlighting key elements on screen */
+        function highlightKeyVisual(noteName, isActive) {
+            const key = document.querySelector(`[data-note="${noteName}"]`);
+            if (!key) return; // Note may be out of current octave span
+
+            if (key.classList.contains("white-key")) {
+                if (isActive) {
+                    key.classList.add("white-key-active");
+                } else {
+                    key.classList.remove("white-key-active");
+                }
+            } else if (key.classList.contains("black-key")) {
+                if (isActive) {
+                    key.classList.add("black-key-active");
+                } else {
+                    key.classList.remove("black-key-active");
+                }
+            }
+        }
+
+        /* Canvas Waterfall Loop (Visual cascade) */
+        const canvas = document.getElementById("canvas-visualizer");
+        const ctx = canvas.getContext("2d");
+
+        // Resize Canvas dynamically
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+        window.addEventListener("resize", () => {
+            resizeCanvas();
+            renderKeyboard(); // Redraw layout parameters
+        });
+        resizeCanvas();
+
+        const speedFactor = 160; // speed pixels per second
+
+        function renderVisuals() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (!isPlaying || loadedMidiNotes.length === 0) {
+                requestAnimationFrame(renderVisuals);
+                return;
+            }
+
+            const currentTime = Tone.Transport.seconds;
+            const viewDuration = canvas.height / speedFactor; // Seconds visible on screen
+
+            // Draw lanes matching keys positions to align nicely
+            const keysOnScreen = Array.from(document.querySelectorAll(".white-key, .black-key"));
+            const keyPositions = {};
+
+            keysOnScreen.forEach(k => {
+                const note = k.dataset.note;
+                const rect = k.getBoundingClientRect();
+                const parentRect = k.parentElement.parentElement.getBoundingClientRect();
+                
+                keyPositions[note] = {
+                    left: rect.left - parentRect.left,
+                    width: rect.width,
+                    isBlack: k.classList.contains("black-key")
+                };
+            });
+
+            // Iterate over note sequences to draw falling bars
+            loadedMidiNotes.forEach(note => {
+                const pos = keyPositions[note.name];
+                if (!pos) return; // Nốt không nằm trong tầm ngắm của bàn phím hiện tại
+
+                // Calculate vertical coordinates relative to time
+                const noteTimeSec = note.time;
+                const noteDur = note.duration;
+
+                // Time coordinate calculation
+                const noteYStart = canvas.height - ((noteTimeSec - currentTime) * speedFactor);
+                const noteHeight = noteDur * speedFactor;
+                const noteYEnd = noteYStart - noteHeight;
+
+                // Only draw inside canvas boundaries
+                if (noteYStart >= 0 && noteYEnd <= canvas.height) {
+                    ctx.save();
+                    
+                    // Distinct gradients for black vs white tracks
+                    let gradient = ctx.createLinearGradient(pos.left, noteYEnd, pos.left + pos.width, noteYStart);
+                    if (pos.isBlack) {
+                        gradient.addColorStop(0, '#2563eb');
+                        gradient.addColorStop(1, '#60a5fa');
+                    } else {
+                        gradient.addColorStop(0, '#3b82f6');
+                        gradient.addColorStop(1, '#10b981');
+                    }
+
+                    ctx.fillStyle = gradient;
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = pos.isBlack ? "rgba(37,99,235,0.4)" : "rgba(16,185,129,0.4)";
+                    
+                    // Draw nice rounded bars
+                    drawRoundedRect(ctx, pos.left + 2, noteYEnd, pos.width - 4, noteHeight, 6);
+                    ctx.restore();
+                }
+            });
+
+            requestAnimationFrame(renderVisuals);
+        }
+        requestAnimationFrame(renderVisuals);
+
+        // Canvas UI drawing helper
+        function drawRoundedRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        /* MIDI & Auto-play Scheduler Engine */
+        function loadDemoSong(songKey) {
+            stopPlayback();
+            const rawNotes = demoSongs[songKey];
+            if (!rawNotes) return;
+
+            // Load and normalize
+            loadedMidiNotes = rawNotes.map(n => ({...n}));
+            scheduleMidiPlayback(loadedMidiNotes);
+            showToast("Đã nạp bài hát mẫu!", "blue");
+        }
+
+        function scheduleMidiPlayback(notes) {
+            // Cancel current scheduling
+            if (midiPart) {
+                midiPart.dispose();
+            }
+
+            // Create new schedule part using Tone.Part
+            midiPart = new Tone.Part((time, note) => {
+                // Play audio synthesis
+                activeSynth.triggerAttackRelease(note.name, note.duration, time);
+                
+                // Animate key activation
+                Tone.Draw.schedule(() => {
+                    highlightKeyVisual(note.name, true);
+                    
+                    // De-highlight precisely after duration
+                    setTimeout(() => {
+                        highlightKeyVisual(note.name, false);
+                    }, note.duration * 1000);
+                }, time);
+
+            }, notes.map(n => [n.time, n]));
+
+            midiPart.start(0);
+            
+            // Adjust end timeline limits
+            const lastNote = notes.reduce((max, n) => (n.time + n.duration > max ? n.time + n.duration : max), 0);
+            Tone.Transport.loopEnd = lastNote + 1.0;
+            
+            // Allow controls interaction
+            document.getElementById("btn-play").removeAttribute("disabled");
+            document.getElementById("btn-stop").removeAttribute("disabled");
+        }
+
+        // Parse external binary .mid files
+        async function handleMidiUpload(file) {
+            stopPlayback();
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const midi = new Midi(arrayBuffer);
+                
+                // Extract track data
+                const flattenedNotes = [];
+                midi.tracks.forEach(track => {
+                    track.notes.forEach(note => {
+                        flattenedNotes.push({
+                            time: note.time,
+                            name: note.name,
+                            duration: note.duration,
+                            velocity: note.velocity
+                        });
+                    });
+                });
+
+                if (flattenedNotes.length === 0) {
+                    showToast("File MIDI không chứa dữ liệu nốt khả dụng!", "red");
+                    return;
+                }
+
+                // Sorting chronologically
+                flattenedNotes.sort((a, b) => a.time - b.time);
+
+                loadedMidiNotes = flattenedNotes;
+                scheduleMidiPlayback(loadedMidiNotes);
+
+                // Try reading standard tempo if specified
+                if (midi.header.tempos && midi.header.tempos.length > 0) {
+                    const midiBpm = Math.round(midi.header.tempos[0].bpm);
+                    updateBPM(midiBpm);
+                }
+
+                document.getElementById("midi-filename").innerText = file.name.substring(0, 15) + "...";
+                showToast("File MIDI sẵn sàng!", "emerald");
+
+            } catch (err) {
+                console.error(err);
+                showToast("Không đọc được tệp MIDI!", "red");
+            }
+        }
+
+        /* Controls Actions & Playback handlers */
+        function startPlayback() {
+            if (!isEngineInitialized) return;
+            Tone.start();
+            Tone.Transport.start();
+            isPlaying = true;
+
+            document.getElementById("btn-play").classList.add("hidden");
+            document.getElementById("btn-pause").classList.remove("hidden");
+            showToast("Đang phát tự động...", "emerald");
+        }
+
+        function pausePlayback() {
+            Tone.Transport.pause();
+            isPlaying = false;
+            document.getElementById("btn-pause").classList.add("hidden");
+            document.getElementById("btn-play").classList.remove("hidden");
+            showToast("Đã tạm dừng", "amber");
+        }
+
+        function stopPlayback() {
+            Tone.Transport.stop();
+            isPlaying = false;
+            document.getElementById("btn-pause").classList.add("hidden");
+            document.getElementById("btn-play").classList.remove("hidden");
+            
+            // Clear visual key traces
+            const keys = document.querySelectorAll(".white-key, .black-key");
+            keys.forEach(k => {
+                k.classList.remove("white-key-active", "black-key-active");
+            });
+
+            showToast("Đã dừng phát", "rose");
+        }
+
+        function updateBPM(bpmValue) {
+            currentBpm = bpmValue;
+            Tone.Transport.bpm.value = currentBpm;
+            document.getElementById("slider-tempo").value = currentBpm;
+            document.getElementById("label-bpm").innerText = currentBpm;
+        }
+
+        /* Event Listeners mapping for DOM Controls */
+        document.getElementById("btn-start").addEventListener("click", () => {
+            initSynthesizers();
+            renderKeyboard();
+            document.getElementById("init-overlay").classList.add("hidden");
+        });
+
+        document.getElementById("select-instrument").addEventListener("change", (e) => {
+            const val = e.target.value;
+            if (synths[val]) {
+                activeSynth = synths[val];
+                showToast(`Chuyển sang: ${e.target.options[e.target.selectedIndex].text}`, "blue");
+            }
+        });
+
+        document.getElementById("select-demo").addEventListener("change", (e) => {
+            const val = e.target.value;
+            if (val) {
+                loadDemoSong(val);
+            }
+        });
+
+        document.getElementById("midi-file").addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleMidiUpload(file);
+            }
+        });
+
+        document.getElementById("btn-play").addEventListener("click", startPlayback);
+        document.getElementById("btn-pause").addEventListener("click", pausePlayback);
+        document.getElementById("btn-stop").addEventListener("click", stopPlayback);
+
+        document.getElementById("slider-tempo").addEventListener("input", (e) => {
+            updateBPM(parseInt(e.target.value));
+        });
+
+        document.getElementById("btn-toggle-labels").addEventListener("click", () => {
+            showLabels = !showLabels;
+            const circle = document.getElementById("toggle-circle");
+            if (showLabels) {
+                circle.classList.remove("translate-x-0");
+                circle.classList.add("translate-x-4");
+            } else {
+                circle.classList.remove("translate-x-4");
+                circle.classList.add("translate-x-0");
+            }
+            renderKeyboard();
+        });
+
+        // Octave shifting event listeners
+        document.getElementById("btn-octave-down").addEventListener("click", () => {
+            if (octaveOffset > -2) {
+                octaveOffset--;
+                updateOctaveLabels();
+                renderKeyboard();
+            }
+        });
+
+        document.getElementById("btn-octave-up").addEventListener("click", () => {
+            if (octaveOffset < 2) {
+                octaveOffset++;
+                updateOctaveLabels();
+                renderKeyboard();
+            }
+        });
+
+        function updateOctaveLabels() {
+            const base = 3 + octaveOffset;
+            document.getElementById("label-octave").innerText = `C${base} - B${base + 2}`;
+        }
+
+        /* Dynamic Popups/Toast Messages Helper */
+        let toastTimeout = null;
+        function showToast(text, type = "blue") {
+            const toast = document.getElementById("toast-message");
+            const toastText = document.getElementById("toast-text");
+            
+            toastText.innerText = text;
+            
+            // Color variants
+            toast.className = `bg-slate-900/95 text-xs px-4 py-2 rounded-full border font-medium tracking-wide flex items-center gap-2 shadow-xl opacity-100 translate-y-0 transition-all duration-300 z-30`;
+            if (type === "emerald") {
+                toast.classList.add("border-emerald-500/30", "text-emerald-400");
+            } else if (type === "amber") {
+                toast.classList.add("border-amber-500/30", "text-amber-400");
+            } else if (type === "rose" || type === "red") {
+                toast.classList.add("border-rose-500/30", "text-rose-400");
+            } else {
+                toast.classList.add("border-blue-500/30", "text-blue-400");
+            }
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add("opacity-0", "translate-y-2");
+            }, 2500);
+        }
+
+        // Detect screen orientation on mobile dynamically
+        function checkOrientation() {
+            const isPortrait = window.innerHeight > window.innerWidth;
+            const overlay = document.getElementById("orientation-overlay");
+            if (isPortrait && window.innerWidth < 1024) {
+                overlay.classList.remove("hidden");
+            } else {
+                overlay.classList.add("hidden");
+            }
+        }
+        window.addEventListener("resize", checkOrientation);
+        window.addEventListener("load", checkOrientation);
+
+        // Bootstrap
+        window.onload = function() {
+            renderKeyboard();
+            checkOrientation();
+        };
+    </script>
+</body>
+</html>
