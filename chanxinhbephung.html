@@ -1,0 +1,1501 @@
+<title>Chân Xinh Của Bé</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,600;0,800;1,400;1,600&family=Dancing+Script:wght@700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+:root{
+  /* Layout: một khung phim dọc 360×640 đặt giữa nền rạp tối, phóng vừa màn hình; mọi cảnh vẽ trên hệ toạ độ đó */
+  --night:#0e0b10;
+  --film:#000;
+  --ink:#fbf3ea;
+  --rose:#ffb3c1;
+  --honey:#f6c870;
+  --sky:#a8d6ff;
+  --mint:#9fe3cb;
+  --f-sub:"Be Vietnam Pro","Segoe UI",system-ui,sans-serif;
+  --f-title:"Dancing Script","Segoe Script",cursive;
+  color-scheme:dark;
+}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--night);color:var(--ink);font-family:var(--f-sub);overflow:hidden;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+#stage{position:fixed;left:50%;top:50%;width:360px;height:640px;margin:-320px 0 0 -180px;overflow:hidden;overflow:clip;background:var(--film);transform-origin:50% 50%;touch-action:manipulation;box-shadow:0 0 90px rgba(0,0,0,.7)}
+#grade,#cam,#scenes{position:absolute;inset:0}
+#cam{transform-origin:50% 50%}
+.scene{position:absolute;inset:0}
+.world{position:absolute;left:0;top:0;transform-origin:0 0}
+.layer{position:absolute;left:0;top:0;overflow:visible}
+svg{overflow:visible;display:block}
+.soft{filter:blur(2.5px)}
+.softer{filter:blur(6px)}
+#tint{position:absolute;inset:0;mix-blend-mode:soft-light;opacity:0;pointer-events:none;background:#ffb070}
+#vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 78% 66% at 50% 47%,transparent 52%,rgba(12,6,12,.6) 100%)}
+#grain{position:absolute;inset:0;width:100%;height:100%;opacity:.09;mix-blend-mode:overlay;pointer-events:none}
+.lid{position:absolute;left:-20%;width:140%;height:57%;background:#050305;pointer-events:none}
+#lid-t{top:0;border-radius:0 0 50% 50%/0 0 40% 40%}
+#lid-b{bottom:0;border-radius:50% 50% 0 0/40% 40% 0 0}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.bar{position:absolute;left:0;right:0;height:46px;background:#000;pointer-events:none}
+#bar-t{top:0}
+#bar-b{bottom:0}
+#stamp{position:absolute;left:18px;top:58px;font:600 10.5px/1 var(--f-sub);letter-spacing:.24em;color:var(--ink);opacity:.9;text-shadow:0 1px 3px rgba(0,0,0,.6);pointer-events:none}
+#subs{position:absolute;left:18px;right:18px;bottom:60px;text-align:center;pointer-events:none;opacity:0}
+#subs .who{display:block;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin-bottom:5px;text-shadow:0 1px 3px #000}
+#subs .txt{display:block;font-size:16px;line-height:1.45;font-weight:600;color:var(--ink);text-shadow:0 1px 2px #000,0 0 14px rgba(0,0,0,.7);text-wrap:balance}
+#subs.sleepy .txt,#subs.thought .txt,#subs.dream .txt{font-weight:400;font-style:italic}
+#subs.muffled .txt{font-style:italic;font-weight:400;opacity:.78;filter:blur(.6px);letter-spacing:.02em}
+#subs.shout .txt{font-size:36px;font-weight:800;letter-spacing:.03em}
+#hint{position:absolute;left:0;right:0;top:63%;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;opacity:0;transition:opacity .3s}
+#hint.on{opacity:1}
+#hint .ring{width:46px;height:46px;border-radius:50%;border:2px solid rgba(255,255,255,.9);animation:ring 1.4s ease-out infinite}
+#hint .lbl{font-size:12.5px;font-weight:600;letter-spacing:.03em;background:rgba(0,0,0,.5);padding:6px 13px;border-radius:999px}
+#hint .lbl:empty{display:none}
+@keyframes ring{0%{transform:scale(.55);opacity:1}100%{transform:scale(1.45);opacity:0}}
+#skip{position:absolute;top:9px;right:10px;z-index:5;font:600 11.5px var(--f-sub);color:var(--ink);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:6px 12px;cursor:pointer}
+button:focus-visible{outline:2px solid var(--rose);outline-offset:3px}
+.card{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 30px;gap:14px}
+#start{background:radial-gradient(ellipse 120% 60% at 50% 0%,#5a2f33 0%,#24141a 45%,#0b080b 100%)}
+#start .sun{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#ffe2b8,#f6a38f 60%,rgba(246,163,143,0) 72%);margin-bottom:6px;animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(1.06)}}
+.eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--honey)}
+.title{font-family:var(--f-title);font-size:46px;line-height:1.05;color:#ffe3d3;text-wrap:balance;margin:0}
+.lede{font-size:13.5px;line-height:1.6;color:#e8d9cf;max-width:280px;margin:0}
+.note{font-size:11.5px;color:#b9a69c}
+.cta{font:700 15px var(--f-sub);color:#2a1218;background:var(--rose);border:0;border-radius:999px;padding:13px 34px;cursor:pointer;box-shadow:0 8px 24px rgba(255,140,160,.25)}
+#end{background:linear-gradient(to top,rgba(10,6,10,.95) 35%,rgba(10,6,10,.55) 70%,rgba(10,6,10,.25));justify-content:flex-end;padding-bottom:70px}
+.chip{font-size:12px;font-weight:600;color:#2a1d24;background:#fff3e6;border-radius:999px;padding:7px 14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+/* điện thoại chung */
+.phone-bg{position:absolute;left:-80px;top:-80px;width:520px;height:800px;filter:blur(10px)}
+.phone{position:absolute;left:70px;top:96px;width:220px;height:440px;border-radius:34px;background:#141016;padding:9px;box-sizing:border-box;box-shadow:0 30px 60px rgba(0,0,0,.45),inset 0 0 0 2px #3a3036}
+.screen{position:relative;width:100%;height:100%;border-radius:26px;overflow:hidden;color:#fff}
+.notch{position:absolute;top:8px;left:50%;width:66px;height:18px;margin-left:-33px;background:#141016;border-radius:12px;z-index:3}
+/* màn hình cuộc gọi */
+.call{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;text-align:center}
+.c-top{margin-top:52px;font-size:10px;font-weight:600;letter-spacing:.16em;opacity:.75}
+.avatar{width:96px;height:96px;border-radius:50%;margin-top:30px;background:#cfe3f5;overflow:hidden}
+.call-in .avatar{animation:pulse 1.4s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.5)}100%{box-shadow:0 0 0 24px rgba(255,255,255,0)}}
+.c-name{font-size:24px;font-weight:600;margin-top:16px}
+.c-sub{font-size:12.5px;opacity:.8;margin-top:4px;font-variant-numeric:tabular-nums}
+.c-btns{position:absolute;bottom:38px;left:0;right:0;display:flex;justify-content:space-around;font-size:10px}
+.c-btns>div{display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.95}
+.cb{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:19px}
+.cb.red{background:#ff4d5e}
+.cb.red svg{transform:rotate(135deg)}
+.cb.green{background:#34c46a;animation:pulse 1.2s ease-out infinite}
+.cb.grey{background:rgba(255,255,255,.18)}
+/* chat của cô Hậu */
+.screen.chat{display:flex;flex-direction:column;background:#eef2f7;color:#1d2330}
+.chat-h{padding:32px 10px 9px;background:#2f80ed;color:#fff;display:flex;align-items:center;gap:7px;font-weight:700;font-size:12px;line-height:1.25}
+.chat-h .back{font-size:20px;font-weight:400;opacity:.9}
+.chat-h .av{width:30px;height:30px;border-radius:50%;background:#cfe3f5;overflow:hidden;flex:none}
+.chat-h small{display:block;font-weight:400;font-size:9.5px;opacity:.85}
+.chat-b{flex:1;min-height:0;padding:10px;display:flex;flex-direction:column;gap:7px;justify-content:flex-end;overflow:hidden}
+.bub{max-width:84%;padding:7px 11px;border-radius:14px;font-size:13px;line-height:1.38}
+.bub.me{align-self:flex-end;background:#d6e8ff;border-bottom-right-radius:4px;font-size:15px}
+.bub.him{align-self:flex-start;background:#fff;border-bottom-left-radius:4px}
+.chat-in{margin:0 8px 14px;background:#fff;border-radius:18px;padding:8px 12px;font-size:15px;line-height:1.35;min-height:20px}
+.chat-in .caret{display:inline-block;width:2px;height:15px;background:#2f80ed;vertical-align:-2px;margin-left:1px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.ring-ov{position:absolute;left:8px;right:8px;top:30px;z-index:2;background:rgba(28,34,48,.96);color:#fff;border-radius:16px;padding:9px 10px;display:flex;align-items:center;gap:9px;font-size:11.5px;line-height:1.3;box-shadow:0 10px 24px rgba(0,0,0,.3)}
+.ring-ov .av{width:32px;height:32px;border-radius:50%;background:#cfe3f5;overflow:hidden;flex:none}
+.ring-ov .cb{width:32px;height:32px;margin-left:auto;flex:none}
+.amb{position:absolute;left:-80px;top:-80px;width:520px;height:800px;background:linear-gradient(#1a2233,#0f141f);filter:blur(8px);overflow:hidden}
+.amb span{position:absolute;width:320px;height:320px;border-radius:50%;animation:siren .9s steps(1) infinite}
+.amb .sr{left:-40px;top:20px;background:radial-gradient(circle,rgba(255,60,80,.7),rgba(255,60,80,0) 65%)}
+.amb .sb{right:-40px;top:120px;background:radial-gradient(circle,rgba(60,140,255,.7),rgba(60,140,255,0) 65%);animation-delay:.45s}
+@keyframes siren{50%{opacity:0}}
+/* video call */
+.v-top{position:absolute;left:0;right:0;top:32px;text-align:center;font-size:11.5px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.6);font-variant-numeric:tabular-nums;z-index:2}
+.pip{position:absolute;right:10px;top:54px;width:52px;height:74px;border-radius:10px;overflow:hidden;border:2px solid rgba(255,255,255,.75);background:#f4d3dc;z-index:2}
+.v-btns{position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;gap:22px;z-index:2}
+.v-btns .cb{width:42px;height:42px;font-size:16px}
+.hearts{position:absolute;inset:0;pointer-events:none;z-index:2}
+.hearts span{position:absolute;font-size:18px}
+/* màn hình khóa */
+.l-date{margin-top:46px;text-align:center;font-size:11.5px;font-weight:600;opacity:.92}
+.l-time{text-align:center;font-size:62px;font-weight:300;line-height:1.05;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.notif{margin:8px 10px 0;background:rgba(255,255,255,.88);color:#2a1d24;border-radius:15px;padding:9px 11px;text-align:left;overflow:hidden}
+.notif .app{display:flex;justify-content:space-between;font-size:9px;opacity:.65;font-weight:600}
+.notif .who{font-weight:800;font-size:12px;margin-top:2px}
+.notif .msg{font-size:12px;line-height:1.35}
+/* giấc mơ */
+.dream-bg{position:absolute;left:-80px;top:-80px;width:520px;height:800px;background:linear-gradient(180deg,#fff6ee 0%,#ffd9e2 55%,#d6e4ff 100%)}
+.bokeh{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95),rgba(255,255,255,0) 70%);animation:floaty 6s ease-in-out infinite alternate}
+.spark{position:absolute;width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2px rgba(255,240,200,.9);animation:rise 5s linear infinite}
+@keyframes floaty{to{transform:translateY(-34px) scale(1.08)}}
+@keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(-420px);opacity:0}}
+.spin{animation:spin 7s linear infinite;transform-box:fill-box;transform-origin:center}
+@keyframes spin{to{transform:rotate(360deg)}}
+.steam path{animation:steam 2.6s ease-in-out infinite;opacity:0}
+.steam path:nth-child(2){animation-delay:.9s}
+.steam path:nth-child(3){animation-delay:1.7s}
+@keyframes steam{0%{opacity:0;transform:translateY(6px)}40%{opacity:.7}100%{opacity:0;transform:translateY(-14px)}}
+.ecg{stroke-dasharray:140 300;animation:ecg 1.1s linear infinite}
+@keyframes ecg{from{stroke-dashoffset:300}to{stroke-dashoffset:-140}}
+.dust circle{animation:floaty 5s ease-in-out infinite alternate}
+.dust circle:nth-child(2n){animation-duration:7s}
+@media (prefers-reduced-motion:reduce){.spin,.bokeh,.spark,.steam path,.dust circle,#start .sun,.amb span,.cb.green,.call-in .avatar{animation:none}}
+</style>
+
+<div id="stage">
+  <!-- ========== THƯ VIỆN NHÂN VẬT ========== -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <pattern id="pj" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="14" height="14" fill="#f6b8c6"/><circle cx="3.5" cy="3.5" r="1.7" fill="#fff"/><circle cx="10.5" cy="10.5" r="1.7" fill="#fff"/></pattern>
+      <pattern id="quilt" width="26" height="26" patternUnits="userSpaceOnUse"><rect width="26" height="26" fill="#f9c6cd"/><path d="M0 13H26M13 0V26" stroke="#fcdfe3" stroke-width="5"/><circle cx="13" cy="13" r="2.4" fill="#fff"/></pattern>
+      <pattern id="tile" width="44" height="44" patternUnits="userSpaceOnUse"><rect width="44" height="44" fill="#efe2cf"/><rect width="22" height="22" fill="#e2cfb6"/><rect x="22" y="22" width="22" height="22" fill="#e2cfb6"/></pattern>
+      <pattern id="gingham" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#fff"/><rect width="8" height="16" fill="#f4a3a3" opacity=".45"/><rect width="16" height="8" fill="#f4a3a3" opacity=".45"/></pattern>
+      <pattern id="gown" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#bfdcf2"/><path d="M3 3l2 2M9 9l2 2" stroke="#8fbde3" stroke-width="1.4"/></pattern>
+      <linearGradient id="beam" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff4cf" stop-opacity=".95"/><stop offset="1" stop-color="#fff4cf" stop-opacity="0"/></linearGradient>
+      <radialGradient id="glow"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".5" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+      <radialGradient id="warm"><stop offset="0" stop-color="#ffe9b8" stop-opacity="1"/><stop offset="1" stop-color="#ffe9b8" stop-opacity="0"/></radialGradient>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe3ff"/><stop offset="1" stop-color="#fff2d6"/></linearGradient>
+      <linearGradient id="woodg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d7a274"/><stop offset="1" stop-color="#bf8658"/></linearGradient>
+      <path id="ico-call" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" fill="#fff"/>
+
+      <!-- PHỤNG: tâm đầu (0,0) -->
+      <g id="ph-hairback"><path d="M-38,-8 C-46,-52 -18,-64 0,-64 C22,-64 46,-52 40,-8 C44,34 44,70 34,96 L-34,96 C-44,70 -44,34 -38,-8Z" fill="#3a2630"/></g>
+      <g id="ph-face">
+        <ellipse cx="-31" cy="6" rx="5" ry="7" fill="#f1c4ab"/><ellipse cx="31" cy="6" rx="5" ry="7" fill="#f1c4ab"/>
+        <ellipse cx="0" cy="4" rx="30" ry="33" fill="#f8d6c2"/>
+        <ellipse cx="-17" cy="16" rx="6" ry="3.5" fill="#ee9aa6" opacity=".55"/><ellipse cx="17" cy="16" rx="6" ry="3.5" fill="#ee9aa6" opacity=".55"/>
+        <path d="M-33,0 C-38,-42 -12,-56 4,-54 C28,-52 40,-34 33,0 C28,-16 20,-24 12,-27 C10,-17 1,-12 -8,-10 C-5,-18 -6,-24 -8,-27 C-16,-17 -25,-8 -33,0Z" fill="#3a2630"/>
+        <path d="M2,-54 C-4,-70 16,-76 12,-62" fill="none" stroke="#3a2630" stroke-width="3" stroke-linecap="round"/>
+      </g>
+      <g id="ph-eyes-open">
+        <ellipse cx="-12" cy="6" rx="3.6" ry="4.6" fill="#2b1d24"/><circle cx="-11" cy="4.4" r="1.3" fill="#fff"/>
+        <ellipse cx="12" cy="6" rx="3.6" ry="4.6" fill="#2b1d24"/><circle cx="13" cy="4.4" r="1.3" fill="#fff"/>
+        <path d="M-17,-1 q5,-3 9,-1 M8,-2 q5,-2 9,1" stroke="#2b1d24" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      </g>
+      <g id="ph-eyes-half">
+        <path d="M-17,5 h10 M7,5 h10" stroke="#2b1d24" stroke-width="2" stroke-linecap="round"/>
+        <path d="M-15.5,5 a3.5,3.4 0 0 0 7,0Z M8.5,5 a3.5,3.4 0 0 0 7,0Z" fill="#2b1d24"/>
+        <path d="M-18,-3 L-8,-1 M8,-1 L18,-3" stroke="#2b1d24" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      </g>
+      <g id="ph-eyes-sleepy" fill="none" stroke="#2b1d24" stroke-width="2.2" stroke-linecap="round"><path d="M-17,7 q5,3 10,0"/><path d="M7,7 q5,3 10,0"/></g>
+      <g id="ph-mouth-smile"><path d="M-5,20 q5,4 10,0" fill="none" stroke="#b0545f" stroke-width="2" stroke-linecap="round"/></g>
+      <g id="ph-mouth-pout"><path d="M-5,23 q5,-4 10,0" fill="none" stroke="#b0545f" stroke-width="2" stroke-linecap="round"/></g>
+      <g id="ph-mouth-laugh"><path d="M-7,18 q7,10 14,0Z" fill="#a24a56"/></g>
+      <g id="ph-mouth-yawn"><ellipse cx="0" cy="21" rx="4.5" ry="6" fill="#a24a56"/></g>
+      <g id="ph-mouth-o"><ellipse cx="0" cy="21" rx="2.8" ry="3.4" fill="#a24a56"/></g>
+      <!-- thân Phụng: chân tại (0,0), tâm đầu tại (0,-200) -->
+      <g id="ph-body">
+        <use href="#ph-hairback" transform="translate(0,-200)"/>
+        <rect x="-7" y="-172" width="14" height="14" fill="#f1c4ab"/>
+        <path d="M-26,-96 L-29,-16 L-5,-16 L-1,-66 L1,-66 L5,-16 L29,-16 L26,-96Z" fill="#f7c6d0"/>
+        <path d="M-29,-19 L-5,-19 M5,-19 L29,-19" stroke="#f0aebd" stroke-width="4"/>
+        <rect x="-23" y="-17" width="12" height="8" fill="#f1c4ab"/><rect x="11" y="-17" width="12" height="8" fill="#f1c4ab"/>
+        <ellipse cx="-24" cy="-17" rx="3" ry="8" fill="#fffaf7" stroke="#f3c0cb" stroke-width="1.2" transform="rotate(-18 -24 -17)"/>
+        <ellipse cx="24" cy="-17" rx="3" ry="8" fill="#fffaf7" stroke="#f3c0cb" stroke-width="1.2" transform="rotate(18 24 -17)"/>
+        <ellipse cx="-18" cy="-6" rx="15" ry="8" fill="#fffaf7"/><ellipse cx="18" cy="-6" rx="15" ry="8" fill="#fffaf7"/>
+        <circle cx="-22" cy="-7" r="1.3" fill="#3a2630"/><circle cx="-14" cy="-7" r="1.3" fill="#3a2630"/>
+        <circle cx="14" cy="-7" r="1.3" fill="#3a2630"/><circle cx="22" cy="-7" r="1.3" fill="#3a2630"/>
+        <path d="M-29,-162 C-35,-150 -36,-114 -32,-90 L32,-90 C36,-114 35,-150 29,-162 C17,-170 -17,-170 -29,-162Z" fill="url(#pj)"/>
+        <path d="M-32,-93 L32,-93" stroke="#f0aebd" stroke-width="5"/>
+        <path d="M-11,-167 L0,-152 L11,-167" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+      </g>
+      <g id="ph-arms">
+        <path d="M-28,-156 C-40,-140 -42,-116 -39,-98" stroke="#f6b8c6" stroke-width="13" fill="none" stroke-linecap="round"/>
+        <path d="M28,-156 C40,-140 42,-116 39,-98" stroke="#f6b8c6" stroke-width="13" fill="none" stroke-linecap="round"/>
+        <circle cx="-39" cy="-92" r="6.5" fill="#f1c4ab"/><circle cx="39" cy="-92" r="6.5" fill="#f1c4ab"/>
+      </g>
+
+      <!-- CÔ HẬU: tâm đầu (0,0) -->
+      <g id="hau-head">
+        <circle cx="0" cy="-38" r="15" fill="#2f2a2c"/>
+        <ellipse cx="-31" cy="6" rx="5" ry="6.5" fill="#e6b294"/><ellipse cx="31" cy="6" rx="5" ry="6.5" fill="#e6b294"/>
+        <ellipse cx="0" cy="5" rx="30" ry="31" fill="#f0c3a5"/>
+        <path d="M-32,4 C-34,-30 -12,-38 0,-31 C12,-38 34,-30 32,4 C26,-14 14,-21 0,-19 C-14,-21 -26,-14 -32,4Z" fill="#2f2a2c"/>
+        <path d="M6,-33 C14,-35 24,-29 28,-18" stroke="#9a9095" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <ellipse cx="-17" cy="15" rx="6" ry="3.5" fill="#e98f8f" opacity=".4"/><ellipse cx="17" cy="15" rx="6" ry="3.5" fill="#e98f8f" opacity=".4"/>
+      </g>
+      <g id="hau-kind" fill="none" stroke-linecap="round"><path d="M-17,6 q5,-5 10,0 M7,6 q5,-5 10,0" stroke="#2b1d24" stroke-width="2.2"/><path d="M-7,18 q7,7 14,0" stroke="#a24a56" stroke-width="2.2"/></g>
+      <g id="hau-laugh"><path d="M-17,6 q5,-5 10,0 M7,6 q5,-5 10,0" stroke="#2b1d24" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M-9,16 q9,13 18,0Z" fill="#8c3b45"/></g>
+      <g id="hau-shock">
+        <path d="M-20,-9 q7,-6 13,-2 M7,-11 q7,-4 13,2" stroke="#2f2a2c" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <circle cx="-12" cy="5" r="5.5" fill="#fff" stroke="#2b1d24" stroke-width="1.6"/><circle cx="-12" cy="6" r="2.3" fill="#2b1d24"/>
+        <circle cx="12" cy="5" r="5.5" fill="#fff" stroke="#2b1d24" stroke-width="1.6"/><circle cx="12" cy="6" r="2.3" fill="#2b1d24"/>
+        <ellipse cx="0" cy="22" rx="6" ry="8" fill="#8c3b45"/>
+      </g>
+      <g id="hau-worry">
+        <path d="M-19,-5 L-7,-10 M7,-10 L19,-5" stroke="#2f2a2c" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <ellipse cx="-12" cy="6" rx="3.4" ry="4.4" fill="#2b1d24"/><ellipse cx="12" cy="6" rx="3.4" ry="4.4" fill="#2b1d24"/>
+        <circle cx="-11" cy="4.6" r="1.2" fill="#fff"/><circle cx="13" cy="4.6" r="1.2" fill="#fff"/>
+        <ellipse cx="0" cy="21" rx="5" ry="4" fill="#8c3b45"/>
+      </g>
+      <!-- thân cô Hậu: chân tại (0,0), tâm đầu tại (0,-190) -->
+      <g id="hau-body">
+        <rect x="-7" y="-162" width="14" height="14" fill="#e6b294"/>
+        <path d="M-25,-80 L-27,-12 L-5,-12 L-1,-56 L1,-56 L5,-12 L27,-12 L25,-80Z" fill="#5b4a5e"/>
+        <ellipse cx="-16" cy="-6" rx="13" ry="7" fill="#6b4f3f"/><ellipse cx="16" cy="-6" rx="13" ry="7" fill="#6b4f3f"/>
+        <path d="M-31,-152 C-38,-140 -38,-100 -34,-74 L34,-74 C38,-100 38,-140 31,-152 C18,-160 -18,-160 -31,-152Z" fill="#b8a2d8"/>
+        <path d="M-15,-152 L-20,-128 M15,-152 L20,-128" stroke="#fffaf2" stroke-width="4"/>
+        <path d="M-22,-128 L22,-128 L27,-42 C10,-36 -10,-36 -27,-42Z" fill="#fffaf2"/>
+        <path d="M-27,-44 C-10,-38 10,-38 27,-44" stroke="#f3b7a7" stroke-width="3" fill="none"/>
+        <rect x="-10" y="-84" width="20" height="14" rx="3" fill="none" stroke="#eadbc9" stroke-width="2"/>
+      </g>
+      <g id="hau-arms">
+        <path d="M-30,-146 C-42,-128 -40,-112 -22,-108" stroke="#b8a2d8" stroke-width="13" fill="none" stroke-linecap="round"/>
+        <path d="M30,-146 C42,-128 40,-112 22,-108" stroke="#b8a2d8" stroke-width="13" fill="none" stroke-linecap="round"/>
+        <circle cx="-18" cy="-108" r="6.5" fill="#f0c3a5"/><circle cx="18" cy="-108" r="6.5" fill="#f0c3a5"/>
+      </g>
+      <g id="plate">
+        <ellipse cx="0" cy="0" rx="34" ry="10" fill="#fff" stroke="#e6ddd3" stroke-width="1.5"/>
+        <ellipse cx="0" cy="-1" rx="24" ry="6" fill="#f3ede6"/>
+        <path d="M-27,-5 C-21,-16 3,-18 9,-10 C5,-3 -17,-1 -27,-5Z" fill="#d89a52"/>
+        <path d="M-19,-10 l4,-3 M-11,-12 l4,-3 M-3,-12 l4,-3" stroke="#b97a3a" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M5,-5 C5,-14 27,-14 27,-5 C27,0 8,1 5,-5Z" fill="#fffdf6"/><circle cx="16" cy="-8" r="4.3" fill="#f6b31b"/>
+      </g>
+
+      <!-- HOÀNG -->
+      <g id="ho-base">
+        <ellipse cx="-31" cy="6" rx="5" ry="7" fill="#eab995"/><ellipse cx="31" cy="6" rx="5" ry="7" fill="#eab995"/>
+        <ellipse cx="0" cy="4" rx="30" ry="34" fill="#f3cbae"/>
+        <path d="M-33,4 C-40,-38 -16,-58 4,-57 C30,-56 42,-36 33,4 C31,-10 26,-18 18,-21 L21,-11 C10,-19 -1,-22 -12,-20 L-9,-12 C-18,-16 -27,-10 -33,4Z" fill="#221d26"/>
+        <ellipse cx="-18" cy="16" rx="5" ry="3" fill="#ee9aa6" opacity=".35"/><ellipse cx="18" cy="16" rx="5" ry="3" fill="#ee9aa6" opacity=".35"/>
+      </g>
+      <g id="ho-smile">
+        <path d="M-17,7 q5,-5 10,0 M7,7 q5,-5 10,0" stroke="#221d26" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <path d="M-18,-4 q6,-3 11,-1 M7,-5 q6,-2 11,1" stroke="#221d26" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M-8,19 q8,8 16,0" stroke="#9c4a4f" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      </g>
+      <g id="ho-worry">
+        <path d="M-19,-3 L-7,-9 M7,-9 L19,-3" stroke="#221d26" stroke-width="2.4" stroke-linecap="round"/>
+        <ellipse cx="-12" cy="7" rx="3.4" ry="4.4" fill="#221d26"/><ellipse cx="12" cy="7" rx="3.4" ry="4.4" fill="#221d26"/>
+        <circle cx="-11" cy="5.6" r="1.2" fill="#fff"/><circle cx="13" cy="5.6" r="1.2" fill="#fff"/>
+        <path d="M-6,22 q3,-3 6,0 q3,3 6,0" stroke="#9c4a4f" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </g>
+      <g id="ho-hold">
+        <path d="M-19,-7 q6,-4 12,-2 M7,-9 q6,-2 12,2" stroke="#221d26" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <path d="M-17,7 q5,-4 10,0" stroke="#221d26" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <ellipse cx="12" cy="7" rx="3.4" ry="4.4" fill="#221d26"/><circle cx="13" cy="5.6" r="1.2" fill="#fff"/>
+        <path d="M-8,21 q4,3 8,0 q4,-3 8,0" stroke="#9c4a4f" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <ellipse cx="-18" cy="16" rx="7" ry="4" fill="#ee9aa6" opacity=".6"/><ellipse cx="18" cy="16" rx="7" ry="4" fill="#ee9aa6" opacity=".6"/>
+      </g>
+      <g id="ho-head"><use href="#ho-base"/><use href="#ho-smile"/></g>
+      <g id="ho-torso">
+        <rect x="-8" y="28" width="16" height="22" fill="#eab995"/>
+        <path d="M-74,170 C-74,96 -52,62 -20,54 L20,54 C52,62 74,96 74,170Z" fill="#fbfaf7"/>
+        <path d="M-74,170 C-74,96 -54,64 -26,56 L-14,82 L-10,170Z" fill="#a9cdea"/>
+        <path d="M74,170 C74,96 54,64 26,56 L14,82 L10,170Z" fill="#a9cdea"/>
+        <path d="M-12,54 Q0,66 12,54" fill="none" stroke="#e8e3dc" stroke-width="3"/>
+      </g>
+      <g id="ho-bust"><use href="#ho-torso"/><use href="#ho-head"/></g>
+
+      <!-- BÁC SĨ -->
+      <g id="dr-head">
+        <ellipse cx="-31" cy="6" rx="5" ry="7" fill="#e3b391"/><ellipse cx="31" cy="6" rx="5" ry="7" fill="#e3b391"/>
+        <ellipse cx="0" cy="4" rx="30" ry="34" fill="#efc4a3"/>
+        <path d="M-33,0 C-38,-40 -14,-58 6,-56 C30,-54 40,-36 33,0 C30,-20 18,-30 -2,-30 C-14,-30 -26,-20 -33,0Z" fill="#2b2326"/>
+        <path d="M-4,-31 C10,-46 28,-40 33,-16 C26,-28 12,-32 -4,-31Z" fill="#2b2326"/>
+        <path d="M-17,7 q5,-4 10,0 M7,7 q5,-4 10,0" stroke="#2b1d24" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <rect x="-24" y="-3" width="19" height="15" rx="5" fill="rgba(255,255,255,.18)" stroke="#3d4b5c" stroke-width="2"/>
+        <rect x="5" y="-3" width="19" height="15" rx="5" fill="rgba(255,255,255,.18)" stroke="#3d4b5c" stroke-width="2"/>
+        <path d="M-5,3 h10" stroke="#3d4b5c" stroke-width="2"/>
+        <path d="M-6,20 q6,5 12,0" stroke="#a04f4f" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </g>
+      <g id="dr-bust">
+        <rect x="-8" y="28" width="16" height="22" fill="#e3b391"/>
+        <path d="M-74,170 C-74,96 -52,62 -20,54 L20,54 C52,62 74,96 74,170Z" fill="#7fb7d8"/>
+        <path d="M-14,54 L0,80 L14,54Z" fill="#efc4a3"/>
+        <path d="M-74,170 C-74,96 -54,64 -24,56 L-8,122 L-6,170Z" fill="#fdfdfb"/>
+        <path d="M74,170 C74,96 54,64 24,56 L8,122 L6,170Z" fill="#fdfdfb"/>
+        <path d="M-24,56 L-14,92 M24,56 L14,92" stroke="#e1e4e6" stroke-width="2"/>
+        <path d="M-18,60 C-30,92 -10,118 0,120 C10,118 30,92 18,60" fill="none" stroke="#3d4b5c" stroke-width="3"/>
+        <circle cx="0" cy="126" r="7" fill="#c9d2da" stroke="#3d4b5c" stroke-width="2"/>
+        <rect x="30" y="98" width="24" height="11" rx="2" fill="#fff" stroke="#b9cbd6"/>
+        <use href="#dr-head"/>
+        <path d="M-24,27 Q0,44 24,27 L22,40 Q0,55 -22,40Z" fill="#bfe3f1"/>
+        <path d="M-24,30 L-31,10 M24,30 L31,10" stroke="#bfe3f1" stroke-width="1.6"/>
+      </g>
+    </defs>
+  </svg>
+
+  <div id="grade"><div id="cam"><div id="scenes">
+
+    <!-- 1 · Trần nhà (góc nhìn Phụng) -->
+    <section class="scene" id="s-ceil" hidden>
+      <div class="world" style="width:360px;height:640px">
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <rect x="-200" y="-200" width="760" height="1040" fill="#f6e4d4"/>
+          <polygon points="-200,-200 560,-200 560,40 -200,130" fill="#eed6c2"/>
+          <path d="M-200,130 L560,40" stroke="#e2c4ad" stroke-width="3"/>
+          <polygon points="230,70 380,52 380,230 262,236" fill="#fff2cc" opacity=".75"/>
+          <polygon points="380,-60 440,-60 70,720 -120,720" fill="url(#beam)" opacity=".55"/>
+          <g transform="translate(180 330)">
+            <ellipse cx="0" cy="0" rx="120" ry="120" fill="url(#warm)" opacity=".35"/>
+            <g class="spin">
+              <ellipse cx="54" cy="0" rx="56" ry="11" fill="#e3cbb4"/>
+              <ellipse cx="-54" cy="0" rx="56" ry="11" fill="#e3cbb4"/>
+              <ellipse cx="0" cy="54" rx="11" ry="56" fill="#e3cbb4"/>
+              <ellipse cx="0" cy="-54" rx="11" ry="56" fill="#e3cbb4"/>
+            </g>
+            <circle r="15" fill="#b8967a"/><circle r="6" fill="#d9bea4"/>
+          </g>
+          <g class="dust" fill="#fff8e1">
+            <circle cx="250" cy="200" r="1.8"/><circle cx="210" cy="300" r="1.4"/><circle cx="160" cy="420" r="2"/>
+            <circle cx="120" cy="500" r="1.5"/><circle cx="280" cy="140" r="1.3"/><circle cx="190" cy="250" r="1.6"/>
+          </g>
+        </svg>
+        <svg class="layer softer" data-d="1.4" width="360" height="640" viewBox="0 0 360 640">
+          <path d="M-200,590 C0,548 200,606 560,566 L560,900 L-200,900Z" fill="url(#quilt)"/>
+          <ellipse cx="-30" cy="40" rx="110" ry="70" fill="#ffffff" opacity=".9"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 2 · Cuộc gọi lúc 8 giờ -->
+    <section class="scene" id="s-call" hidden>
+      <div class="world" style="width:360px;height:640px">
+        <div class="layer phone-bg" data-d=".8" style="background:radial-gradient(circle at 20% 30%,#ffe2c4 0 12%,transparent 13%),radial-gradient(circle at 78% 20%,#fff1d0 0 9%,transparent 10%),radial-gradient(circle at 70% 70%,#ffd0c2 0 14%,transparent 15%),linear-gradient(#efc2a6,#c98a7a)"></div>
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <path d="M60,700 C40,560 90,470 180,470 C270,470 320,560 300,700Z" fill="#f1c4ab"/>
+          <path d="M40,700 C40,640 60,610 90,600 L270,600 C300,610 320,640 320,700Z" fill="url(#pj)"/>
+        </svg>
+        <div class="layer" data-d="1" style="width:360px;height:640px">
+          <div class="phone"><div class="screen" style="background:linear-gradient(180deg,#4a5a80 0%,#2a3150 60%,#1c2034 100%)">
+            <div class="notch"></div>
+            <div class="call call-in">
+              <div class="c-top">CUỘC GỌI ĐẾN</div>
+              <div class="avatar"><svg width="96" height="96" viewBox="-46 -60 92 104" preserveAspectRatio="xMidYMid slice"><use href="#ho-head"/></svg></div>
+              <div class="c-name">Chằm (gấu) 🐻</div>
+              <div class="c-sub">đang gọi…</div>
+              <div class="c-btns">
+                <div><span class="cb red"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#ico-call"/></svg></span>Từ chối</div>
+                <div><span class="cb green c-accept"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#ico-call"/></svg></span>Nghe máy</div>
+              </div>
+            </div>
+            <div class="call call-on" hidden>
+              <div class="c-top">ĐANG GỌI</div>
+              <div class="avatar"><svg width="96" height="96" viewBox="-46 -60 92 104" preserveAspectRatio="xMidYMid slice"><use href="#ho-head"/></svg></div>
+              <div class="c-name">Chằm (gấu) 🐻</div>
+              <div class="c-sub c-status"><span class="c-timer">00:00</span></div>
+              <div class="c-btns">
+                <div><span class="cb grey">🔇</span>Tắt tiếng</div>
+                <div><span class="cb red c-end"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#ico-call"/></svg></span>Kết thúc</div>
+                <div><span class="cb grey">🔊</span>Loa</div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <ellipse cx="68" cy="300" rx="12" ry="19" fill="#f1c4ab"/><ellipse cx="66" cy="346" rx="12" ry="19" fill="#f1c4ab"/><ellipse cx="68" cy="392" rx="12" ry="18" fill="#f1c4ab"/>
+          <ellipse cx="294" cy="420" rx="15" ry="40" fill="#f1c4ab" transform="rotate(-20 294 420)"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 3 · Phòng ngủ -->
+    <section class="scene" id="s-bed" hidden>
+      <div class="world" style="width:360px;height:640px">
+        <svg class="layer" data-d=".95" width="360" height="640" viewBox="0 0 360 640">
+          <rect x="-200" y="-200" width="760" height="1040" fill="#ffe2cf"/>
+          <rect x="-200" y="470" width="760" height="400" fill="#e8c1a3"/>
+          <path d="M-200,520 H560 M-200,580 H560 M-200,650 H560" stroke="#dcb090" stroke-width="2"/>
+          <polygon points="200,470 330,470 250,640 60,640" fill="#fff0cc" opacity=".45"/>
+          <g transform="translate(206 90)">
+            <rect x="0" y="0" width="124" height="160" rx="6" fill="#fff"/>
+            <rect x="8" y="8" width="108" height="144" fill="url(#sky)"/>
+            <circle cx="84" cy="44" r="18" fill="#fff6c8"/>
+            <path d="M62,8 V152 M8,80 H116" stroke="#fff" stroke-width="5"/>
+            <path d="M-14,-8 C6,40 2,120 -10,176 L22,176 C14,110 16,40 10,-8Z" fill="#f4a9b8"/>
+            <path d="M138,-8 C118,40 122,120 134,176 L102,176 C110,110 108,40 114,-8Z" fill="#f4a9b8"/>
+          </g>
+          <path d="M-10,60 Q90,100 180,70 T370,80" stroke="#c9a98c" stroke-width="1.2" fill="none"/>
+          <g fill="#ffd27a">
+            <circle cx="22" cy="73" r="4"/><circle cx="62" cy="86" r="4"/><circle cx="102" cy="90" r="4"/><circle cx="142" cy="82" r="4"/>
+            <circle cx="182" cy="70" r="4"/><circle cx="262" cy="70" r="4"/><circle cx="342" cy="84" r="4"/>
+          </g>
+          <g transform="translate(40 140) rotate(-7)">
+            <rect width="62" height="72" fill="#fff" stroke="#efdccc"/>
+            <rect x="5" y="5" width="52" height="50" fill="#bfe0f0"/>
+            <circle cx="22" cy="34" r="9" fill="#f8d6c2"/><path d="M12,32 C12,18 32,18 32,32 C28,26 16,26 12,32Z" fill="#3a2630"/>
+            <circle cx="41" cy="33" r="9" fill="#f3cbae"/><path d="M31,31 C31,19 51,19 51,31 C46,25 36,25 31,31Z" fill="#221d26"/>
+            <path d="M31,14 c-3,-4 -9,0 -4,5 l4,3 l4,-3 c5,-5 -1,-9 -4,-5Z" fill="#f3708a"/>
+            <rect x="20" y="-5" width="22" height="9" fill="#f7e3a0" opacity=".85" transform="rotate(4 31 0)"/>
+          </g>
+        </svg>
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <rect x="34" y="228" width="236" height="210" rx="34" fill="#e3a68c"/>
+          <rect x="46" y="240" width="212" height="190" rx="26" fill="#eab59c"/>
+          <ellipse cx="150" cy="334" rx="84" ry="27" fill="#fff"/>
+          <g transform="translate(150 448) scale(.8)">
+            <use href="#ph-body"/>
+            <g class="arm-l"><path d="M-27,-156 C-40,-182 -42,-228 -32,-262" stroke="#f6b8c6" stroke-width="13" fill="none" stroke-linecap="round"/><circle cx="-31" cy="-268" r="7" fill="#f1c4ab"/></g>
+            <g class="arm-r"><path d="M27,-156 C40,-182 42,-228 32,-262" stroke="#f6b8c6" stroke-width="13" fill="none" stroke-linecap="round"/><circle cx="31" cy="-268" r="7" fill="#f1c4ab"/></g>
+            <g transform="translate(0,-200)">
+              <use href="#ph-face"/>
+              <use href="#ph-eyes-sleepy"/>
+              <g class="m-yawn"><use href="#ph-mouth-yawn"/></g>
+              <g class="m-smile" opacity="0"><use href="#ph-mouth-smile"/></g>
+            </g>
+          </g>
+          <path d="M14,374 C80,360 220,366 296,380 L304,520 L8,520Z" fill="url(#quilt)"/>
+          <path d="M60,410 C120,400 180,420 240,404" stroke="#f3aab6" stroke-width="2" fill="none"/>
+          <rect x="8" y="500" width="296" height="26" rx="6" fill="#d39b80"/>
+          <g transform="translate(290 398)">
+            <rect x="0" y="0" width="74" height="92" rx="6" fill="#f3e3d2"/>
+            <rect x="8" y="34" width="58" height="22" rx="4" fill="#ead2bd"/><circle cx="37" cy="45" r="3" fill="#c9a07e"/>
+            <rect x="34" y="-34" width="6" height="34" fill="#c9a98c"/>
+            <path d="M20,-34 L54,-34 L46,-62 L28,-62Z" fill="#ffd9a0"/>
+            <ellipse cx="37" cy="-44" rx="44" ry="34" fill="url(#warm)" opacity=".6"/>
+            <rect x="8" y="-8" width="28" height="8" rx="3" fill="#1b161c"/>
+            <rect x="10" y="-8" width="24" height="3" rx="1.5" fill="#9ad0ff" opacity=".8"/>
+          </g>
+        </svg>
+        <svg class="layer softer" data-d="1.25" width="360" height="640" viewBox="0 0 360 640">
+          <path d="M-30,640 C-10,560 30,540 60,520 C50,560 40,600 50,640Z" fill="#79b48e"/>
+          <path d="M10,640 C20,580 70,560 100,566 C80,590 60,620 60,640Z" fill="#5f9e78"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 4 · Cầu thang + bếp -->
+    <section class="scene" id="s-stairs" hidden>
+      <div class="world" style="width:360px;height:1500px">
+        <svg class="layer" data-d=".97" width="360" height="1500" viewBox="0 0 360 1500">
+          <rect x="-200" y="-200" width="760" height="1900" fill="#f3d8c4"/>
+          <rect x="-200" y="-200" width="760" height="220" fill="#f8e6d6"/>
+          <g transform="translate(18 228)">
+            <rect x="0" y="0" width="96" height="204" fill="#e6c3a6"/>
+            <rect x="8" y="8" width="80" height="196" fill="#ffe7b0"/>
+            <polygon points="8,8 70,20 70,204 8,204" fill="#fbeee3"/>
+            <circle cx="60" cy="110" r="4" fill="#c9a07e"/>
+          </g>
+          <g transform="translate(250 150)">
+            <circle r="44" fill="#fff"/><circle r="38" fill="url(#sky)"/>
+            <path d="M0,-38 V38 M-38,0 H38" stroke="#fff" stroke-width="5"/>
+          </g>
+          <rect x="140" y="226" width="40" height="50" fill="#fff" stroke="#e2c4ad" stroke-width="3"/>
+          <rect x="146" y="232" width="28" height="38" fill="#cfe3d2"/>
+          <rect x="190" y="250" width="30" height="36" fill="#fff" stroke="#e2c4ad" stroke-width="3"/>
+          <rect x="195" y="255" width="20" height="26" fill="#f6c2c8"/>
+        </svg>
+        <svg class="layer" data-d="1" width="360" height="1500" viewBox="0 0 360 1500">
+          <rect x="-200" y="418" width="760" height="14" fill="url(#woodg)"/>
+          <rect x="-200" y="1174" width="760" height="600" fill="url(#tile)"/>
+          <rect x="-200" y="1168" width="760" height="8" fill="#dcc1a6"/>
+          <g class="stairs-gen"></g>
+          <ellipse cx="180" cy="1222" rx="130" ry="22" fill="#e9a8a0" opacity=".7"/>
+          <g transform="translate(14 1352)">
+            <rect x="8" y="12" width="8" height="70" fill="#b47c52"/><rect x="128" y="12" width="8" height="70" fill="#b47c52"/>
+            <rect x="0" y="0" width="144" height="16" rx="3" fill="url(#gingham)"/>
+            <rect x="22" y="-22" width="20" height="22" rx="3" fill="#fff" stroke="#e6ddd3"/><rect x="25" y="-18" width="14" height="6" fill="#8a5a3a"/>
+            <g class="steam" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"><path d="M28,-28 q-4,-6 0,-12"/><path d="M34,-28 q4,-6 0,-12"/><path d="M31,-30 q-3,-6 0,-12"/></g>
+            <rect x="100" y="-30" width="16" height="30" rx="3" fill="#fffef8" stroke="#e6ddd3"/>
+          </g>
+          <g transform="translate(272 1432) scale(1.05)">
+            <use href="#hau-body"/><use href="#hau-arms"/>
+            <g transform="translate(0,-114)"><use href="#plate"/>
+              <g class="steam" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"><path d="M-6,-14 q-4,-6 0,-12"/><path d="M10,-14 q4,-6 0,-12"/><path d="M2,-16 q-3,-6 0,-12"/></g>
+            </g>
+            <g transform="translate(0,-190)"><use href="#hau-head"/><use href="#hau-kind"/></g>
+          </g>
+          <g class="fig-ph">
+            <use href="#ph-body"/><use href="#ph-arms"/>
+            <g transform="translate(0,-200)">
+              <use href="#ph-face"/>
+              <g class="e-open" opacity="0"><use href="#ph-eyes-open"/></g>
+              <g class="e-sleepy"><use href="#ph-eyes-sleepy"/></g>
+              <g class="m-smile"><use href="#ph-mouth-smile"/></g>
+              <g class="m-o" opacity="0"><use href="#ph-mouth-o"/></g>
+            </g>
+          </g>
+        </svg>
+        <svg class="layer" data-d="1.2" width="360" height="1500" viewBox="0 0 360 1500">
+          <g class="softer">
+            <path d="M300,-40 V40" stroke="#5b4636" stroke-width="2"/>
+            <path d="M276,40 L324,40 L314,66 L286,66Z" fill="#e7b46a"/>
+            <ellipse cx="300" cy="72" rx="34" ry="16" fill="url(#warm)"/>
+          </g>
+          <g class="softer">
+            <path d="M-40,1560 C-30,1460 20,1420 70,1410 C60,1460 50,1510 60,1560Z" fill="#6fae8a"/>
+            <path d="M0,1560 C20,1480 80,1450 120,1458 C96,1490 80,1530 80,1560Z" fill="#5a9a74"/>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 5 · Cận bàn chân trượt -->
+    <section class="scene" id="s-foot" hidden>
+      <div class="world" style="width:360px;height:640px">
+        <svg class="layer softer" data-d=".85" width="360" height="640" viewBox="0 0 360 640">
+          <rect x="-200" y="-200" width="760" height="1040" fill="#efd6c1"/>
+          <rect x="-200" y="-200" width="300" height="1040" fill="#f6e2d0"/>
+          <path d="M40,-200 V840" stroke="#e2c4ad" stroke-width="8"/>
+        </svg>
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <path d="M-200,360 L296,360 Q306,360 306,372 L306,600 L560,600 L560,900 L-200,900Z" fill="#f7eee2"/>
+          <rect x="-200" y="344" width="506" height="20" rx="8" fill="url(#woodg)"/>
+          <path d="M-200,350 H290 M-120,356 H200" stroke="#c18a5c" stroke-width="1.2"/>
+          <rect x="306" y="588" width="300" height="18" fill="url(#woodg)"/>
+          <rect x="-200" y="364" width="506" height="10" fill="#000" opacity=".07"/>
+          <g class="slip">
+            <rect x="150" y="-60" width="64" height="300" rx="10" fill="#f7c6d0"/>
+            <rect x="150" y="226" width="64" height="16" fill="#f0aebd"/>
+            <rect x="160" y="240" width="44" height="60" fill="#f1c4ab"/>
+            <ellipse cx="246" cy="300" rx="10" ry="30" fill="#fffaf7" stroke="#f3c0cb" stroke-width="2" transform="rotate(20 246 300)"/>
+            <ellipse cx="226" cy="296" rx="10" ry="30" fill="#fffaf7" stroke="#f3c0cb" stroke-width="2" transform="rotate(-6 226 296)"/>
+            <ellipse cx="246" cy="300" rx="4" ry="18" fill="#f7c0cb" transform="rotate(20 246 300)"/>
+            <ellipse cx="226" cy="296" rx="4" ry="18" fill="#f7c0cb" transform="rotate(-6 226 296)"/>
+            <ellipse cx="206" cy="330" rx="78" ry="28" fill="#fffaf7"/>
+            <circle cx="252" cy="326" r="3" fill="#3a2630"/><circle cx="268" cy="328" r="3" fill="#3a2630"/>
+            <ellipse cx="282" cy="334" rx="5" ry="4" fill="#f3708a"/>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 6 · Cận mặt cô Hậu -->
+    <section class="scene" id="s-hau" hidden>
+      <div class="world" style="width:360px;height:640px">
+        <svg class="layer softer" data-d=".85" width="360" height="640" viewBox="0 0 360 640">
+          <rect x="-200" y="-200" width="760" height="1040" fill="#f2dcc4"/>
+          <rect x="230" y="40" width="160" height="210" fill="#fff6dc"/>
+          <circle cx="40" cy="120" r="50" fill="#ead0b6"/>
+          <rect x="-200" y="430" width="760" height="40" fill="#e7cfb4"/>
+        </svg>
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <g transform="translate(180 790) scale(2.7)">
+            <use href="#hau-body"/><use href="#hau-arms"/>
+            <g transform="translate(0,-114)"><g class="plate-fall"><use href="#plate"/></g></g>
+            <g transform="translate(0,-190)"><use href="#hau-head"/><use href="#hau-shock"/></g>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 7 · Nằm dưới sàn nhìn lên -->
+    <section class="scene" id="s-floor" hidden>
+      <div class="world" style="width:360px;height:640px">
+        <svg class="layer softer" data-d=".85" width="360" height="640" viewBox="0 0 360 640">
+          <rect x="-200" y="-200" width="760" height="1040" fill="#ead6c4"/>
+          <polygon points="-200,-200 180,-200 -200,320" fill="#b98258"/>
+          <polygon points="-200,-200 150,-200 -200,270" fill="#f4e8da"/>
+          <ellipse cx="270" cy="90" rx="60" ry="40" fill="url(#warm)"/>
+        </svg>
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <g transform="translate(186 700) scale(2.3) rotate(10)">
+            <use href="#hau-body"/><use href="#hau-arms"/>
+            <g transform="translate(0,-190)"><use href="#hau-head"/><use href="#hau-worry"/></g>
+          </g>
+        </svg>
+        <svg class="layer softer" data-d="1.3" width="360" height="640" viewBox="0 0 360 640">
+          <ellipse cx="300" cy="610" rx="52" ry="74" fill="#f0c3a5" transform="rotate(-25 300 610)"/>
+          <path d="M330,700 C320,650 340,620 380,600 L420,700Z" fill="#b8a2d8"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 8 · Cô Hậu nhắn tin cho Hoàng (trên xe cấp cứu) -->
+    <section class="scene" id="s-msg" hidden>
+      <div class="world" style="width:360px;height:640px">
+        <div class="layer amb" data-d=".8"><span class="sr"></span><span class="sb"></span></div>
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <path d="M60,700 C40,560 90,470 180,470 C270,470 320,560 300,700Z" fill="#f0c3a5"/>
+          <path d="M40,700 C40,640 60,610 90,600 L270,600 C300,610 320,640 320,700Z" fill="#b8a2d8"/>
+        </svg>
+        <div class="layer" data-d="1" style="width:360px;height:640px">
+          <div class="phone"><div class="screen chat">
+            <div class="notch"></div>
+            <div class="chat-h">
+              <span class="back">‹</span>
+              <span class="av"><svg width="30" height="30" viewBox="-46 -60 92 104" preserveAspectRatio="xMidYMid slice"><use href="#ho-head"/></svg></span>
+              <span>Hoàng (bồ con Phụng) 💕<small>Đang hoạt động</small></span>
+            </div>
+            <div class="chat-b"></div>
+            <div class="chat-in"><span class="c-type"></span><span class="caret"></span></div>
+            <div class="ring-ov" hidden>
+              <span class="av"><svg width="32" height="32" viewBox="-46 -60 92 104" preserveAspectRatio="xMidYMid slice"><use href="#ho-head"/></svg></span>
+              <span><b>Hoàng (bồ con Phụng)</b><br>đang gọi cho bạn…</span>
+              <span class="cb green"><svg width="16" height="16" viewBox="0 0 24 24"><use href="#ico-call"/></svg></span>
+            </div>
+          </div></div>
+        </div>
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <ellipse cx="68" cy="300" rx="12" ry="19" fill="#f0c3a5"/><ellipse cx="66" cy="346" rx="12" ry="19" fill="#f0c3a5"/><ellipse cx="68" cy="392" rx="12" ry="18" fill="#f0c3a5"/>
+          <ellipse cx="294" cy="430" rx="15" ry="40" fill="#f0c3a5" transform="rotate(-20 294 430)"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 9 · Hành lang bệnh viện (trên cáng) -->
+    <section class="scene" id="s-corr" hidden>
+      <div class="world" style="width:360px;height:640px">
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <rect x="-200" y="-200" width="760" height="1040" fill="#2a3542"/>
+          <g class="lights">
+            <g><rect x="112" y="-180" width="136" height="44" rx="6" fill="#eaf6ff"/><ellipse cx="180" cy="-158" rx="120" ry="60" fill="url(#glow)" opacity=".3"/></g>
+            <g><rect x="112" y="0" width="136" height="44" rx="6" fill="#eaf6ff"/><ellipse cx="180" cy="22" rx="120" ry="60" fill="url(#glow)" opacity=".3"/></g>
+            <g><rect x="112" y="180" width="136" height="44" rx="6" fill="#eaf6ff"/><ellipse cx="180" cy="202" rx="120" ry="60" fill="url(#glow)" opacity=".3"/></g>
+            <g><rect x="112" y="360" width="136" height="44" rx="6" fill="#eaf6ff"/><ellipse cx="180" cy="382" rx="120" ry="60" fill="url(#glow)" opacity=".3"/></g>
+            <g><rect x="112" y="540" width="136" height="44" rx="6" fill="#eaf6ff"/><ellipse cx="180" cy="562" rx="120" ry="60" fill="url(#glow)" opacity=".3"/></g>
+          </g>
+          <polygon points="-200,-200 50,-200 50,840 -200,840" fill="#1b232c"/>
+          <polygon points="310,-200 560,-200 560,840 310,840" fill="#1b232c"/>
+        </svg>
+        <svg class="layer softer" data-d="1.3" width="360" height="640" viewBox="0 0 360 640">
+          <ellipse cx="-6" cy="330" rx="74" ry="170" fill="#3aa79a"/>
+          <circle cx="16" cy="140" r="48" fill="#141b22"/>
+          <rect x="282" y="40" width="40" height="62" rx="12" fill="#dff0ff" opacity=".8"/>
+          <path d="M302,102 C300,200 330,260 340,400" stroke="#dff0ff" stroke-width="3" fill="none" opacity=".6"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 10 · Giấc mơ -->
+    <section class="scene" id="s-dream" hidden>
+      <div class="world" style="width:360px;height:640px">
+        <div class="layer dream-bg" data-d=".8">
+          <span class="bokeh" style="left:90px;top:160px;width:120px;height:120px"></span>
+          <span class="bokeh" style="left:360px;top:120px;width:90px;height:90px;animation-delay:-2s"></span>
+          <span class="bokeh" style="left:140px;top:560px;width:150px;height:150px;animation-delay:-4s"></span>
+          <span class="bokeh" style="left:380px;top:520px;width:70px;height:70px;animation-delay:-1s"></span>
+          <span class="bokeh" style="left:260px;top:60px;width:60px;height:60px;animation-delay:-3s"></span>
+        </div>
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <circle cx="180" cy="300" r="220" fill="url(#glow)" opacity=".9"/>
+          <g transform="translate(180 290) scale(1.55)"><g class="hoang"><use href="#ho-bust"/></g></g>
+        </svg>
+        <div class="layer" data-d="1.2" style="width:360px;height:640px">
+          <span class="spark" style="left:60px;top:560px"></span>
+          <span class="spark" style="left:120px;top:620px;animation-delay:-1.4s"></span>
+          <span class="spark" style="left:250px;top:600px;animation-delay:-2.6s"></span>
+          <span class="spark" style="left:300px;top:540px;animation-delay:-3.8s"></span>
+          <span class="spark" style="left:190px;top:640px;animation-delay:-.7s"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 · Bác sĩ (góc nhìn Phụng) -->
+    <section class="scene" id="s-doc" hidden>
+      <div class="world" style="width:360px;height:640px">
+        <svg class="layer softer" data-d=".85" width="360" height="640" viewBox="0 0 360 640">
+          <rect x="-200" y="-200" width="760" height="1040" fill="#e2eef0"/>
+          <ellipse cx="80" cy="30" rx="90" ry="50" fill="url(#glow)"/>
+          <rect x="230" y="-40" width="40" height="160" rx="8" fill="#ffffff"/>
+        </svg>
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <g transform="translate(180 300) scale(2.6)"><use href="#dr-bust"/></g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 12 · Phòng bệnh -->
+    <section class="scene" id="s-room" hidden>
+      <div class="world" style="width:360px;height:640px">
+        <svg class="layer" data-d=".95" width="360" height="640" viewBox="0 0 360 640">
+          <rect x="-200" y="-200" width="760" height="1040" fill="#dcefe7"/>
+          <rect x="-200" y="300" width="760" height="170" fill="#c9e4d9"/>
+          <rect x="-200" y="470" width="760" height="400" fill="#e9eeeb"/>
+          <path d="M-200,530 H560 M-200,600 H560" stroke="#dbe3df" stroke-width="2"/>
+          <g transform="translate(26 70)">
+            <rect width="150" height="164" rx="6" fill="#fff"/>
+            <rect x="8" y="8" width="134" height="148" fill="url(#sky)"/>
+            <path d="M8,22 H142 M8,36 H142 M8,50 H142 M8,64 H142" stroke="#fff" stroke-width="5" opacity=".9"/>
+          </g>
+          <polygon points="40,234 176,234 290,470 60,470" fill="#fff4cf" opacity=".35"/>
+          <circle cx="232" cy="44" r="17" fill="#fff" stroke="#b7c9c3" stroke-width="3"/>
+          <path d="M232,44 V33 M232,44 L240,46" stroke="#4b5a57" stroke-width="2" stroke-linecap="round"/>
+          <path d="M224,60 V470" stroke="#b9c4c9" stroke-width="4"/>
+          <rect x="209" y="62" width="30" height="46" rx="8" fill="#eef8ff" stroke="#b8d4e3" stroke-width="2"/>
+          <path d="M224,108 C220,200 160,280 130,346" stroke="#cfe3ee" stroke-width="2" fill="none"/>
+          <path d="M302,160 V470" stroke="#b9c4c9" stroke-width="5"/>
+          <rect x="260" y="98" width="84" height="62" rx="7" fill="#1d2a33"/>
+          <path class="ecg" d="M266,130 H284 L290,116 L296,144 L302,124 L306,130 H338" stroke="#6ff0b0" stroke-width="2" fill="none"/>
+          <text x="330" y="114" fill="#6ff0b0" font-size="10" font-family="Be Vietnam Pro, sans-serif" text-anchor="end">72</text>
+          <path d="M330,-200 V470 M342,-200 V470 M354,-200 V470" stroke="#93cbbd" stroke-width="10"/>
+        </svg>
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <g transform="translate(266 252) scale(.72)"><use href="#dr-bust"/></g>
+          <rect x="8" y="250" width="22" height="210" rx="8" fill="#b9c7cd"/>
+          <rect x="338" y="300" width="18" height="160" rx="6" fill="#b9c7cd"/>
+          <rect x="20" y="355" width="330" height="52" rx="12" fill="#fdfdfd"/>
+          <rect x="20" y="404" width="330" height="22" rx="4" fill="#c5d0d5"/>
+          <path d="M44,426 V470 M326,426 V470" stroke="#9fb0b8" stroke-width="5"/>
+          <circle cx="44" cy="474" r="7" fill="#7d8f98"/><circle cx="326" cy="474" r="7" fill="#7d8f98"/>
+          <ellipse cx="84" cy="342" rx="60" ry="24" fill="#fff" stroke="#e3ebee"/>
+          <use href="#ph-hairback" transform="translate(92 300) scale(.62) rotate(-8)"/>
+          <path d="M50,374 C52,346 70,334 92,334 C114,334 132,346 134,374Z" fill="url(#gown)"/>
+          <g transform="translate(92 300) scale(.62) rotate(-8)">
+            <use href="#ph-face"/>
+            <g class="rp-eh"><use href="#ph-eyes-half"/></g>
+            <g class="rp-eo" opacity="0"><use href="#ph-eyes-open"/></g>
+            <g class="rp-es" opacity="0"><use href="#ph-eyes-sleepy"/></g>
+            <g class="rp-tear" opacity="0"><path d="M-22,12 q-4,7 0,9 q4,-2 0,-9Z M22,12 q-4,7 0,9 q4,-2 0,-9Z" fill="#9fd3ff"/></g>
+            <g class="rp-mo"><use href="#ph-mouth-o"/></g>
+            <g class="rp-ms" opacity="0"><use href="#ph-mouth-smile"/></g>
+            <g class="rp-mp" opacity="0"><use href="#ph-mouth-pout"/></g>
+            <g class="rp-ml" opacity="0"><use href="#ph-mouth-laugh"/></g>
+          </g>
+          <ellipse cx="290" cy="372" rx="52" ry="16" fill="#fff" stroke="#e3ebee"/>
+          <g transform="rotate(-7 276 348)">
+            <ellipse cx="276" cy="366" rx="56" ry="6" fill="#000" opacity=".08"/>
+            <rect x="222" y="334" width="106" height="28" rx="13" fill="#fbfaf6" stroke="#c9bfae" stroke-width="2"/>
+            <path d="M240,336 V360 M258,336 V360 M276,336 V360 M294,336 V360" stroke="#e4dccd" stroke-width="2"/>
+            <circle cx="331" cy="340" r="4" fill="#f1c4ab"/><circle cx="333" cy="347" r="4" fill="#f1c4ab"/><circle cx="332" cy="354" r="3.6" fill="#f1c4ab"/>
+          </g>
+          <path d="M118,352 C150,338 210,342 240,350 L244,410 L112,410Z" fill="#bcd6ee"/>
+          <path d="M140,372 C170,366 200,374 230,368" stroke="#a7c6e3" stroke-width="2" fill="none"/>
+          <circle cx="150" cy="360" r="6.5" fill="#f1c4ab"/>
+        </svg>
+        <svg class="layer" data-d="1.12" width="360" height="640" viewBox="0 0 360 640">
+          <g transform="translate(48 668)">
+            <use href="#hau-body"/>
+            <rect x="-13" y="-152" width="26" height="44" rx="5" fill="#1b161c"/>
+            <circle cx="-6" cy="-145" r="2.4" fill="#3a3340"/>
+            <use href="#hau-arms"/>
+            <g transform="translate(0,-190)"><use href="#hau-head"/><g class="rh-kind"><use href="#hau-kind"/></g><g class="rh-laugh" opacity="0"><use href="#hau-laugh"/></g></g>
+          </g>
+          <rect x="252" y="520" width="130" height="140" rx="6" fill="#f4f7f6" stroke="#d6e0e0"/>
+          <rect x="246" y="510" width="140" height="12" rx="4" fill="#e7eeee"/>
+          <path d="M262,560 H372" stroke="#d6e0e0" stroke-width="2"/>
+          <rect x="330" y="476" width="18" height="34" rx="6" fill="#dbeeff" opacity=".85"/>
+          <path d="M336,476 L328,452 M340,476 L342,446 M344,476 L354,460" stroke="#6aa57d" stroke-width="2"/>
+          <g fill="#fff"><circle cx="328" cy="450" r="6"/><circle cx="342" cy="444" r="6"/><circle cx="354" cy="458" r="6"/></g>
+          <g fill="#f6c343"><circle cx="328" cy="450" r="2.4"/><circle cx="342" cy="444" r="2.4"/><circle cx="354" cy="458" r="2.4"/></g>
+          <rect x="254" y="490" width="16" height="20" rx="3" fill="#fff" stroke="#d6e0e0"/>
+          <g transform="translate(300 504)">
+            <ellipse class="room-glow" cx="0" cy="-4" rx="52" ry="26" fill="url(#glow)" opacity="0"/>
+            <rect x="-24" y="-6" width="48" height="12" rx="4" fill="#1b161c"/>
+            <rect x="-21" y="-6" width="42" height="4" rx="2" fill="#9ad0ff"/>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 13 · Video call với Hoàng (cô Hậu cầm máy) -->
+    <section class="scene" id="s-vcall" hidden>
+      <div class="world" style="width:360px;height:640px">
+        <div class="layer phone-bg" data-d=".8" style="background:radial-gradient(circle at 25% 25%,#ffffff 0 10%,transparent 11%),radial-gradient(circle at 80% 60%,#e6fff4 0 12%,transparent 13%),linear-gradient(#cfe9df,#a9cfc4)"></div>
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <path d="M60,700 C40,560 90,470 180,470 C270,470 320,560 300,700Z" fill="#f0c3a5"/>
+          <path d="M40,700 C40,640 60,610 90,600 L270,600 C300,610 320,640 320,700Z" fill="#b8a2d8"/>
+        </svg>
+        <div class="layer" data-d="1" style="width:360px;height:640px">
+          <div class="phone"><div class="screen">
+            <div class="notch"></div>
+            <svg width="202" height="422" viewBox="0 0 202 422" style="position:absolute;inset:0">
+              <rect width="202" height="422" fill="#e9ddd0"/>
+              <rect x="118" y="44" width="72" height="112" fill="#fff6e0" stroke="#fff" stroke-width="5"/>
+              <path d="M154,44 V156" stroke="#fff" stroke-width="4"/>
+              <rect x="14" y="74" width="42" height="56" fill="#f3b6a8"/><circle cx="35" cy="96" r="10" fill="#fff3d6"/>
+              <rect x="0" y="330" width="202" height="92" fill="#cdbca9"/>
+              <g transform="translate(101 216) scale(1.22)"><g class="hv-body">
+                <use href="#ho-torso"/>
+                <use href="#ho-base"/>
+                <path d="M-6,-55 q-6,-14 4,-18 M8,-54 q4,-12 14,-10 M-18,-49 q-10,-8 -6,-18" stroke="#221d26" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                <g class="hv-worry"><use href="#ho-worry"/></g>
+                <g class="hv-hold" opacity="0"><use href="#ho-hold"/></g>
+                <g class="hv-smile" opacity="0"><use href="#ho-smile"/></g>
+                <g class="hv-hug" opacity="0">
+                  <path d="M-62,150 C-70,100 -40,70 6,78" stroke="#a9cdea" stroke-width="22" fill="none" stroke-linecap="round"/>
+                  <path d="M62,150 C70,100 40,70 -6,78" stroke="#a9cdea" stroke-width="22" fill="none" stroke-linecap="round"/>
+                  <circle cx="8" cy="78" r="10" fill="#f3cbae"/><circle cx="-8" cy="78" r="10" fill="#f3cbae"/>
+                </g>
+              </g></g>
+            </svg>
+            <div class="hearts"></div>
+            <div class="v-top">Hoàng 💕 · <span class="v-timer">12:14</span></div>
+            <div class="pip"><svg width="52" height="74" viewBox="-36 -50 72 104"><rect x="-40" y="-60" width="80" height="120" fill="#cfe9df"/><use href="#ph-hairback" transform="scale(.9)"/><g transform="scale(.9)"><use href="#ph-face"/><use href="#ph-eyes-half"/><use href="#ph-mouth-pout"/></g><path d="M-40,54 C-36,38 -20,32 0,32 C20,32 36,38 40,54Z" fill="url(#gown)"/></svg></div>
+            <div class="v-btns">
+              <span class="cb grey">🎤</span>
+              <span class="cb red"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#ico-call"/></svg></span>
+              <span class="cb grey">📷</span>
+            </div>
+          </div></div>
+        </div>
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <ellipse cx="68" cy="300" rx="12" ry="19" fill="#f0c3a5"/><ellipse cx="66" cy="346" rx="12" ry="19" fill="#f0c3a5"/><ellipse cx="68" cy="392" rx="12" ry="18" fill="#f0c3a5"/>
+          <ellipse cx="294" cy="430" rx="15" ry="40" fill="#f0c3a5" transform="rotate(-20 294 430)"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 14 · Tin nhắn riêng của Chằm -->
+    <section class="scene" id="s-pm" hidden>
+      <div class="world" style="width:360px;height:640px">
+        <div class="layer phone-bg" data-d=".8" style="background:radial-gradient(circle at 25% 25%,#ffffff 0 10%,transparent 11%),radial-gradient(circle at 80% 60%,#e6fff4 0 12%,transparent 13%),linear-gradient(#cfe9df,#a9cfc4)"></div>
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <path d="M60,700 C40,560 90,470 180,470 C270,470 320,560 300,700Z" fill="#f1c4ab"/>
+          <path d="M40,700 C40,640 60,610 90,600 L270,600 C300,610 320,640 320,700Z" fill="url(#gown)"/>
+        </svg>
+        <div class="layer" data-d="1" style="width:360px;height:640px">
+          <div class="phone"><div class="screen" style="background:linear-gradient(170deg,#ffc9d6 0%,#c9b6f2 55%,#9fc8ff 100%)">
+            <div class="notch"></div>
+            <div class="l-date">Thứ Năm, 1 tháng 10</div>
+            <div class="l-time">10:21</div>
+            <div class="notif pm-item"><div class="app"><span>TIN NHẮN</span><span>bây giờ</span></div><div class="who">Chằm (gấu) 🐻</div><div class="msg">Bé ơi, Chằm này… thương thương 🐻</div></div>
+            <div class="notif pm-item"><div class="app"><span>TIN NHẮN</span><span>bây giờ</span></div><div class="who">Chằm (gấu) 🐻</div><div class="msg">Hồi nãy bị cô chọc, giờ Chằm bế bé lắc lắc bù nè 🤗</div></div>
+            <div class="notif pm-item"><div class="app"><span>TIN NHẮN</span><span>bây giờ</span></div><div class="who">Chằm (gấu) 🐻</div><div class="msg">Chụp cái chân gửi Chằm đi. Chằm phải ký tên đầu tiên.</div></div>
+          </div></div>
+        </div>
+        <svg class="layer" data-d="1" width="360" height="640" viewBox="0 0 360 640">
+          <ellipse cx="68" cy="300" rx="12" ry="19" fill="#f1c4ab"/><ellipse cx="66" cy="346" rx="12" ry="19" fill="#f1c4ab"/><ellipse cx="68" cy="392" rx="12" ry="18" fill="#f1c4ab"/>
+          <ellipse cx="294" cy="420" rx="15" ry="40" fill="#f1c4ab" transform="rotate(-20 294 420)"/>
+        </svg>
+      </div>
+    </section>
+
+  </div></div></div>
+
+  <div id="tint"></div>
+  <div id="vig"></div>
+  <canvas id="grain"></canvas>
+  <div class="lid" id="lid-t"></div>
+  <div class="lid" id="lid-b"></div>
+  <div id="flash"></div>
+  <div class="bar" id="bar-t"></div>
+  <div class="bar" id="bar-b"></div>
+  <div id="stamp"></div>
+  <div id="subs"><span class="who"></span><span class="txt"></span></div>
+  <div id="hint"><div class="ring"></div><div class="lbl"></div></div>
+  <button id="skip" type="button" hidden>Bỏ qua ›</button>
+
+  <div class="card" id="start">
+    <div class="sun"></div>
+    <div class="eyebrow">Bản chơi thử · Phần mở đầu</div>
+    <h1 class="title">Chân Xinh Của Bé</h1>
+    <p class="lede">Sáng 1/10, 8 giờ. Chằm Hoàng gọi điện đánh thức bé Phụng.</p>
+    <button class="cta" id="btn-start" type="button">Bắt đầu</button>
+    <div class="note">🎧 Nên bật âm thanh · Chạm màn hình khi thấy vòng tròn</div>
+  </div>
+
+  <div class="card" id="end" hidden>
+    <div class="eyebrow" style="line-height:1.9">Chân Xinh Của Bé<br>Ngày 1 / 14</div>
+    <h2 class="title">Còn tiếp…</h2>
+    <p class="lede">Tập sau: gửi hình cái chân cho Chằm ký tên đầu tiên, và hai tuần dưỡng thương vui hết cỡ.</p>
+    <div class="row"><span class="chip">🦴 Bột ký tên · đã mở khóa</span><span class="chip">📞 8:00 mỗi sáng · Chằm gọi dậy</span></div>
+    <div class="row"><button class="cta" id="btn-replay" type="button">Xem lại</button></div>
+  </div>
+</div>
+
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const stage = $('#stage'), gradeEl = $('#grade'), camEl = $('#cam'), scenesEl = $('#scenes');
+const lidT = $('#lid-t'), lidB = $('#lid-b'), flashEl = $('#flash'), tintEl = $('#tint');
+const barT = $('#bar-t'), barB = $('#bar-b'), stampEl = $('#stamp');
+const subs = $('#subs'), subWho = subs.querySelector('.who'), subTxt = subs.querySelector('.txt');
+const hint = $('#hint'), hintLbl = hint.querySelector('.lbl');
+const skipBtn = $('#skip'), startCard = $('#start'), endCard = $('#end');
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function fit(){ const s = Math.min(innerWidth/360, innerHeight/640); stage.style.transform = `scale(${s})`; }
+addEventListener('resize', fit); fit();
+
+/* ---------- Cầu thang (sinh bằng code) ---------- */
+const T = 430, H = 62, N = 12, FLOOR = T + N*H;
+const W = y => 196 + (y - T)/H*12, L = y => 180 - W(y)/2, R = y => 180 + W(y)/2;
+function buildStairs(){
+  const g = document.querySelector('#s-stairs .stairs-gen');
+  let s = '';
+  s += `<polygon points="${L(T)},${T} ${L(FLOOR)},${FLOOR} ${L(FLOOR)-14},${FLOOR} ${L(T)-10},${T}" fill="#b47c52"/>`;
+  s += `<polygon points="${R(T)},${T} ${R(FLOOR)},${FLOOR} ${R(FLOOR)+14},${FLOOR} ${R(T)+10},${T}" fill="#b47c52"/>`;
+  for (let k = 1; k <= N; k++){
+    const a = T + (k-1)*H, b = a + 12, c = T + k*H;
+    s += `<polygon points="${L(a)},${a} ${R(a)},${a} ${R(b)},${b} ${L(b)},${b}" fill="url(#woodg)"/>`;
+    s += `<polygon points="${L(b)},${b} ${R(b)},${b} ${R(c)},${c} ${L(c)},${c}" fill="#f7eee2"/>`;
+    s += `<polygon points="${L(b)},${b} ${R(b)},${b} ${R(b+7)},${b+7} ${L(b+7)},${b+7}" fill="#000" opacity=".07"/>`;
+  }
+  const rail = [];
+  for (let k = 0; k < N; k++){
+    const y = T + k*H + 4, x = R(y) - 12;
+    s += `<rect x="${x-2.5}" y="${y-84}" width="5" height="84" fill="#fff7ee" stroke="#d9bfa6"/>`;
+    rail.push(`${x},${y-86}`);
+  }
+  const xn = R(FLOOR) - 12;
+  rail.push(`${xn},${FLOOR-104}`);
+  s += `<polyline points="${rail.join(' ')}" fill="none" stroke="#9c6640" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>`;
+  s += `<rect x="${xn-9}" y="${FLOOR-112}" width="18" height="112" rx="3" fill="#a96f46"/><rect x="${xn-12}" y="${FLOOR-120}" width="24" height="12" rx="4" fill="#8d5a37"/>`;
+  g.innerHTML = s;
+}
+buildStairs();
+const SCENES_HTML = scenesEl.innerHTML;
+const stepY = i => T + i*H, stepX = i => 180 - i*1.5, stepS = i => .78 + i*.018;
+
+/* ---------- Trạng thái máy quay & hậu kỳ ---------- */
+const FX0 = {eye:1, blur:0, sat:1, bright:1, contrast:1, hue:0, bars:1, flash:0, tint:0, gx:0, go:0};
+const fx = {...FX0};
+const rig = {rot:0, shake:0, sway:0};
+const cam = {x:180, y:320, z:1, x0:180, y0:320, scene:null, world:null, layers:[], ghost:null, gLayers:[], fig:null, gFig:null};
+const ph = {x:0, y:0, s:1, r:0};
+
+function layerShift(l){ const d = +l.dataset.d; return `translate(${(cam.x-cam.x0)*(1-d)}px,${(cam.y-cam.y0)*(1-d)}px)`; }
+function applyCam(){
+  if (!cam.world) return;
+  const t = `translate(${180-cam.x*cam.z}px,${320-cam.y*cam.z}px) scale(${cam.z})`;
+  cam.world.style.transform = t;
+  cam.layers.forEach(l => l.style.transform = layerShift(l));
+  if (cam.ghost){
+    cam.ghost.style.transform = `translate(${fx.gx}px,${fx.gx*.35}px) ${t}`;
+    cam.ghost.style.opacity = fx.go;
+    cam.gLayers.forEach(l => l.style.transform = layerShift(l));
+  }
+  if (cam.fig){
+    const a = `translate(${ph.x} ${ph.y}) scale(${ph.s}) rotate(${ph.r} 0 -110)`;
+    cam.fig.setAttribute('transform', a);
+    if (cam.gFig) cam.gFig.setAttribute('transform', a);
+  }
+}
+function applyRig(){
+  const t = performance.now()/1000, k = REDUCED ? .2 : 1;
+  let x = 0, y = 0, r = rig.rot;
+  if (rig.sway){ const a = rig.sway*k; x += Math.sin(t*1.3)*a + Math.sin(t*2.7)*a*.35; y += Math.cos(t*1.1)*a*.7; r += Math.sin(t*.8)*a*.25; }
+  if (rig.shake){ const a = rig.shake*k; x += (Math.random()-.5)*a*2; y += (Math.random()-.5)*a*2; }
+  camEl.style.transform = `translate(${x}px,${y}px) rotate(${r}deg) scale(${1 + Math.abs(r)/50 + (rig.sway ? .04 : 0)})`;
+}
+function applyFx(){
+  lidT.style.transform = `translateY(${-fx.eye*112}%)`;
+  lidB.style.transform = `translateY(${fx.eye*112}%)`;
+  const neutral = fx.blur < .05 && fx.sat === 1 && fx.bright === 1 && fx.contrast === 1 && fx.hue === 0;
+  gradeEl.style.filter = neutral ? 'none' : `blur(${fx.blur}px) saturate(${fx.sat}) brightness(${fx.bright}) contrast(${fx.contrast}) hue-rotate(${fx.hue}deg)`;
+  barT.style.transform = `translateY(${(fx.bars-1)*100}%)`;
+  barB.style.transform = `translateY(${(1-fx.bars)*100}%)`;
+  flashEl.style.opacity = fx.flash;
+  tintEl.style.opacity = fx.tint;
+}
+gsap.ticker.add(() => {
+  if (stage.scrollTop || stage.scrollLeft){ stage.scrollTop = 0; stage.scrollLeft = 0; }
+  applyCam(); applyRig(); applyFx();
+});
+
+/* hạt phim */
+const gc = $('#grain'), gctx = gc.getContext('2d'); gc.width = 90; gc.height = 160;
+const gimg = gctx.createImageData(90, 160); let gtick = 0;
+gsap.ticker.add(() => {
+  if ((gtick++) % 3) return;
+  const d = gimg.data;
+  for (let i = 0; i < d.length; i += 4){ const v = Math.random()*255|0; d[i] = d[i+1] = d[i+2] = v; d[i+3] = 255; }
+  gctx.putImageData(gimg, 0, 0);
+});
+
+/* ---------- Điều khiển kịch bản (có thể bỏ qua) ---------- */
+const SKIPERR = {skip:true};
+let SKIP = false; const pend = new Set(); let tapWaiters = [];
+function guard(p){
+  return new Promise((res, rej) => {
+    if (SKIP){ rej(SKIPERR); return; }
+    const o = {rej}; pend.add(o);
+    p.then(v => { pend.delete(o); res(v); }, e => { pend.delete(o); rej(e); });
+  });
+}
+const tw = (t, v) => guard(gsap.to(t, v).then());
+const go = (t, v) => gsap.to(t, v);
+const wait = s => guard(new Promise(r => gsap.delayedCall(s, r)));
+const anyTap = () => guard(new Promise(r => tapWaiters.push(r)));
+function fireTap(){ const w = tapWaiters; tapWaiters = []; w.forEach(f => f()); }
+stage.addEventListener('pointerdown', e => { if (e.target.closest('button')) return; fireTap(); });
+addEventListener('keydown', e => { if ((e.key === ' ' || e.key === 'Enter') && !e.target.closest?.('button')){ e.preventDefault(); fireTap(); } });
+function hold(s){
+  const a = wait(s), b = wait(.5).then(() => anyTap());
+  a.catch(() => {}); b.catch(() => {});
+  return Promise.race([a, b]);
+}
+async function tap(label){
+  hintLbl.textContent = label || ''; hint.classList.add('on');
+  try { await anyTap(); sfx.click(); } finally { hint.classList.remove('on'); }
+}
+function skip(){
+  if (SKIP) return; SKIP = true;
+  pend.forEach(o => o.rej(SKIPERR)); pend.clear(); tapWaiters = [];
+}
+function killAll(){ gsap.globalTimeline.getChildren(true, true, true).forEach(t => t.kill()); gsap.globalTimeline.timeScale(1); }
+
+/* phụ đề */
+const COLORS = {'Phụng':'var(--rose)', 'Cô Hậu':'var(--honey)', 'Hoàng':'var(--sky)', 'Bác sĩ':'var(--mint)', 'Điều dưỡng':'var(--mint)'};
+function setSub(who, text, style){
+  subs.className = style || '';
+  subWho.textContent = who; subWho.style.color = COLORS[who.replace(/ \(.*\)/, '')] || 'var(--ink)';
+  subTxt.textContent = text;
+  gsap.fromTo(subs, {opacity:0, y:6}, {opacity:1, y:0, duration:.25, overwrite:true});
+}
+function clearSub(){ gsap.to(subs, {opacity:0, duration:.2, overwrite:true}); }
+async function say(who, text, o = {}){
+  setSub(who, text, o.style);
+  await hold(o.dur ?? Math.min(4.6, 1.5 + text.length*.045));
+  if (!o.keep) clearSub();
+}
+function stamp(text){
+  stampEl.textContent = ''; const p = {n:0};
+  go(p, {n:text.length, duration:text.length*.06, ease:'none', onUpdate(){ stampEl.textContent = text.slice(0, Math.round(p.n)); }});
+}
+function clock(node, from = 0){
+  const p = {t:from};
+  return go(p, {t:from + 3600, duration:3600, ease:'none', onUpdate(){ const s = p.t|0; node.textContent = String(s/60|0).padStart(2, '0') + ':' + String(s%60).padStart(2, '0'); }});
+}
+
+/* ---------- Âm thanh tổng hợp (không cần file) ---------- */
+let AC = null, master, lpf, NB;
+function initAudio(){
+  if (AC) { AC.resume?.(); return; }
+  try {
+    AC = new (window.AudioContext || window.webkitAudioContext)();
+    master = AC.createGain(); master.gain.value = .9;
+    lpf = AC.createBiquadFilter(); lpf.type = 'lowpass'; lpf.frequency.value = 18000;
+    master.connect(lpf); lpf.connect(AC.destination);
+    const len = AC.sampleRate*2; NB = AC.createBuffer(1, len, AC.sampleRate);
+    const d = NB.getChannelData(0); for (let i = 0; i < len; i++) d[i] = Math.random()*2 - 1;
+  } catch (e) { AC = null; }
+}
+function env(g, t, a, peak, dur){ g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(.0001, t + dur); }
+function tone(f, dur, {type='sine', vol=.2, at=0, to=null, a=.005} = {}){
+  if (!AC) return; const t = AC.currentTime + at;
+  const o = AC.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, t);
+  if (to) o.frequency.exponentialRampToValueAtTime(to, t + dur);
+  const g = AC.createGain(); env(g, t, a, vol, dur); o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + .05);
+}
+function noise(dur, {vol=.3, at=0, type='lowpass', f=1000, to=null, q=.8, a=.005} = {}){
+  if (!AC) return; const t = AC.currentTime + at;
+  const s = AC.createBufferSource(); s.buffer = NB;
+  const bf = AC.createBiquadFilter(); bf.type = type; bf.frequency.setValueAtTime(f, t);
+  if (to) bf.frequency.exponentialRampToValueAtTime(to, t + dur); bf.Q.value = q;
+  const g = AC.createGain(); env(g, t, a, vol, dur);
+  s.connect(bf); bf.connect(g); g.connect(master); s.start(t, Math.random()); s.stop(t + dur + .05);
+}
+function muffle(f, tc = .25){ if (AC) lpf.frequency.setTargetAtTime(f, AC.currentTime, tc); }
+const sfx = {
+  chirp(){ const b = 2600 + Math.random()*1200; const n = 1 + (Math.random()*3|0); for (let i = 0; i < n; i++) tone(b, .07, {vol:.03, at:i*.09, to:b*1.35}); },
+  step(){ noise(.07, {type:'bandpass', f:600, vol:.22, q:2}); tone(130, .09, {vol:.1}); },
+  thud(k = 1){ tone(95, .45, {vol:.9*k, to:38}); noise(.22, {f:500, vol:.5*k}); },
+  whoosh(){ noise(.42, {type:'bandpass', f:300, to:3200, vol:.35, q:1.2, a:.12}); },
+  crash(){ noise(.5, {type:'highpass', f:2200, vol:.45}); noise(.12, {f:900, vol:.4}); for (let i = 0; i < 9; i++) tone(2200 + Math.random()*4500, .12 + Math.random()*.15, {vol:.05, at:Math.random()*.28}); },
+  ding(){ tone(1568, .4, {vol:.06}); tone(2093, .5, {vol:.04, at:.07}); },
+  key(){ noise(.025, {type:'highpass', f:3000, vol:.08}); },
+  send(){ tone(900, .14, {vol:.05, to:1600}); },
+  answer(){ tone(880, .08, {vol:.06}); tone(1175, .12, {vol:.06, at:.09}); },
+  hangup(){ tone(620, .12, {vol:.06}); tone(440, .18, {vol:.06, at:.14}); },
+  shutter(){ noise(.04, {type:'highpass', f:2500, vol:.45}); noise(.06, {type:'highpass', f:1800, vol:.35, at:.08}); },
+  click(){ tone(880, .05, {vol:.025}); },
+  shimmer(){ [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, 1.3, {vol:.05, at:i*.08, a:.02})); },
+  chime(){ [784, 988, 1175, 1568].forEach((f, i) => tone(f, 1.6, {vol:.055, at:i*.14, a:.01})); }
+};
+function every(fn, ms){ fn(); const id = setInterval(fn, ms); return () => clearInterval(id); }
+const loops = {};
+function loop(name, stopper){ stopLoop(name); loops[name] = stopper; }
+function stopLoop(name){ if (loops[name]){ loops[name](); delete loops[name]; } }
+function stopAllLoops(){ Object.keys(loops).forEach(stopLoop); }
+const LOOP = {
+  /* nhạc chuông riêng Phụng cài cho Hoàng */
+  ring: () => every(() => { [1319, 1568, 1760, 1568, 1319, 1175, 1319].forEach((f, i) => tone(f, .13, {type:'triangle', vol:.05, at:i*.15})); tone(110, .9, {type:'square', vol:.016}); }, 2200),
+  /* chuông điện thoại cô Hậu: kiểu cũ */
+  oldring: () => every(() => { [0, .22].forEach(at => tone(760, .18, {type:'square', vol:.03, at})); }, 1300),
+  birds: () => every(() => { if (Math.random() < .7) sfx.chirp(); }, 700),
+  heart: (ms = 900) => every(() => { tone(58, .16, {vol:.8, to:40}); tone(52, .18, {vol:.6, to:38, at:.24}); }, ms),
+  monitor: () => every(() => tone(988, .11, {vol:.04}), 1100),
+  siren(){
+    if (!AC) return () => {};
+    const o = AC.createOscillator(); o.type = 'triangle'; const g = AC.createGain(); g.gain.value = 0;
+    const t = AC.currentTime; g.gain.linearRampToValueAtTime(.05, t + 1);
+    for (let i = 0; i < 60; i++) o.frequency.setValueAtTime(i % 2 ? 880 : 660, t + i*.55);
+    o.connect(g); g.connect(master); o.start();
+    return () => { const n = AC.currentTime; g.gain.cancelScheduledValues(n); g.gain.setValueAtTime(g.gain.value, n); g.gain.linearRampToValueAtTime(0, n + .6); o.stop(n + .7); };
+  },
+  pad(){
+    if (!AC) return () => {};
+    const g = AC.createGain(); g.gain.value = 0; const t = AC.currentTime;
+    g.gain.linearRampToValueAtTime(.045, t + 2.5); g.connect(master);
+    const os = [261.6, 329.6, 392, 493.9].map((f, i) => { const o = AC.createOscillator(); o.frequency.value = f; o.detune.value = (i - 1.5)*4; o.connect(g); o.start(); return o; });
+    return () => { const n = AC.currentTime; g.gain.cancelScheduledValues(n); g.gain.setValueAtTime(g.gain.value, n); g.gain.linearRampToValueAtTime(0, n + 1.2); os.forEach(o => o.stop(n + 1.3)); };
+  }
+};
+
+/* ---------- Chuyển cảnh ---------- */
+const INIT = {
+  's-bed': el => {
+    gsap.set(el.querySelector('.arm-l'), {rotation:-172, transformOrigin:'100% 100%'});
+    gsap.set(el.querySelector('.arm-r'), {rotation:172, transformOrigin:'0% 100%'});
+  },
+  's-stairs': el => { cam.fig = el.querySelector('.fig-ph'); Object.assign(ph, {x:stepX(0), y:stepY(0), s:stepS(0), r:0}); },
+  's-corr': el => go(el.querySelector('.lights'), {y:180, duration:.8, ease:'none', repeat:-1}),
+  's-dream': el => gsap.set(el.querySelector('.hoang'), {opacity:0, y:24}),
+  's-pm': el => gsap.set(el.querySelectorAll('.pm-item'), {opacity:0, y:-14, height:0, marginTop:0, paddingTop:0, paddingBottom:0})
+};
+function cut(id, view = {}){
+  document.querySelectorAll('.scene').forEach(s => s.hidden = s.id !== id);
+  document.querySelectorAll('.ghost').forEach(g => g.remove());
+  const el = $('#' + id);
+  gsap.killTweensOf(cam);
+  Object.assign(cam, {scene:el, world:el.querySelector('.world'), ghost:null, gLayers:[], fig:null, gFig:null});
+  cam.layers = [...cam.world.querySelectorAll('.layer[data-d]')];
+  cam.x = view.x ?? 180; cam.y = view.y ?? 320; cam.z = view.z ?? 1; cam.x0 = cam.x; cam.y0 = cam.y;
+  INIT[id]?.(el);
+  applyCam();
+  return el;
+}
+function makeGhost(){
+  const g = cam.world.cloneNode(true); g.classList.add('ghost'); g.style.pointerEvents = 'none'; g.style.opacity = 0;
+  cam.scene.appendChild(g);
+  cam.ghost = g; cam.gLayers = [...g.querySelectorAll('.layer[data-d]')]; cam.gFig = g.querySelector('.fig-ph');
+}
+/* bật/tắt biểu cảm: đặt opacity cho các nhóm theo class */
+function expr(roots, on){
+  [].concat(roots).filter(Boolean).forEach(r => Object.entries(on).forEach(([cls, v]) => r.querySelectorAll('.' + cls).forEach(n => n.setAttribute('opacity', v))));
+}
+const figFace = on => expr([cam.fig, cam.gFig], on);
+function phFace(el, eyes, mouth, tear = 0){
+  const m = {'rp-eh':0, 'rp-eo':0, 'rp-es':0, 'rp-mo':0, 'rp-ms':0, 'rp-mp':0, 'rp-ml':0, 'rp-tear':tear};
+  m['rp-' + eyes] = 1; m['rp-' + mouth] = 1; expr(el, m);
+}
+function hoFace(el, which){ expr(el, {'hv-worry':0, 'hv-hold':0, 'hv-smile':0, ['hv-' + which]:1}); }
+const shake = (amt, dur) => { rig.shake = amt; go(rig, {shake:0, duration:dur, ease:'power2.out'}); };
+const flash = (color, peak, dur) => { flashEl.style.background = color; fx.flash = peak; go(fx, {flash:0, duration:dur, ease:'power2.out'}); };
+const tint = (color, op, dur = 1) => { tintEl.style.background = color; go(fx, {tint:op, duration:dur}); };
+async function typeInto(node, text, secs){
+  const p = {n:0}; let last = 0;
+  await tw(p, {n:text.length, duration:secs, ease:'none', onUpdate(){
+    const n = Math.round(p.n);
+    if (n !== last){ node.textContent = text.slice(0, n); if (n % 3 === 0) sfx.key(); last = n; }
+  }});
+}
+function bubble(box, cls, text){
+  const b = document.createElement('div'); b.className = 'bub ' + cls; b.textContent = text; box.appendChild(b);
+  gsap.from(b, {y:10, opacity:0, scale:.9, duration:.3, ease:'back.out(1.6)', transformOrigin: cls === 'me' ? '100% 100%' : '0% 100%'});
+  return b;
+}
+
+/* ---------- KỊCH BẢN ---------- */
+async function run(){
+  /* Cảnh 1 — nhạc chuông của Hoàng, mở mắt */
+  cut('s-ceil', {x:180, y:320, z:1.08});
+  Object.assign(fx, {eye:0, blur:10, bright:.7, sat:.85});
+  tintEl.style.background = '#ffb070'; fx.tint = .35;
+  loop('birds', LOOP.birds()); loop('ring', LOOP.ring());
+  await wait(1);
+  stamp('SÁNG 1/10 · 08:00');
+  await tap('Chạm để mở mắt');
+  await tw(fx, {eye:.45, blur:7, bright:.85, duration:.7, ease:'power2.out'});
+  await tw(fx, {eye:0, duration:.22, ease:'power2.in'});
+  await wait(.25);
+  go(cam, {z:1, y:330, duration:5, ease:'sine.inOut'});
+  await tw(fx, {eye:1, blur:3, bright:1, duration:1.1, ease:'power2.out'});
+  await say('Phụng', 'Ưm… Chằm chằm gọi kìa…', {style:'sleepy'});
+  stampEl.textContent = '';
+  sfx.whoosh();
+
+  /* Cảnh 2 — nghe máy */
+  let el = cut('s-call', {x:180, y:340, z:1.14});
+  Object.assign(fx, {blur:0, sat:1});
+  go(cam, {z:1.04, y:320, duration:4, ease:'sine.out'});
+  await tap('Chạm để nghe máy');
+  stopLoop('ring'); sfx.answer();
+  el.querySelector('.call-in').hidden = true; el.querySelector('.call-on').hidden = false;
+  const callClock = clock(el.querySelector('.c-timer'));
+  go(cam, {z:1.12, duration:12, ease:'sine.inOut'});
+  await say('Hoàng', 'Bé ơi, Chằm này… Dậy chưa? 8 giờ rồi nè.');
+  await say('Phụng', 'Ưmm… cho bé ngủ 5 phút nữa thôi…', {style:'sleepy'});
+  await say('Hoàng', 'Hông được. Dậy xuống ăn sáng đi, cô Hậu đợi kìa. Ăn xong chụp hình gửi Chằm coi.');
+  await say('Phụng', 'Dạaa… biết rồi mà…', {style:'sleepy'});
+  await say('Hoàng', 'Ngoan. Thương thương.');
+  await tw(el.querySelector('.c-end'), {scale:.82, duration:.12, yoyo:true, repeat:1});
+  callClock.kill(); sfx.hangup();
+  el.querySelector('.c-status').textContent = 'Cuộc gọi kết thúc';
+  await wait(.9);
+
+  /* Cảnh 3 — ôm điện thoại cười, vươn vai */
+  el = cut('s-bed', {x:170, y:380, z:1});
+  go(cam, {x:152, y:300, z:1.4, duration:5, ease:'sine.inOut'});
+  go(el.querySelector('.arm-l'), {rotation:0, duration:1.3, ease:'back.out(1.3)'});
+  go(el.querySelector('.arm-r'), {rotation:0, duration:1.3, ease:'back.out(1.3)'});
+  await say('Phụng', 'Oaaa…', {style:'sleepy', dur:1.6});
+  go(el.querySelector('.arm-l'), {rotation:-172, duration:.9, ease:'power2.inOut'});
+  go(el.querySelector('.arm-r'), {rotation:172, duration:.9, ease:'power2.inOut'});
+  el.querySelector('.m-yawn').setAttribute('opacity', 0); el.querySelector('.m-smile').setAttribute('opacity', 1);
+  await say('Phụng (nghĩ)', 'Không biết sáng nay cô nấu món gì ngon ta…', {style:'thought'});
+
+  /* Cảnh 4 — cầu thang: cẩu máy xuống bếp rồi lên lại */
+  el = cut('s-stairs', {x:180, y:300, z:1.12});
+  stopLoop('birds');
+  const crane = tw(cam, {y:1215, z:1, duration:3.6, ease:'power2.inOut'});
+  await say('Cô Hậu', 'Phụng ơi! Xuống ăn sáng nè con, cô làm bánh mì ốp la nè!', {dur:3.4});
+  await crane;
+  await wait(.3);
+  await tw(cam, {y:330, z:1.12, duration:2.2, ease:'power2.inOut'});
+  await say('Phụng', 'Dạ con xuống liền!');
+
+  /* bước xuống — mơ màng, nhìn đôi */
+  makeGhost();
+  go(fx, {go:.32, gx:4, duration:1.2}); go(rig, {sway:3, duration:1});
+  /* té ở bậc thứ 10: đứng bậc 9, bước tiếp thì trượt */
+  for (let i = 1; i <= 10; i++){
+    await tap(i === 1 ? 'Chạm để bước xuống' : '');
+    if (i === 10) break;
+    const k = i*.7;
+    sfx.step();
+    go(cam, {y:stepY(i) - 120, duration:.6, ease:'power2.out'});
+    go(fx, {gx:4 + k*1.6, blur:k*.25, duration:.6});
+    go(rig, {sway:3 + k*.7, duration:.6});
+    await tw(ph, {x:stepX(i), y:stepY(i), s:stepS(i), duration:.42, ease:'power1.inOut'});
+    if (i === 3) await say('Phụng (nghĩ)', 'Lát chụp đồ ăn gửi Chằm… chụp góc nào cho xinh ta…', {style:'thought'});
+    if (i === 7) await say('Cô Hậu', 'Từ từ thôi con, coi chừng té nha!', {dur:2.2});
+  }
+
+  /* Cảnh 5 — cận bàn chân, quay chậm */
+  rig.sway = 0;
+  el = cut('s-foot', {x:200, y:330, z:1.05});
+  Object.assign(fx, {blur:0, gx:0, go:0});
+  muffle(380); loop('heart', LOOP.heart(950));
+  go(fx, {sat:.6, contrast:1.15, duration:.5});
+  go(cam, {z:1.35, x:230, y:340, duration:3.2, ease:'sine.inOut'});
+  await wait(.7);
+  await tw(el.querySelector('.slip'), {x:70, y:26, rotation:16, transformOrigin:'20% 100%', duration:2.2, ease:'sine.in'});
+  stopLoop('heart'); muffle(18000, .05);
+
+  /* Té — máy nghiêng, lia nhanh, rung */
+  cut('s-stairs', {x:180, y:stepY(9) - 120, z:1.12});
+  Object.assign(ph, {x:stepX(9), y:stepY(9), s:stepS(9), r:0});
+  figFace({'e-open':1, 'e-sleepy':0, 'm-o':1, 'm-smile':0});
+  fx.sat = 1; fx.contrast = 1;
+  sfx.whoosh();
+  go(rig, {rot:-13, duration:.35, ease:'power2.out'});
+  go(cam, {y:1160, z:1.04, duration:.85, ease:'power2.in'});
+  go(fx, {blur:4, duration:.22, yoyo:true, repeat:1});
+  await tw(ph, {x:170, y:1040, r:-35, duration:.2, ease:'power2.in'});
+  await tw(ph, {x:164, y:1110, r:-150, duration:.22, ease:'none'});
+  sfx.thud(.5); shake(8, .25);
+  await tw(ph, {x:152, y:1190, r:-260, duration:.22, ease:'none'});
+  sfx.thud(.7); shake(11, .25);
+  figFace({'e-open':0, 'e-sleepy':1, 'm-o':0, 'm-smile':0});
+  await tw(ph, {x:140, y:1316, r:-450, s:.95, duration:.28, ease:'power2.out'});
+  sfx.thud(1); shake(18, .5); flash('#fff', .8, .35);
+  go(rig, {rot:0, duration:.6, ease:'power2.out'});
+  await wait(.55);
+
+  /* Cảnh 6 — cô Hậu, zoom giật + đĩa rơi */
+  el = cut('s-hau', {x:180, y:330, z:1});
+  rig.rot = 0;
+  go(cam, {z:1.6, y:290, duration:.3, ease:'expo.out'}); shake(9, .45);
+  setSub('Cô Hậu', 'PHỤNG!!!', 'shout');
+  await wait(.45);
+  await tw(el.querySelector('.plate-fall'), {y:150, rotation:40, duration:1.1, ease:'power2.in'});
+  sfx.crash(); shake(6, .3);
+  await wait(.6); clearSub();
+
+  /* Cảnh 7 — nằm dưới sàn, mọi thứ mờ dần */
+  cut('s-floor', {x:180, y:320, z:1.1});
+  Object.assign(fx, {eye:.65, blur:3, sat:.55});
+  muffle(650, .1); loop('heart', LOOP.heart(1400));
+  go(cam, {z:1.25, duration:7, ease:'sine.inOut'});
+  go(rig, {sway:2, duration:1});
+  await say('Cô Hậu', 'Phụng ơi! Phụng! Nghe cô nói hông con?!', {style:'muffled'});
+  go(fx, {eye:.25, blur:5, sat:.3, duration:2.5});
+  await say('Cô Hậu', 'Trời ơi… cố lên con, cô gọi xe liền!', {style:'muffled'});
+  await tw(fx, {eye:0, duration:1.2, ease:'power2.in'});
+  stopLoop('heart'); rig.sway = 0;
+
+  /* Màn đen — còi xe */
+  loop('siren', LOOP.siren()); muffle(900, .1);
+  await wait(1.4);
+
+  /* Cảnh 8 — cô Hậu nhắn cho Hoàng trên xe cấp cứu */
+  el = cut('s-msg', {x:180, y:330, z:1.12});
+  Object.assign(fx, {blur:0, sat:.95, eye:1});
+  muffle(2200, .3);
+  go(cam, {z:1.02, y:320, duration:8, ease:'sine.inOut'});
+  go(rig, {sway:1.4, duration:.5});
+  const box = el.querySelector('.chat-b'), typing = el.querySelector('.c-type');
+  await wait(.6);
+  const msg = 'Hoàng ơi, con Phụng té cầu thang, cô đang đưa nó vô viện. Con đừng lo quá, có cô đây.';
+  await typeInto(typing, msg, 3.4);
+  await wait(.3);
+  typing.textContent = ''; sfx.send(); bubble(box, 'me', msg);
+  await wait(.9);
+  for (const t of ['Dạ??', 'Cô ơi bé có sao không ạ??', 'Con gọi cô liền nha cô']){
+    const dots = bubble(box, 'him', '•••'); await wait(.55);
+    dots.textContent = t; sfx.ding(); await wait(.65);
+  }
+  el.querySelector('.ring-ov').hidden = false;
+  gsap.from(el.querySelector('.ring-ov'), {y:-30, opacity:0, duration:.4, ease:'back.out(1.6)'});
+  loop('oldring', LOOP.oldring());
+  await hold(1.6);
+  stopLoop('oldring');
+  await say('Cô Hậu', 'Alo… Hoàng hả con… nó té cầu thang, bất tỉnh rồi…', {style:'muffled'});
+  rig.sway = 0;
+  await tw(fx, {eye:0, duration:.6, ease:'power2.in'});
+
+  /* Cảnh 9 — đèn hành lang lướt qua */
+  cut('s-corr', {x:180, y:320, z:1.05});
+  Object.assign(fx, {blur:3, sat:.6});
+  muffle(900, .1);
+  await tw(fx, {eye:.35, duration:.5});
+  await say('Điều dưỡng', 'Bệnh nhân nữ, té cầu thang, nghi gãy cẳng chân phải!', {style:'muffled'});
+  await tw(fx, {eye:0, duration:.4});
+  stopLoop('siren');
+  await wait(.6); await tw(fx, {eye:.18, duration:.3}); await wait(.4); await tw(fx, {eye:0, duration:.3});
+  await wait(1);
+
+  /* Cảnh 10 — giấc mơ: giọng Hoàng (cuộc gọi thật kề tai) */
+  el = cut('s-dream', {x:180, y:320, z:1});
+  muffle(18000, .6);
+  Object.assign(fx, {sat:.9, blur:6, bright:1.12});
+  tint('#ffc2d1', .4, .1);
+  loop('pad', LOOP.pad());
+  go(cam, {z:1.12, duration:9, ease:'sine.inOut'});
+  go(el.querySelector('.hoang'), {opacity:1, y:0, duration:2, ease:'power2.out'});
+  await tw(fx, {eye:1, blur:1.2, duration:2.2, ease:'sine.inOut'});
+  await say('Hoàng', 'Bé ơi… Chằm này. Tỉnh dậy đi bé…', {style:'dream'});
+  await say('Phụng', '…Chằm…', {style:'thought'});
+  await tap('Chạm để mở mắt');
+  sfx.shimmer();
+  flashEl.style.background = '#fff';
+  go(cam, {z:2.2, y:300, duration:1.6, ease:'power2.in'});
+  await tw(fx, {flash:1, duration:1.4, ease:'power1.in'});
+  stopLoop('pad');
+
+  /* Cảnh 11 — bác sĩ, lấy nét dần */
+  cut('s-doc', {x:180, y:320, z:1.05});
+  Object.assign(fx, {eye:0, blur:8, sat:.75, hue:-10, bright:1});
+  tint('#9fd0ff', .3, .1);
+  loop('monitor', LOOP.monitor());
+  go(fx, {flash:0, duration:.6});
+  await tw(fx, {eye:.5, duration:.5}); await tw(fx, {eye:.1, duration:.18}); await tw(fx, {eye:1, blur:3, duration:.8});
+  go(cam, {z:1.12, duration:4, ease:'sine.inOut'});
+  await tw(fx, {blur:0, duration:1.2, ease:'power2.inOut'});
+  await say('Bác sĩ', 'Em tỉnh rồi hả? Không sao rồi nha.');
+  await say('Bác sĩ', 'May là chỉ rạn xương cẳng chân thôi. Bó bột hai tuần là lành nha.');
+
+  /* Cảnh 12 — kéo máy ra: cô Hậu đang gọi video với Hoàng */
+  el = cut('s-room', {x:95, y:300, z:2.4});
+  const room = el;
+  go(fx, {hue:0, sat:1, duration:4});
+  tint('#ffcf9e', .25, 3);
+  await tw(cam, {x:180, y:340, z:1, duration:3.6, ease:'power2.inOut'});
+  await say('Cô Hậu', 'Hoàng ơi, nó tỉnh rồi nè con!');
+
+  /* Cảnh 13 — méc anh (cắt qua lại như phim) */
+  let vc = cut('s-vcall', {x:180, y:320, z:1.06});
+  hoFace(vc, 'worry');
+  clock(vc.querySelector('.v-timer'), 734);
+  go(cam, {z:1.14, duration:5, ease:'sine.inOut'});
+  await say('Hoàng', 'Bé! Bé nghe anh nói hông? Đau lắm hông bé?');
+
+  cut('s-room', {x:92, y:304, z:2.6});
+  phFace(room, 'eh', 'mp', 1);
+  go(cam, {z:2.75, duration:4, ease:'sine.inOut'});
+  await say('Phụng', 'Anh ơi… cái cầu thang… nó làm bé té… 🥺', {style:'sleepy'});
+
+  cut('s-vcall', {x:180, y:300, z:1.18});
+  hoFace(vc, 'hold');
+  go(cam, {z:1.24, duration:4, ease:'sine.inOut'});
+  await say('Hoàng (nín cười)', 'Cầu thang nào dám ăn hiếp bé của anh? Để anh tính sổ với nó!');
+
+  cut('s-room', {x:92, y:304, z:2.6});
+  go(cam, {z:2.75, duration:4, ease:'sine.inOut'});
+  await say('Phụng', 'Bậc thứ mười đó… nó trượt bé…', {style:'sleepy'});
+
+  cut('s-vcall', {x:180, y:300, z:1.18});
+  await say('Hoàng', 'Rồi. Bậc thứ mười. Anh ghi vô sổ đen rồi nha.');
+
+  cut('s-room', {x:72, y:500, z:1.7});
+  expr(room, {'rh-kind':0, 'rh-laugh':1});
+  go(cam, {z:1.8, duration:3, ease:'sine.inOut'});
+  await say('Cô Hậu', 'Trời đất, hai đứa này. Té rạn chân mà còn méc với hỏng.');
+
+  cut('s-room', {x:130, y:322, z:1.8});
+  phFace(room, 'eo', 'mp');
+  const pan = tw(cam, {x:276, y:348, z:2.1, duration:2.6, ease:'power2.inOut'});
+  await say('Phụng', 'Vậy là hai tuần bé không đi đâu được hết…');
+  await pan;
+
+  /* "bế lắc lắc yêu thương" — tim bay trên màn hình */
+  cut('s-vcall', {x:180, y:310, z:1.1});
+  hoFace(vc, 'smile'); expr(vc, {'hv-hug':1});
+  go(cam, {z:1.22, duration:6, ease:'sine.inOut'});
+  go(vc.querySelector('.hv-body'), {rotation:6, transformOrigin:'50% 100%', duration:.45, ease:'sine.inOut', yoyo:true, repeat:7, startAt:{rotation:-6}});
+  const hearts = vc.querySelector('.hearts');
+  for (let i = 0; i < 9; i++){
+    const h = document.createElement('span'); h.textContent = i % 3 ? '💗' : '💕';
+    h.style.left = (20 + Math.random()*150) + 'px'; h.style.top = '330px'; hearts.appendChild(h);
+    go(h, {y:-220 - Math.random()*80, x:(Math.random() - .5)*40, opacity:0, scale:1.4, duration:2.4, delay:i*.28, ease:'sine.out'});
+  }
+  await say('Hoàng', 'Thương thương… Để anh bế bé lắc lắc yêu thương nè, cho chân mau lành nha.', {dur:4.2});
+
+  cut('s-room', {x:72, y:500, z:1.9});
+  shake(3, .3);
+  await say('Cô Hậu', 'Ủa alo, cô còn ngồi đây nha hai đứa!');
+
+  cut('s-vcall', {x:180, y:300, z:1.2});
+  expr(vc, {'hv-hug':0}); hoFace(vc, 'hold');
+  gsap.set(vc.querySelector('.hv-body'), {rotation:0});
+  await say('Hoàng (ngượng)', 'Dạ… con quên. Cô ơi, con nhờ cô chăm bé giùm con.');
+
+  cut('s-room', {x:72, y:500, z:1.7});
+  expr(room, {'rh-kind':1, 'rh-laugh':0});
+  await say('Cô Hậu', 'Ừ, có cô đây, con yên tâm.');
+
+  cut('s-vcall', {x:180, y:320, z:1.1});
+  hoFace(vc, 'smile');
+  await wait(.4);
+  sfx.hangup();
+  vc.querySelector('.v-top').textContent = 'Cuộc gọi kết thúc';
+  go(vc.querySelector('.screen svg'), {opacity:.25, duration:.5});
+  await wait(1);
+
+  /* Cảnh 14 — tin nhắn riêng: Chằm – bé */
+  cut('s-room', {x:180, y:380, z:1.2});
+  phFace(room, 'eo', 'ms');
+  tone(110, .28, {type:'square', vol:.03}); tone(110, .28, {type:'square', vol:.03, at:.42});
+  go(room.querySelector('.room-glow'), {opacity:1, duration:.25, yoyo:true, repeat:5});
+  await tw(cam, {x:300, y:500, z:2.2, duration:1.3, ease:'power2.inOut'});
+  const pm = cut('s-pm', {x:180, y:320, z:1});
+  go(cam, {z:1.08, y:300, duration:6, ease:'sine.out'});
+  await wait(.4);
+  for (const m of pm.querySelectorAll('.pm-item')){
+    gsap.to(m, {opacity:1, y:0, height:'auto', marginTop:8, paddingTop:9, paddingBottom:9, duration:.45, ease:'back.out(1.5)'});
+    sfx.ding(); await wait(1.3);
+  }
+  await hold(1.4);
+
+  cut('s-room', {x:92, y:304, z:2.6});
+  phFace(room, 'es', 'ml');
+  go(cam, {z:2.7, duration:3, ease:'sine.inOut'});
+  await say('Phụng', 'Hì… Chằm khùng quá à.');
+
+  /* chụp hình cái chân bột */
+  cut('s-room', {x:276, y:348, z:2.3});
+  go(cam, {z:2.4, duration:2, ease:'sine.out'});
+  await wait(.6);
+  sfx.shutter(); flash('#fff', .95, .6); stopLoop('monitor');
+  await wait(1);
+}
+
+/* ---------- Bắt đầu / kết thúc ---------- */
+function reset(){
+  killAll(); stopAllLoops();
+  SKIP = false; pend.clear(); tapWaiters = [];
+  scenesEl.innerHTML = SCENES_HTML;
+  Object.assign(fx, FX0); Object.assign(rig, {rot:0, shake:0, sway:0}); Object.assign(ph, {x:0, y:0, s:1, r:0});
+  cam.world = null; cam.fig = null; cam.ghost = null;
+  subs.style.opacity = 0; hint.classList.remove('on'); stampEl.textContent = '';
+  endCard.hidden = true; startCard.hidden = true; skipBtn.hidden = false;
+  muffle(18000, .05);
+}
+function finish(){
+  killAll(); stopAllLoops(); muffle(18000, .05);
+  const room = cut('s-room', {x:92, y:330, z:2.2});
+  phFace(room, 'es', 'ml');
+  Object.assign(fx, {eye:1, blur:2, sat:1, bright:.9, contrast:1, hue:0, flash:0, gx:0, go:0});
+  Object.assign(rig, {rot:0, shake:0, sway:0});
+  subs.style.opacity = 0; hint.classList.remove('on'); stampEl.textContent = '';
+  skipBtn.hidden = true;
+  go(fx, {bars:0, duration:.8, ease:'power2.inOut'});
+  endCard.hidden = false;
+  gsap.fromTo(endCard.children, {opacity:0, y:14}, {opacity:1, y:0, duration:.6, stagger:.12, ease:'power2.out'});
+  sfx.chime();
+}
+async function play(){
+  initAudio(); reset();
+  try { await run(); } catch (e) { if (e !== SKIPERR) console.error(e); }
+  finish();
+}
+$('#btn-start').addEventListener('click', play);
+$('#btn-replay').addEventListener('click', play);
+skipBtn.addEventListener('click', skip);
+
+/* khung hình chờ phía sau màn bắt đầu */
+cut('s-ceil', {x:180, y:320, z:1.05}); fx.blur = 6; fx.bright = .6;
+})();
+</script>
